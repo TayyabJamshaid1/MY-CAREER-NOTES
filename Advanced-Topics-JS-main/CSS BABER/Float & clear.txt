@@ -1,0 +1,44 @@
+---------------------------------------------------------------------------
+Float & clear
+=>Float is the property specifies how an element should float(located) within its container.
+=>It places an element on the left or right side of its container, allowing text and inline elements to wrap around it.
+=>clear is the property which is used with that element jo ye chahta hu k mere left ya right pr koi floated element na aiy 
+
+Example:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+ <div class="cards">
+    <img src="./kesa.png" width="230px" style="float: right;"/>
+    <div class="card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita culpa esse, ut, fugit ad facere sit reprehenderit at perferendis, laudantium odit quo. Maxime, veniam totam? Ipsa quis sed facere, eveniet consequuntur saepe modi maxime sint ea provident pariatur facilis temporibus at fugit optio consequatur veniam! Expedita totam, delectus sunt repudiandae dolor reiciendis dolores eveniet laboriosam alias pariatur nihil voluptatum fugiat possimus deserunt vero debitis. Odit nihil labore dolores atque corrupti necessitatibus iure dolor consequatur deleniti unde, incidunt saepe pariatur? Qui enim ullam magni! Distinctio perspiciatis similique, numquam explicabo necessitatibus quas minus saepe pariatur? Odit minus veritatis culpa rerum, molestias eum.</div>
+    <div class="card">22222Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eaque iusto minima rem corrupti assumenda ullam fugit, doloribus dolore, at blanditiis incidunt cupiditate repudiandae a quis quod voluptate tenetur vitae? Aliquid perspiciatis aspernatur officiis culpa possimus, ratione, consequuntur doloremque magni magnam, quas quae? Nostrum nemo dolor recusandae ratione ipsum in quidem ipsam vel dignissimos corrupti animi minima quam cumque fuga consectetur omnis nisi facilis deleniti quod, voluptate explicabo sed officiis nam temporibus. Nobis repellendus nemo repellat magni commodi tenetur voluptatem itaque, rerum necessitatibus quam ratione minus illum error, nulla incidunt asperiores eius. Deserunt nobis repellendus at debitis ut rerum mollitia quis corrupti magni iste tempore blanditiis, omnis temporibus modi dolorem dolores ratione excepturi quo numquam earum voluptate, aperiam officia fuga totam. Cumque explicabo iste itaque deleniti voluptates illo optio repellat quod ab sunt sed eum laboriosam omnis nam rerum quaerat officiis ut dolor tenetur accusantium, maxime cum velit laborum? Necessitatibus sunt at adipisci fugiat velit maxime beatae consequuntur? Eius laudantium consequatur, quos aliquam facilis debitis asperiores ratione rerum ipsam ipsum amet incidunt hic consequuntur dolorem reprehenderit enim illum dignissimos magni corrupti id error eligendi neque officiis. Accusamus aspernatur nemo amet magnam esse ipsam! Odit labore sunt aspernatur. Voluptatibus distinctio sint modi necessitatibus. Repellat rerum necessitatibus error, assumenda iste maxime inventore quasi impedit ipsa nostrum, expedita, laboriosam rem at ducimus nemo dolor quae corrupti maiores officiis quaerat? Accusantium, repellat necessitatibus nobis provident repudiandae possimus veniam sit ipsa maxime corporis commodi placeat nemo nostrum cum non vel voluptas, voluptates quia consequatur harum adipisci veritatis. Voluptates ea nisi doloribus dicta alias magnam autem animi! Eum voluptate inventore modi eius. Sit ipsa distinctio sint veniam nisi, corporis error maxime ab culpa laboriosam quaerat vel nesciunt fuga doloremque quod vitae voluptas quo dolor, provident repellendus reprehenderit! Deleniti maxime quam quia hic ad! In officiis, deleniti natus laborum libero unde obcaecati sed a cum quia iusto maiores accusantium nihil delectus ad fuga, commodi qui dolores quod, harum enim facere excepturi. Quae ex sint libero ut. Ducimus, animi nulla. Nulla accusantium dicta vitae facere inventore est velit voluptatum quasi eligendi. Commodi numquam sequi magni, repellat, quis beatae ad doloremque non illo, ipsam ab suscipit eos dolorum cupiditate cum provident. Sunt dignissimos quam voluptates placeat nisi voluptate natus nihil voluptas voluptatum ab incidunt officia aliquam, facilis corporis at beatae! Accusantium id iusto placeat asperiores libero culpa deleniti ratione, nobis provident. Sed iste ipsam, vero placeat corrupti cum dignissimos quis accusantium, quam quia neque laudantium? Perspiciatis ea ullam fugit perferendis dolorem laborum, similique saepe voluptate voluptatum modi iusto explicabo temporibus incidunt excepturi corporis ab, nobis laudantium voluptatibus. Possimus quia id veritatis esse sint! Iusto doloremque commodi enim dignissimos perspiciatis mollitia illum repellendus neque ullam minus, soluta ea natus nam repellat tempore vel delectus aut animi nobis, excepturi officiis praesentium impedit. Ipsam minus iusto laborum! Enim debitis accusamus officia incidunt dolores. At totam recusandae vero, esse dolores rerum quia! Rerum quas vero dolor facilis architecto distinctio dolorem accusantium aut, nisi magnam, eligendi consequuntur delectus voluptatibus sunt dolores, in magni neque omnis.</div>
+      <div class="card">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita culpa esse, ut, fugit ad facere sit reprehenderit at perferendis, laudantium odit quo. Maxime, veniam totam? Ipsa quis sed facere, eveniet consequuntur saepe modi maxime sint ea provident pariatur facilis temporibus at fugit optio consequatur veniam! Expedita totam, delectus sunt repudiandae dolor reiciendis dolores eveniet laboriosam alias pariatur nihil voluptatum fugiat possimus deserunt vero debitis. Odit nihil labore dolores atque corrupti necessitatibus iure dolor consequatur deleniti unde, incidunt saepe pariatur? Qui enim ullam magni! Distinctio perspiciatis similique, numquam explicabo necessitatibus quas minus saepe pariatur? Odit minus veritatis culpa rerum, molestias eum.</div>
+ </div>
+</body>
+
+</body>
+</html>
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-size: 10px;
+}
+.cards{
+ border: 5px solid green;
+ display: flow-root;
+   /* font-size: 22px; */
+}
+.card:nth-child(3){
+    clear: right;
+}
+.card{
+     border: 5px solid blue;
+
+}

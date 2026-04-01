@@ -1,0 +1,33 @@
+
+function multiply(x,y){
+  console.log(x*y);
+  
+}
+let multiplyByTwo=multiply.bind(this,2)
+multiplyByTwo(3)
+
+How to make a function currying?
+We make a copy of function(multiply) and we create a more methods out of it by pre setting some arguments inside the function like we pre-set the 2 in multiply function.Work in both(arrow & regular function)
+
+There are 2 ways to do it
+1-By bind method (First we discussed in top)
+2-By closures
+
+By Closures:
+let multiply=function (x){
+  return function (y){
+    console.log(x*y);
+    
+  }
+}
+let multiplyByTwo=multiply(2)
+multiplyByTwo(3)
+
+In bind;
+this is referring to the global object (or undefined in strict mode)
+
+It's not pointing to a function or the data function specifically
+
+The value of this in this case doesn't affect the outcome because the function doesn't use it
+The this value here is essentially ignored because the data function doesn't reference this. The code would work exactly the same if you used null or undefined instead of this:
+let multiplyByTwo=multiply.bind(null,2) // Also works the same

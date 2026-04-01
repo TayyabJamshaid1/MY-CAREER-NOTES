@@ -1,0 +1,96 @@
+Sure! Let's break down the key Socket.IO methods in simple words with examples.
+
+1. socket.emit() → Send Data
+What it does: Sends a message/event from the client to the server.
+
+Example:
+
+javascript
+// Client sends a "message" event to the server
+socket.emit("message", { text: "Hello, server!" });
+The server can listen for this event using socket.on("message").
+
+2. socket.on() → Listen for Data
+What it does: Listens for an event from the server (or another client).
+
+Example:
+
+javascript
+// Client listens for a "new_message" event
+socket.on("new_message", (data) => {
+  console.log("New message received:", data);
+});
+This runs every time the server sends a new_message.
+
+3. socket.once() → Listen Only Once
+What it does: Listens for an event just once (then stops listening).
+
+Example:
+
+javascript
+// Client listens for "welcome" only the first time
+socket.once("welcome", (data) => {
+  console.log("First welcome message:", data);
+});
+Useful for one-time events (e.g., initial connection message).
+
+4. socket.off() → Stop Listening
+What it does: Removes an event listener (like turning off a notification).
+
+Example:
+
+javascript
+// Stop listening for "new_message"
+const handleMessage = (data) => console.log(data);
+socket.on("new_message", handleMessage);
+
+// Later, unsubscribe
+socket.off("new_message", handleMessage);
+Prevents memory leaks in React/React Native when unmounting components.
+
+Real-Life Analogy
+Think of Socket.IO like a walkie-talkie:
+
+emit = You press the button to speak.
+
+on = You keep the walkie-talkie on to hear messages.
+
+once = You listen only for the next message.
+
+off = You turn off the walkie-talkie to stop hearing messages.
+
+When to Use Which?
+Method	Use Case
+emit	Sending chat messages, live updates.
+on	Listening for real-time data (messages, notifications).
+once	One-time events (e.g., initial connection success).
+off	Cleaning up listeners in React's useEffect cleanup.
+--------------------------
+Broadcast to all clients
+
+If the server wants to reply to everyone, not just the sender, it uses io.emit:
+
+// Server side
+socket.on("message", (data) => {
+  // Send to ALL clients
+  io.emit("new_message", { text: data.text });
+});
+
+// Client side
+socket.on("new_message", (data) => {
+  console.log("Broadcast message:", data.text);
+});
+
+
+✅ Rule of thumb:
+
+Server → one client → socket.emit()
+
+Server → all clients → io.emit()
+
+Server → everyone except sender → socket.broadcast.emit()
+
+
+
+
+

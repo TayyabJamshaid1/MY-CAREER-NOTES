@@ -1,0 +1,122 @@
+How to create a Promise?
+
+To Create a promise,we use a new keyword and a promise constructor(Promise()).This promise constructor takes a function along with 2 parameters(resolve,reject).These (resolve,reject)are the functions given by javascript to build promises.
+Promise have only 2 things 
+a)Promise can be fullfilled or resolved
+b)Promise can be rejected
+In case of rejection,we should always handle the errors gracefully.For this purpose,promise comes along with one more function that is catch.We attached a failure callback in it
+Note:
+The function we passed in Promise constructor is not a callback function.It is a executor function that is executed immediately by the Promise constructor.
+
+Example:
+let cart=["shoes","bag","mobile"];
+
+const createOrder=(cart)=>{
+ return new Promise((resolve,reject)=>{
+  if(!validateCart(cart)){
+    reject("Card is not Valid")
+  }
+  //let suppose,order is created without any error
+  let orderId=12345;
+  if (orderId){
+  setTimeout(()=>{
+    resolve(orderId)
+
+  },5000)
+}
+ })
+}
+const validateCart=(cart)=>{
+  return true;
+}
+let promise=createOrder(cart);
+
+console.log(promise);//here it is showing a pending state,why? When Js try to execute this code,createOrder takes 5 seconds to be complete,by that time,our promise object will be in pending state,thats why it is in a pending state
+
+promise.then((data)=>{
+  console.log(data);
+}).catch((err)=>{
+console.log(err);
+})
+
+PROMISE Chaining
+Scenario 1:
+
+Example 1:
+let cart=["shoes","bag","mobile"];
+
+const createOrder=(cart)=>{
+ return new Promise((resolve,reject)=>{
+  if(!validateCart(cart)){
+    reject("Card is not Valid")
+  }
+  //let suppose,order is created without any error
+  let orderId=12345;
+  if (orderId){
+  setTimeout(()=>{
+    resolve(orderId)
+
+  },5000)
+}
+ })
+}
+const validateCart=(cart)=>{
+  return true;
+}
+const createPayment=(dataId)=>{
+  return new Promise((resolve,reject)=>{
+    resolve(dataId)
+
+  })
+  }
+createOrder(cart)
+.then((orderId)=>{
+  console.log(orderId);
+  return orderId
+
+})
+.then((dataId)=>{       //add a  promise chain
+ return createPayment(dataId)
+})
+.then((paymentInfo)=>{
+  console.log(paymentInfo);
+}).catch((err)=>{      
+console.log(err);
+})
+
+NOTE:
+If there is a error in any of this chain(in any .then) , catch can handle any error which comes in any chain.If  error occured in any chain in scenario 1,us sy agay ka koi b .then ni chly ga.
+
+
+Scenario 2:
+As We discuss that agr let suppose ap k pas total 10 .then hain,aur ap k kisi b .then me error a gya tu agay k tamam .then ni chly gy. if we want k aisa na hu,agr koi ek .then ni chla tu us k agay k .then tu lazmi chly,for this agr jis .then me apko lgta ha k yaha error a skta ha,tu us k sath .catch lga k error ko handle kr ly,Is sy agay ka process continue rhy ga.
+
+Example:
+upr ka baqi ka code same hu ga scenario 1  ka,updated code is given below
+
+const validateCart=(cart)=>{
+  return false;
+}
+
+createOrder(cart).then((orderId)=>{
+  console.log(orderId);
+  return orderId
+})
+.catch((err)=>{    //here,we attach a separate .catch to stop the blockage of our program,ye .catch upr jitny b .then k errors hu gy,un sab ko handle kary ga 
+  console.log(err);
+})
+.then((dataId)=>{
+  if (dataId){
+    return dataId
+  }else{
+    return "TLP"
+  }
+})
+.then((paymentInfo)=>{
+  console.log(paymentInfo);
+})
+.catch((err)=>{
+console.log(err);
+})
+
+

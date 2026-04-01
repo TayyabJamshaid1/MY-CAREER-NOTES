@@ -1,0 +1,258 @@
+ STORY BEHIND WHY WE NEED USEEFFECT
+
+Let suppose,i want to fetch dataArray from api in my component,where i can do it in below example?
+
+import { useEffect, useState } from "react";
+import RestaurantCard from "./RestaurantCard";
+const Body = () => {
+ fetch('');        //if i call fetch here,then on every render ,this api will continuous call,then where should we call it?
+   const [searchText,setSearchText]=useState("")
+   const [restaurants,setRestaurants]=useState(dataArray)
+   const filterData=()=>{
+    let data=dataArray.filter((data)=>data.name.includes(searchText))    
+    if (data.length>0){
+        setRestaurants(data)    
+    }else{
+      
+        setRestaurants([...dataArray])    
+    }
+   }
+   
+   console.log('render');
+    
+    return (
+      <>
+      <div className="search-container">
+      <input type="text" placeholder="Enter your value" value={searchText} onChange={(e)=>{
+        setSearchText(e.target.value)
+      }}/>
+      <button onClick={filterData}>Search</button>
+      </div>
+        <RestaurantCard dataArray={restaurants} />
+      </>
+    );
+  };
+  
+There are two ways/approaches to fetch the data in react
+
+1-Load the page ===>call the api===>render the page
+                     300(mseconds)   (500mseconds)
+  After page reload,call the api (it takes sometime to call it) and render the page (it takes sometime to render data)                  
+  This approach is not good because ui in this case is not user friendly and professional
+ 
+ 2-Load the page ===> render the  page===>call the api===>update the ui
+                                                100(mseconds)                                 (300mseconds)   (500mseconds)
+  After page reload,render the initial page and then call the api and then update the ui                                       
+ This approach is good because your page is avaiable in this approach after 100ms while in first approach,it is avaiable after 500ms.Also second approach is user friendly approach.We use a second approach in react very much
+ 
+ In react ,usually we initially render something on ui and then we make a api call and then update the ui.React says that dom manipulation is very fast.Dont worry about the re renders.I will quickly handle it
+ 
+ THIS SECOND APPROACH IS PROVIDED TO US BY DEFAULT IN REACT BY USE EFFECT
+ 
+ What is useEffect?
+useEffect is  a function .You can  called this function by passing another callback function into it."useEffect is a function which takes a callback function as a parameter.useEffect is a function which takes a callback function as a parameter.
+useEffect will not call the passed callback function immedjiately,it will call it whenever it wants.So whenever useEffect wants to call callback function,it will call it.React will make sure it that this callback function is called at a specific time.What is that time? Whenever our component renders and re renders and again re renders,useEffect will call the passed callback function after every render.(Jab b hamara component render hu ga tab tab useEffect passed callback function ko call krta rhy ga).
+useEffect(()=>{console.log('kesa')});
+
+Now question is whenever my compoennt render?
+As we discussed whenever our state changed or props changed,our compoenent will be re render.
+Example:
+import { useEffect, useState } from "react";
+import RestaurantCard from "./RestaurantCard";
+
+let dataArray = [
+    {
+      name: "Cheesy Bacon Burger",
+      imageUrl: "https://images.deliveryhero.io/image/fd-pk/Products/24651688.jpg?width=%s&unique=1",
+      cuisens: ["Burger", "Cheese", "Bacon"],
+      rating: "4.2",
+    }
+  ];
+  
+ 
+  const Body = () => {
+  //whenever below states is changed,component render
+   const [searchText,setSearchText]=useState("")
+   const [restaurants,setRestaurants]=useState(dataArray)
+   const filterData=()=>{
+    let data=dataArray.filter((data)=>data.name.includes(searchText))    
+    if (data.length>0){
+        setRestaurants(data)    
+    }else{
+      
+        setRestaurants([...dataArray])    
+    }
+   }
+   useEffect(()=>{
+    console.log('useEffect call');
+    
+   })  
+   console.log('render');
+    
+    return (
+      <>
+      <div className="search-container">
+      <input type="text" placeholder="Enter your value" value={searchText} onChange={(e)=>{
+        setSearchText(e.target.value)
+      }}/>
+      <button onClick={filterData}>Search</button>
+      </div>
+        <RestaurantCard dataArray={restaurants} /> //whenever props will change,it will re render
+      </>
+    );
+  };
+  export default Body
+
+Thats a bad way to call it after every render.We dont want to call it on every re render.So if you dont want to call it after every re render,passed  a empty dependency after callback function.
+useEffect(()=>{
+    console.log('useEffect call');
+    
+   },[])  //this array is known as dependency array
+   
+ In conclusion,
+ UseEffect is a hook.At the end of day,Hook is  a function.How can you call that function?You called the useEffect function by giving two parameters.One is call back function and other one is dependency array.Without dependency array,useEffect will call the callback function after every render.This approach is bad thats why we use dependency array.If passed empty dependency,it will call only once after first time render.
+ 
+ Now if i want that ,whenever my search text is updating,useEffect callback function should be called.For this, passed the search text in its dependency array
+ 
+ useEffect(()=>{
+    console.log('useEffect call');
+    
+   },[searchText])  //this array is known as dependency array
+   
+  Remember,
+ => Useeffect  will always called after render,not before render.
+ => Useeffect callback function will allways called on below scenarios
+  
+ a) without dependency array[]===>once after initial render+  everytime after render
+ b) empty dependency array[]===> once after initial render
+ c) with dependent data [searchText]===> once after initial render+  everytime after render when searchText updates
+ -----------------------------------------------------------
+ Now we are going to discuss one important scenario
+ 
+ Hamary pas restaurants nam ki state ha ,jis me phly sy he dummy data para ha,ab hum chahty ha k api sy wo data aiy,is liye hum ny useEffect me api call kr k restaurants me again data set krwa dia ha.Ab is approach ki background me huta yeh ha k first time hamara page dummy data k sath render hu ga,render huny k foran bad useEffect call hu ga aur api call jai gi,aur hamari state phr update hu jai gi.Is liye screen k shuru me thori dr k liye dummy data show hu ga aur bad me kuch seconds k bad api wala data show hu ga.In short,When you are rendering for the first time,it will render your initial data
+ 
+ Example:
+ import { useEffect, useState } from "react";
+import RestaurantCard from "./RestaurantCard";
+
+let dataArray = [
+    {
+      title: "Cheesy Bacon Burger",
+      images: ["https://images.deliveryhero.io/image/fd-pk/Products/24651688.jpg?width=%s&unique=1"],
+      tags: ["Burger", "Cheese", "Bacon"],
+      rating: 4.2,
+    },
+    {
+      title: "Classic Beef Burger",
+      images: ["https://images.deliveryhero.io/image/fd-pk/Products/24651688.jpg?width=%s&unique=1"],
+      tags: ["Burger", "Beef", "Classic"],
+      rating: 4.5,
+    },
+  ];
+  
+  const Body = () => {
+   const [searchText,setSearchText]=useState("")
+   const [restaurants,setRestaurants]=useState(dataArray) //dummy data set
+   
+   const filterData=()=>{
+    let data=dataArray.filter((data)=>data.name.includes(searchText))    
+    if (data.length>0){
+        setRestaurants(data)    
+    }else{
+      
+        setRestaurants([...dataArray])    
+    }
+   }
+   useEffect(()=>{
+    console.log('useEffect call');
+    fetchDummyProducts() //api called after first render
+   },[])  
+const fetchDummyProducts=async()=>{
+  const data=await fetch("https://dummyjson.com/products");
+  const jsonData=await data.json();
+  setRestaurants(jsonData.products)   //new data set 
+}    
+    return (
+      <>
+      <div className="search-container">
+      <input type="text" placeholder="Enter your value" value={searchText} onChange={(e)=>{
+        setSearchText(e.target.value)
+      }}/>
+      <button onClick={filterData}>Search</button>
+      </div>
+        <RestaurantCard dataArray={restaurants} />
+      </>
+    );
+  };
+  export default Body
+
+---------------------------------------------------------------------------------
+Conclusion:
+When react renders our component,then useEffect is called
+When i add any dependency in useEffect,i will called it again and again on that dependency update
+When i give empty dependency array,then will only called once after a initial render.
+This is a best place for a api call
+When you are rendering for the first time,it will render your initial data
+
+---
+loader k jagah shimmer effect industry me use huta ha
+---
+IMPORTANT POINT:
+import React from 'react'
+
+const Header = () => {
+    return (
+      <div className="header">
+       {
+ //does below lines work in jsx,the answer is no,because it is a statements and  you cannot run statements in jsx ,jsx only runs expressions
+       a=10;                   
+       console.log(a);
+       }
+      </div>
+    );
+  };
+  export  {Header};
+  Diff btw statements and expressions
+  {
+       a=10;                   //this kind of code is statements
+       console.log(a);
+       }
+       while
+       {console.log("tayyab")} //it will run it is a expression
+       or 
+       {(a=10;console.log(a);)} //it will run it is also a expression
+ ---------------------------------------------------------------------------
+ Imp points:
+ 
+1-React says that never create a another component inside a component.React kehta ha k ek component k andr dosra component mat bnaiy.Keep the new component on the top of page.Its reason is on every render,your new component automatically created on every render.
+
+Wrong Approach:
+
+const Header = () => {
+
+const anotherComponent=()=>{}            //never created a component inside another component bcoz it will automatically created on every render.
+   
+    return (
+      <div className="header">
+      </div>
+    );
+  };
+  export  {Header};
+  
+Correct Approach:
+
+const anotherComponent=()=>{}            // created a component on top
+
+const Header = () => {
+    return (
+      <div className="header">
+      </div>
+    );
+  };
+  export  {Header};
+  
+2-Never create your state inside if else/or in any loop
+if(){
+const [data,setData]=useState(false);  //Wrong Approach
+}
+

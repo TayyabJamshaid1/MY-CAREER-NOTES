@@ -1,0 +1,136 @@
+Memoization:
+agr apk pas koi problem aai ha to us problem ko sab sy phly solve kr lo aur us ka data apny pas secure kr lo,in case agr same problem dobara ati ha tu usy dobara solve krny ki bjaiy same result return kr du
+
+UseMemo:
+Sometimes in your react app,you have an expensive operations/task/calculations or sometimes in our app,we perform the same task un necessary,to handle both scenarios,we can use useMemo.
+
+
+useMemo first argument is a function(calculative function)
+
+
+Scenario 1: with same value
+import { useContext, useMemo, useState } from "react";
+import UserContext from "./Utils/userContext";
+const Body = () => {
+  let {user,setUser}=useContext(UserContext)
+  const [searchText, setSearchText] = useState("");
+  const [count,setCount]=useState(0)
+
+    function expensiveTask(q){
+    console.log("expensive card");
+    for (let i=0;i<1000000000;i++){
+  
+    }
+   console.log('done');
+    return 2*q;
+  }
+  let double=useMemo(()=> expensiveTask(2),[])
+
+  return (
+    <>
+      <div className="search-container bg-pink-50 p-5 my-5">
+        <input
+          type="text"
+          placeholder="Enter your value"
+          className="border border-red-500 focus:bg-green-50 p-2 m-2"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
+        <input value={user.name} onChange={(e)=>setUser({
+          ...user,
+          name:e.target.value
+        })}/>
+        <button
+          onClick={() => {
+            // let newData = filterDataNew(
+            //   restaurants,
+            //   searchText,
+            //   allrestaurants
+            // );
+            // setRestaurants(newData);
+            setCount((prev)=>prev+1)
+          }}
+          className="p-2 m-2 bg-purple-400 hover:bg-gray-400 rounded-lg"
+        >
+          Search
+        </button>
+      </div>
+      {count}
+      {double}
+      {/* {restaurants.length > 0 ? (
+        <RestaurantCard dataArray={restaurants} />
+      ) : (
+        <ShimmerComponent />
+      )} */}
+    </>
+  );
+};
+export default Body;
+
+Scenario 2:(with different value)
+import { useContext, useMemo, useState } from "react";
+import UserContext from "./Utils/userContext";
+const Body = () => {
+  let {user,setUser}=useContext(UserContext)
+  const [searchText, setSearchText] = useState(0);
+  const [count,setCount]=useState(0)
+
+    function expensiveTask(q){
+    console.log("expensive card");
+    for (let i=0;i<1000000000;i++){
+  
+    }
+   console.log('done');
+    return 2*q;
+  }
+  let double=useMemo(()=> expensiveTask(searchText),[searchText])
+
+  return (
+    <>
+      <div className="search-container bg-pink-50 p-5 my-5">
+        <input
+          type="text"
+          placeholder="Enter your value"
+          className="border border-red-500 focus:bg-green-50 p-2 m-2"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
+        <input value={user.name} onChange={(e)=>setUser({
+          ...user,
+          name:e.target.value
+        })}/>
+        <button
+          onClick={() => {
+            // let newData = filterDataNew(
+            //   restaurants,
+            //   searchText,
+            //   allrestaurants
+            // );
+            // setRestaurants(newData);
+            setCount((prev)=>prev+1)
+          }}
+          className="p-2 m-2 bg-purple-400 hover:bg-gray-400 rounded-lg"
+        >
+          Search
+        </button>
+      </div>
+      {count}
+      {double}
+      {/* {restaurants.length > 0 ? (
+        <RestaurantCard dataArray={restaurants} />
+      ) : (
+        <ShimmerComponent />
+      )} */}
+    </>
+  );
+};
+export default Body;
+
+Best use Cases:
+1-When we have expensive calculations and dont want to run it on every render,just run it when it requires
+2-Optimizing Renders of Large Lists (Filtering/Sorting)
+

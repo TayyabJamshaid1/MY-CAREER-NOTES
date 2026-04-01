@@ -1,0 +1,12 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:radial-gradient(farthest-side at 50% 30% ,red 15%,blue 25%,green 50%)
+}

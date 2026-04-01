@@ -1,0 +1,35 @@
+=>Function which takes another function as an argument and return a function from itself is called higher order functions
+=>The function passed in higher order functions is known as callback function which is used/called somewhere  in the program
+=>Function can be stored, passed and returned,  they are called first class citizens.
+=>Always follow the dry rule(Dont Repeat YourSelf).Code should not be repitative.Now we will see the example.See Image (Higher Order Function .png).Very much repitative code in that image.The best recommended form is given below,
+const calculateArea=(radius)=>{
+    return Math.PI*radius*radius
+}
+const calculateCircumFerence=(radius)=>{
+    return 2*Math.PI*radius
+}
+const calculateDiameter=(radius)=>{
+    return 2*radius
+}
+const calculateMethod=(radius,logic)=>{  
+    let output=[];
+    for (let i=0;i<radius.length;i++){
+        output.push(logic(radius[i]))
+    }
+    return output;
+}
+
+let radiusArray=[2,3,1,5];
+console.log(calculateMethod(radiusArray,calculateArea));
+console.log(calculateMethod(radiusArray,calculateCircumFerence));
+console.log(calculateMethod(radiusArray,calculateDiameter));
+
+Explanation:
+Functional programming is huge thing in itself but a small part of it says that think and make a logic in your head. According to functions,Allways write your code in this pattern.Now i will tell you why this way of coding is good.So now,if you see clearly,we have abstracted/break our code into smaller functions and each n every unit of this function has its own responsibility.If you see this function calculateArea,it has just one task to do that is calculate the area of circle,similar calculateCircumFerence has a task to calculate the circumference of circle,also calculateMethod has a task to create a new array,iterate through all the elements in that array and return it.Thats the only job calculateMethod can does.We are not repeating anything over here.This is the Functional programming and this is the beauty of Functional programming where you think all the logic in small reusable components which are functions.As we discuss Functional programming is huge thing in itself but these are crucial things in function programming(Reusability,Modularity,how you passing functions in different functions).this is how you can write code.So conclusion function programming deals with functions,composition of functions,reusability of functions.
+
+Interesting Fact:
+Map is also a higher order js function,in our example.calculateMethod function is similar to map function.
+
+console.log(calculateMethod(radiusArray,calculateArea));
+console.log(radiusArray.map(calculateArea));
+both have same results because calculateMethod is the small implementation of map.

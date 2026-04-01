@@ -1,0 +1,97 @@
+=>Function Statement /Function declaration (Function declaration & Function Statement are same things )
+This way of creating a Function is called Function Statement/Function declaration 
+function data(){
+    console.log("HI");
+}
+
+=>Function Expression
+This way of assigning a Function to a variable is called Function Expression
+
+var a =function (){
+        console.log("HI");
+}
+
+What is the difference btw Function Statement vs Function Expression?
+The major difference btw them is hoisting
+Example:
+data();
+a();
+
+function data(){
+    console.log("HI");
+}
+var a =function (){
+        console.log("HI");
+}
+Output:
+HI
+TypeError:a is not a function
+//Important point: a ki value ko ye var datatype ki wajah sy initially undefined rkhwaiy ga but jesy he ye line # 23 py punchy ga,tu ye error throw kr dy ga kyu k is Function Expression ko initialize kiye bgair ap call ni kr skty because it treated "a" like a variable ,not as a function
+
+=>What is anonymonous functions?
+A function without name is called anonymonous function.
+
+How u can use anonymonous function?
+anonymonous functions are used when the function are used as value
+
+For example:
+var a =function (){
+        console.log("HI");
+}
+
+=>What is Named Function Expression?
+
+var a =function bcd(){
+        console.log("HI");
+}
+this is very weird but u can do it in js
+a();  //HI
+bcd();//Reference error:bcd is not a function //u cannot call directly bcd in named function Expression
+Reason why we cannot call directly bcd()?
+Because when u assign a value to function,Js does not consider it as a function,it consider it as a local value.So it is not in its outer/global scope(Means when execution context created,this function is not in its memory,when program run in thread of execution,this function is treated as a local value)
+
+As we say,it is treated as a local value so we can access it in function but cannot call it in a function because ye loop me chla jai ga ,bar bar khud ko he call krta jai ga
+Example:
+var a =function bcd(){
+    console.log("HI",bcd);
+}
+a()
+
+Output:
+HI ƒ bcd(){
+    console.log("HI",bcd);
+}
+
+Remember:we cannot call bcd outside of function e.g console.log(bcd)//Reference error:bcd is not defined
+
+=>What is difference btw arguments and parameters?
+A values which we pass inside a function when we a calling it is known as arguments
+A labels/identifiers which get arguments values is called parameters
+
+Example:
+var a =function bcd(param1,param2){  //parameters
+    console.log("HI",bcd);
+}
+a(10,20)//arguments
+
+=>What is First class function/First class citizens?
+The ability of functions to used as a value is called First class function
+Used as a value means
+a) passed as an argument to another function        b)return from the functions 
+
+point a example:
+var a =function bcd(param1){  
+    console.log(param1);
+}
+a(function(){})
+
+
+point b example:
+var a =function bcd(){  
+return function(){}
+}
+    console.log(a());
+
+    -------Important point--------
+    this all var scenarios are working same with let/const
+    -----------------------------

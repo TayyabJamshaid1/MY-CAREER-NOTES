@@ -1,0 +1,223 @@
+When you have a  web application(single page applications e.g react,regular not html etc),there are 2 layers of it
+a)ui layer (ui layer is everything that you see on the browser e.g btns,colors,headings etc)
+b)Data layer
+
+Both combined to make a react application
+
+How to show data on browser in react aplication?
+We can show that on browser by state & props.
+
+What is diff btw state and prop?
+Suppose if you have a container and you want a variable which has a scope just with in a container,it is known as state
+ while prop is the value passed from one component to another component
+ 
+ Imp:
+ Props are kind of local state of our parent component
+ 
+ 
+ Props Drillings:
+ 
+ Props drilling is when you pass data from a parent component to a deeply nested child component through multiple layers of components — even if the middle components don’t use that data.
+ 
+ Example:
+ function App() {
+  const username = "Alice";
+  return <Parent username={username} />;
+}
+
+function Parent({ username }) {
+  return <Child username={username} />;
+}
+
+function Child({ username }) {
+  return <GrandChild username={username} />;
+}
+
+function GrandChild({ username }) {
+  return <p>Hello, {username}!</p>;
+}
+
+Problems:
+Becomes messy as your app grows
+Harder to maintain or refactor
+Components get bloated with unused props
+
+-----------------------------------------------------------------------------------------------------------------------
+Let suppose,we have Instamart component and we have multiple sections in it.On each Section,it has individually has its own isVisible state. 
+
+import React, { useState } from 'react'
+const Section=({title,description})=>{
+  const [isVisible,setIsVisible]=useState(false)
+ return (
+    <div className='border border-2xl m-2 p-2'>
+<h1 className='text-3xl'>{title}</h1>
+{isVisible ?<button onClick={()=>{setIsVisible(false)}}>Hide</button>:<button onClick={()=>{setIsVisible(true)}}> Show </button>}
+  {isVisible && <p>{description}</p>}
+    </div>
+  ) 
+}
+export default function Instamart() {
+  return (
+    <div>
+      <h1 className='text-3xl'>Instamart</h1>
+      <Section title={"About"} description={"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"}/>
+
+          <Section title={"Test 1"} description={"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"}/>
+
+              <Section title={"Test 2"} description={"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"}/>
+    </div>
+  )
+}
+
+Now currently process is every Section has separately maintaining isVisible state.Due to that ,our code is become longer and lengthy ,because every description takes extra space.See Image (Instamart.png). Now i want that to open discription one at a time.If i any description is already open,then i open another description then previous one should be closed. If we manage state in individually in Section component,then it is not possible.So we have to manage it in Parent (Instamart) component because it has a control on its all children.This concept is known as "lifting the state up".
+
+
+Approach 1 to handle it:  NOT RECOMMENDED
+
+import React, { useState } from "react";
+const Section = ({ title, description, isVisible, setIsVisible }) => {
+  return (
+    <div className="border border-2xl m-2 p-2">
+      <h1 className="text-3xl">{title}</h1>
+      {isVisible ? (
+        <button
+          onClick={() => {
+            setIsVisible();
+          }}
+        >
+          Hide
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            setIsVisible();
+          }}
+        >
+          {" "}
+          Show{" "}
+        </button>
+      )}
+      {isVisible && <p>{description}</p>}
+    </div>
+  );
+};
+export default function Instamart() {
+  const [isVisible, setIsVisible] = useState({
+    showAbout: false,
+    showTest1: false,
+    showTest2: false,
+  });
+  return (
+    <div>
+      <h1 className="text-3xl">Instamart</h1>
+      <Section
+        title={"About"}
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+        isVisible={isVisible.showAbout}
+        setIsVisible={() => {
+          setIsVisible({ showAbout: true, showTest1: false, showTest2: false });
+        }}
+      />
+
+      <Section
+        title={"Test 1"}
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+        isVisible={isVisible.showTest1}
+        setIsVisible={() => {
+          setIsVisible({ showAbout: false, showTest1: true, showTest2: false });
+        }}
+      />
+
+      <Section
+        title={"Test 2"}
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+        isVisible={isVisible.showTest2}
+        setIsVisible={() => {
+          setIsVisible({ showAbout: false, showTest1: false, showTest2: true });
+        }}
+      />
+    </div>
+  );
+}
+
+let suppose,if we have thousand of sections then can we continuously maintaining his state by his name,thats why it is NOT RECOMMENDED.This kind of code is not maintainable
+
+Approach 2: RECOMMENDED
+
+import React, { useState } from "react";
+const Section = ({ title, description, isVisible, setIsVisible }) => {
+  return (
+    <div className="border border-2xl m-2 p-2">
+      <h1 className="text-3xl">{title}</h1>
+      {isVisible ? (
+        <button
+          onClick={() => {
+            setIsVisible("");
+          }}
+        >
+          Hide
+        </button>
+      ) : (
+        <button
+          onClick={() => {
+            setIsVisible(title);
+          }}
+        >
+          {" "}
+          Show{" "}
+        </button>
+      )}
+      {isVisible && <p>{description}</p>}
+    </div>
+  );
+};
+export default function Instamart() {
+  const [isVisible, setIsVisible] = useState("");
+  return (
+    <div>
+      <h1 className="text-3xl">Instamart</h1>
+      <Section
+        title={"About"}
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+        isVisible={isVisible==="About"}
+        setIsVisible={setIsVisible}
+      />
+
+      <Section
+        title={"Test 1"}
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+        isVisible={isVisible==="Test 1"}
+               setIsVisible={setIsVisible}
+
+      />
+
+      <Section
+        title={"Test 2"}
+        description={
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+        }
+        isVisible={isVisible==="Test 2"}
+              setIsVisible={setIsVisible}
+
+      />
+    </div>
+  );
+}
+
+------------------
+Imp:
+Usecontext is like the useState of all the app.It means is me wo data rkha jai ga jisy kahai pori app me access kiya ja skta ha.You can also see how we can use useContext in class component.See image (useContext in class based component.png)
+
+
+
+

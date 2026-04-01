@@ -1,0 +1,105 @@
+There are 2 types of routing
+a)Client side routing         b)server side routing
+
+Server side routing is a way in which all our pages come from server.Suppose,you are going on another route like about,that about page will come from server.In old times,we use server side routing but now in react,we use client side routing.In client side routing,we not need to get data from server.
+
+Imp Point 1:
+we can use anchor tag instead of Link tag but react router dom says that you must use Link tag instead of anchor tag because i have to keep track of all the pages.So you have to use Link tag.Interestingly,when we see in inspect in chrome,we see that react router dom is  using anchor tag behind the scene.
+
+import React, { useState } from 'react'
+import Logo from "./Assets/Images/villa.jpeg"
+import { Link } from 'react-router-dom';
+const Header = () => {
+  const [isLoggedIn,setisLoggedIn]=useState(false)
+    return (
+      <div className="header">
+        <img
+          src={Logo}
+          style={{ width: 100, height: 50, objectFit: "contain" }}
+        />
+        <ul>
+          <Link to={"/"}>
+          <li>Home</li>
+          </Link>
+          <Link to={"/about"}>
+
+          <li>About</li>
+          </Link>
+          <Link to={"/contact"}>
+
+          <li>Contact</li>
+          </Link>
+          <li>Cart</li>
+        </ul>
+        {isLoggedIn?<button onClick={()=>setisLoggedIn(false)}>Logout</button>:<button  onClick={()=>setisLoggedIn(true)}>Login</button>}
+      </div>
+    );
+  };
+  export  {Header};
+  -----------------------------------------
+  Imp Point 2:
+  All the children routes of AppProvider will go in Outlet of AppLayout.In browser inspect,you will not see any Outlet because react-router-dom filled the component in Outlet.
+  
+  import "./App.css";
+import * as Header from "./Header";
+import Body from "./Body";
+import Footer from "./Footer";
+import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom"
+import AboutComponent from "./Components/AboutComponent";
+import Error from "./Components/Error";
+import ContactComponent from "./Components/ContactComponent";
+const AppLayout=()=>{
+    return(
+      <>
+      <Header.Header/>
+      <Outlet/>
+      <Footer/>
+      </>
+    )
+}
+const App = () => {
+
+  const AppProvider=createBrowserRouter([
+    {
+      path:"/",
+      element:<AppLayout/>,
+      errorElement:<Error/>,
+      children:[
+        {
+          path:"/",
+          element:<Body/>
+        },
+        {
+          path:"/about",
+          element:<AboutComponent/>
+        },
+        {
+          path:"/contact",
+          element:<ContactComponent/>
+        }
+      ]
+    }
+  ])
+  return (
+    <>
+    <RouterProvider router={AppProvider}/>
+    </>
+  );
+};
+
+
+export default App;
+---------------------------------------------------
+
+
+What is object.values?
+Object.values is use to create object into array.
+const object1 = {
+  a: "somestring",
+  b: 42,
+  c: false,
+};
+
+console.log(Object.values(object1));
+// Expected output: Array ["somestring", 42, false]
+

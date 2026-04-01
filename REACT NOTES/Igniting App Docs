@@ -1,0 +1,111 @@
+Diff btw framework & libaray
+=>A framework provides a pre-defined structure and dictates how your code should be organized, controlling the overall flow of your application.
+=>A library offers specific functions or tools that you can use in your code as needed, but you have more control over your application's structure and flow.
+
+React is a library,not a framework.Js library means it is a piece of code that somebody wrote for us.React library is wrote by facebook team.It has a lot of super powers.So when i say i am using react,thats means how can i use this code to make my code fast.Basically this library exports a lot of functions that we can use.
+
+ Bundlers:
+ A bundler in reactjs is a tool which allows to package code into a single file or bundle(hamary sary code ko including  CSS or images,ek file ya few files ka bundle bna k akhta kr dta ha). Due to this size of code will reduce and so performance of application will improve.We have a bundlers like vite,parcel,webpack etc.We will use anyone bundler in our app.Our create react app use webpack bundler.Most bundlers do a same job.Bundlers also have a responsibilty of minify your code etc
+ 
+ NPM
+ Mostly developers think npm is Node package manager.But in reality it is not mentioned in their documentation that it means 'Node package manager'.So its abbreviation can be anything.Npm is used to manage our packages.Why do we use npm? we use it because we want a lot of packages in our project.Our react app cannot be built by injecting our app into web.So thats why we need it
+ 
+ if interviewer asks why we need it,so says we need to manage all the packages.Our react app is a huge app which does not just run on react (hamari react app ek bohat badi app hay jo srf ek react par nahi chalti).We need a other super powers in our app which will come from other packages.That packages are present by using npm
+ 
+ Lets talk about how to initialize our app
+ you can use npm init 
+  or
+  if you want to skip steps ,u can use
+  npm init -y
+  
+  after running npm init,we got package.json
+  
+  Imp point:
+  sometimes we want to run our package in a development mode,not in production mode
+  so,in that case u need to run -D or --save-dev while installing packages
+  npm i -D parcel
+  after running it,we see that package in devDependencies in package.json,see below
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+  
+  Package Version Detail:
+=> 2.12.0 is a package version number
+First number (2) is known as major, second number (12) is known as minor, and the last number (0) is patch.
+
+=> ^ is a caret used with version number
+It updates minor and patch versions. Suppose we are using version 2.12.0 and a new version like 2.12.1 or 2.13.0 is released — it will update. But it will not update to 3.0.0.
+Caret ^ updates the package only within the same major version.
+
+=> ~ is a tilda used with version number
+It updates only the patch version. Suppose we are using version 2.12.0 and a new version 2.12.1 is released — it will update. But it will not update to 2.13.0.
+Tilda ~ updates the package only within the same minor version.
+
+=> If we do not use ^ or ~ (just the number), then it locks the package to that exact version.
+
+=> >version → Must be greater than version
+=> >=version → Must be equal to or greater than version
+=> <version → Must be less than version
+=> <=version → Must be equal to or less than version
+=> 1.2.x → Matches 1.2.0, 1.2.1, etc., but not 1.3.0
+=> * → Matches any version
+ 
+ ---------------------------------------------------------------------------------------
+ What is dependency?Dependency means our project is depend on that package.That package provides us multiple super powers.We have to minify our app,we need to bundle it,we need to do chunking .For all these purposes ,we need a packages.Those packages will be installed in our app using npm.There is some packages that we used in global environment and some packages we need in development mode.
+ 
+package.json
+It’s the manifest file of your Node.js (or React, React Native, etc.) project.(A manifest file is like an ID card or a blueprint for a project).
+It contains metadata about your project (name, version, description, author, scripts, etc.) and also lists the dependencies your project needs.
+
+
+ What is package lock.json?
+It is a very important file.It locks the version of packages which is currently run in your app.U never had to use it in .gitIgnore.
+  
+What is node modules?
+Node modules is like a database of npm
+Whenever you install something using npm,it gets installed in node modules.
+U never have to put your node modules in git code
+If i have my package lock.json && package.json,i can regenerate node modules
+
+--------------------------
+Imp NOte:
+What takes a lot of time on website to load?
+Js code is very small,it takes 2 to 3kbs ,similarly css is also very small of 4 to 5 kbs depends,only the images/media data will take time to load on website.So using a parcel give a benefit that it also not even optimize our js code,css code but also it optimizes the images
+--------------------------------
+Imp NOte NPX:
+sometimes we use npx with multiple commpands like npx react-native etc.What does npx means?It means excecute it with npm
+--------------------------
+Hot module Replacement:
+Parcel give us the functionality of reload automatically.Parcel do it by using Hot module Replacement(HMR).It means parcel is keep a track of all the files which you are updating.Now question is how HMR get ko know what i am updating??HMR get to know it by watching algorithum which is written in c++,which keep track of all the files in real time.
+--------------------
+Important Note:
+Lets take an example,When i download any video,it needs some space. similarly,parcel is doing multiple tasks for us.It also needs space.It creates that space automatically by creating a folder of .parcel-cache in our project.Write it in git ignore because any thing which is auto generated ,should be placed in git ignore
+-----------------------
+POWERS OF PARCEl
+1-It minifies & bundled our code
+2-It reload automatically our code by HMR
+3-It is cleaning our code
+4-It take cares of all the development and production build
+5-Super fast build algorithm
+6-It optimizes our Js code and images too
+7-It also do caching while development(If images coming from backend ,than it does not do it for that images,it only do it with that images is avaiable in your project)
+8-Handle Port Number
+9-Tree Shaking (Removing unwanted code.let suppose i download a package,it has 10 functions in that package code.When we import that package in our code,it is just like 10 functions will come in our code but i have to use only 2 functions instead of all 10.so parcel is very smart,it just ignore all unused other functions which is not used)
+10-Compression (Compressed our code)
+-----------------------
+How do parcel can do all the tasks?
+In package lock.json,we see that Parcel has its own dependencies.That dependencies also has other dependencies.Every dependency has link to each other. It is known  as Transitive dependency.
+
+Imp:
+To give good impression on interviewer,says we have our package manager which handles and take cares of Transitive dependency
+----------------------
+Conclusion:
+When we are building our production ready app,we need to do a lot of things like bundling,minification,image & code optimization,caching,differentional bundling and so many things we have to do.React and parcel cant do this alone.For this,Parcel needs a dependencies.That Dependencies are also dependent on another dependencies.These dependent dependencies also known as Transitive dependency(ek dependency dosri dependency k upr depend ha,dosri dependency 3rd k upr depend ha,3rd wali 4th k upr depend ha etc,in sab ko transitive dependency kehty ha)
+----------------------
+Jo powers parcel ki ha,wohi powers dosry bundlers b provide krty ha like webpack,vite etc .Just webpack/vite me kuch configurations set krni huti ha
+
+Important:
+Suppose your interviewer ask,how react is very fast or how to create a fast,scalable web app?
+so you have to tell the interviewer that there are so many things which react optimizes for us and so many other things which bundler optimizes for us.A whole application is the combination of all the things like minification,hmr,optimization of code & images,tree shaking etc
+RUN PROJECT COMMAND
+npx parcel index.html

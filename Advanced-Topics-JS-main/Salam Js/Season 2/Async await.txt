@@ -1,0 +1,396 @@
+ASYNC
+
+Async is a keyboard that is used before a function to create a async function.
+
+This is  a async function
+async function getData(){
+
+}
+
+=>ASYNC FUNCTION ALLWAYS RETURNS A PROMISE
+There are 2 cases in this scenario
+
+a)You can return a value(string/number/object/array/boolean).In case of values,js automatically take this value and wrap it in a promise and will return that wrap promise.For example,
+async function getData(){
+return "Tayyab"; //wrapped in promsise and then return it
+}
+
+const data=getData();
+console.log(data);
+
+[[Prototype]]:Promise
+[[PromiseState]]: "fulfilled"
+[[PromiseResult]]: "Tayyab"
+
+Now,what happens is we have got this promise inside this getData.Now how could we get our actual data from this promise?
+
+We can use a .then method
+data.then((data)=>{console.log(data)}) //Tayyab
+
+So,in any case,we conclude that async function always returns a promise in any situation
+
+b)You can return a promise in async function
+if are returning value is already a promise in async function,then it will not wrapped in any other promise.It will return as it is.For example,
+
+let p =new Promise((resolve,reject)=>{
+  resolve("KESA")
+})
+async function getData(){
+  return p;//return the promise as it is
+  }
+  
+  const data=getData();
+  data.then((data)=>{console.log(data)}) //KESA  
+
+  Using Await with async
+
+Await is a keyword that can only be used inside a async function
+Async and await combo(together) is used to handle promises
+Await resolve the promise
+
+Why we need async await?
+Let me show you  before async await,how do we handle promises
+learn it by example
+
+let p =new Promise((resolve,reject)=>{
+  resolve("KESA")
+})
+ function getData(){
+  p.then((data)=>{console.log(data)}) 
+  }
+getData();
+
+Now we will see,how we can handle this situation using async await
+
+let p =new Promise((resolve,reject)=>{
+  resolve("KESA")
+})
+ async function getData(){
+let data=await p;
+console.log(data);
+}
+getData();
+
+Now we will see the differnce btw normal functions and async await functions
+
+=>Async await scenario
+
+let p =new Promise((resolve,reject)=>{
+setTimeout(()=>{
+  resolve("KESA")
+},5000)
+})
+ async function getData(){
+let data=await p; 
+console.log(data);
+console.log('mera tayyab');
+}
+getData();
+Output:
+kesa
+mera tayyab
+
+In case of async await,jab tak hamara response ni aiy ga,tab tak hamary function k andr ka nichay wala code ni chly ga
+
+=>Normal function scenario
+
+let p =new Promise((resolve,reject)=>{
+setTimeout(()=>{
+  resolve("KESA")
+},5000)
+})
+  function getData(){
+p.then((data)=>{console.log(data);})
+console.log('mera tayyab');
+}
+getData();
+Output:
+mera tayyab
+kesa
+
+In case of normal functions,agr promise ko resolve huny me time lgna ha tu ye nichay wala code chla dy ga because js engine will not wait for promise to be resolved,it will register the promise and moved on next line
+
+---------------------------------------IMPORTANT-----------------------------------
+=>Promises work as a parallel 
+ It means sab ek sath chly gy .Agr 50 promises ha,tu 50 k 50 he execute
+ hu jai gy aur jn sa jab execute hu gy tab apko notified kr diya jai ga
+
+ EXAMPLE:
+ let promise = new Promise(function (resolve, reject) {
+  console.log("I AM PENDING");
+  setTimeout(() => {
+    console.log("I AM Promise 1");
+    resolve("I AM RESOLVED");
+  });
+});
+let promise2 = new Promise(function (resolve, reject) {
+  console.log("I AM PENDING");
+  setTimeout(() => {
+    console.log("I AM Promise 2");
+    reject(new Error("I am Error"));
+  });
+});
+console.log(promise, promise2);
+
+
+
+
+
+//Both promises run at same time 
+I AM PENDING
+ I AM PENDING
+Promise {<pending>} Promise {<pending>}
+ I AM Promise 1
+ I AM Promise 2
+ Uncaught (in promise) Error: I am Error
+
+Scenario 1:
+
+
+let p =new Promise((resolve,reject)=>{
+  setTimeout(()=>{
+    resolve("KESA")
+  },5000)
+  })
+   async function getData(){
+  let data=await p; 
+    console.log('p1');
+  console.log(data);
+
+  let data2=await p; 
+  console.log('p2');
+console.log(data2);
+  }
+  getData();
+
+Output:(both the data displayed together)
+p1
+kesa
+p2
+kesa
+
+Why both the data displayed together?
+Because initially in our call stack,it first executes the promise here.While executing,it checks that setTimeout is here,so js engine moved the setTimeout in webapi and removed it from call stack.After that it called the getData function,getData function is in call stack,remember that settimeout timer  in webapi is still running.Now in getData, when it reaches on first await,it suspends the execution of getData,removed it from call stack,getData is now in webapi,isi drmayan timer b complete hu gya ha,after completion of timer,setTimeout callback function moves in callback quene,event loop us callback function ko call stack me push kr dta ha jis sy hamara promise resolve hu jata ha. After promise resolved,webapi moved getData in callback quene,eventloop take it from callback quene and moved the  getData into call stack again ,it executes the console statement and show resolve value.Then it moved on second await,again its execution suspends,it moved in webapi,ab kyu k p already resolve hu gya ha,is lye foran he webapi isy callback quene me bhjy gi aur eventloop kyu k callstack abi empty ha,is lye foran he isy callstack me push kr dy ga,phr jaha sy isny program chora tha waha sy continue kary ga,then js engine print its console and data.Kyu k promise phly sy he resolve tha,is lye foran he dosry ka data b show hu gya micro mini seconds mei
+
+REMEMBER:
+In case of 2 awaits in one function,Ek await k bad jab dobara function call stack me execute huny k lye ata ha,function again start sy continue krny ki bjaiy wahi sy he continue krta ha jaha sy wo chor k gya tha
+
+Scenario 2:
+
+let p1 =new Promise((resolve,reject)=>{
+  console.log('p1 running');
+  setTimeout(()=>{
+    console.log('p1 setTimeout');
+
+    resolve("KESA p1")
+  },10000)
+  })
+  let p2 =new Promise((resolve,reject)=>{
+    console.log('p2 runn');
+    setTimeout(()=>{
+      console.log('p2 setTimeout');
+
+      resolve("KESA p2")
+    },5000)
+    })
+   async function getData(){
+  let data=await p1; 
+    console.log('p1');
+  console.log(data);
+
+  let data2=await p2; 
+  console.log('p2');
+console.log(data2);
+  }
+  getData();
+
+  Output:(After p2 setTimeout,nichay ka sara data ek sath ata ha kyu k tab tak promise resolve hu jata ha)
+  p1 running
+  p2 runn
+  p2 setTimeout
+  p1 setTimeout
+  p1
+  KESA p1
+  p2
+  KESA p2
+
+  Scenario 3:
+
+let p1 =new Promise((resolve,reject)=>{
+  console.log('p1 running');
+  setTimeout(()=>{
+    console.log('p1 setTimeout');
+
+    resolve("KESA p1")
+  },5000)
+  })
+  let p2 =new Promise((resolve,reject)=>{
+    console.log('p2 runn');
+    setTimeout(()=>{
+      console.log('p2 setTimeout');
+
+      resolve("KESA p2")
+    },10000)
+    })
+   async function getData(){
+  let data=await p1; 
+    console.log('p1');
+  console.log(data);
+
+  let data2=await p2; 
+  console.log('p2');
+console.log(data2);
+  }
+  getData();
+
+   Output:
+  p1 running
+  p2 runn
+  p1 setTimeout
+  p1
+  KESA p1
+  (After 5 second,then nichay ka data show krta ha,kyu k 5 sec ye upr k promise k sath he utilize kr lta ha,is lye is k pending srf 5 sec he rehty ha)
+  p2 setTimeout
+  p2
+  KESA p2
+
+
+
+--------------------REAL WORLD EXAMPLE------------
+What is fetch?
+Fetch function is basically a promise.When this promise is resolved,it gives you a Response object(a readable stream).Suppose,u have to convert this readable stream in json,u can do it like Response.json(). This Response.json() is again a promise and when this promise is resolved,it gave us results
+
+let api="https://api.github.com/users/akshaymarch7"
+const getData=async()=>{
+  let data=await fetch(api)
+console.log(data);// Response stream
+   let res=await data.json()
+   console.log(res);// a simple response object
+
+}
+getData()
+
+-----------------ERROR HANDLING----------------
+We can do error handling in async await by using try catch method.
+
+
+
+
+
+
+
+
+
+
+---------
+Test examples:
+1-let p = new Promise((resolve, reject) => {
+  console.log("Start");
+  resolve("Resolved!");
+  console.log("End");
+});
+
+p.then((res) => {
+  console.log(res);
+});
+
+2-async function run() {
+  console.log("Start");
+
+  await Promise.resolve("Hello");
+
+  console.log("Middle");
+
+  return "End";
+}
+
+run().then((res) => console.log(res));
+
+3-
+async function processArray(arr) {
+  for (let item of arr) {
+    const result = await new Promise(resolve =>
+      setTimeout(() => resolve(item * 2), 1000)
+    );
+    console.log(result);
+  }
+}
+
+processArray([1, 2, 3]);
+console.log('outside');
+
+4-
+async function throwError() {
+  throw new Error('Oops!');
+}
+
+async function test() {
+  try {
+    await throwError();
+  } catch (e) {
+    console.log('Caught:', e.message);
+  }
+  console.log('After catch');
+}
+
+test();
+  console.log('Outside catch');
+
+5-
+const asyncFn = async () => {
+  throw new Error("Async error");
+};
+
+try {
+  asyncFn();
+} catch (e) {
+  console.log("Caught:", e.message);
+}
+
+console.log("After async error");
+
+//suggestion to Caught error:
+// Option 1: Using await in another async function
+(async () => {
+  try {
+    await asyncFn();
+  } catch (e) {
+    console.log("Caught:", e.message);
+  }
+})();
+
+// Option 2: Using .catch()
+asyncFn().catch(e => {
+  console.log("Caught:", e.message);
+});
+6-
+async function throwError() {
+  return new Promise((resolve,reject)=>{
+setTimeout(()=>{
+        resolve('dad')
+
+},5000)  })
+}
+
+async function test() {
+  try {
+  let p=  await throwError();
+  console.log(p);
+  
+  } catch (e) {
+    console.log('Caught:', e.message);
+  }
+  console.log('After catch');
+}
+
+test();
+  console.log('Outside catch');
+------------------------------------------
+
+imp Point:
+.resolve() schedules .then() as a microtask,
+but does not call it immediately —
+it waits until the current synchronous code (GEC) finishes.
+
+--
+When you throw inside a .then() handler, it automatically rejects the promise with the thrown value as the rejection reason.The throw causes the Promise chain to skip any subsequent .then() handlers and jump directly to the nearest .catch() handler.

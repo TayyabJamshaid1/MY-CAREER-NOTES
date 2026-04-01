@@ -1,0 +1,155 @@
+Important points
+
+Every  in js happens inside an execution context
+window is a global object which is created along with global execution context
+Window object global execution context ni ha,blky window object is a part of global execution context.
+Call stack is a stack where all the execution stacks are kept.So when our global execution context is created,it is pushed inside a stack.
+
+lexical environment is a local memory along with lexical environment of his parent
+(apni memory k sath sath parent k variables/functions ko b access kr skty ha )
+=>Whenever a execution context is created,is k andr he  lexical environment is also created
+So,whenever execution context  is created,you also get reference of his lexical environment parent
+
+Temporal dead zone is a space in which this let/const are hoisted and till it initialized a value,it is called a Temporal dead zone
+if you want to access Variables of temporal dead zone,it will give reference error:Cannot access 'a' before initialization
+
+=>REFERENCE ERROR EXPLAINED
+1)wo variables jo isy apny global scope/execution scope me na mily,tab ye reference error dta ha
+ab ye reference error b 2 trah sy dta ha
+   =>1st case:
+      If variables are in temporal dead zone,then it says ReferenceError: Cannot access var before initialization
+   =>2nd Case:
+      if variables are not used in whole code,then it says ReferenceError:var is not defined
+      
+Important Difference btw let & const
+let can be declared first and after some code,we can initialize it while in case of const,it is compulsory that declaration and initialization should be taken at same point
+>How to avoid Temporal dead zone errors?
+Its best solution to do declaration and initialization at the top of the program.So you can easily get rid of errors
+
+A Block is defined by curly brackets{} 
+Another name of a block is Compound Statement
+//shadowing in js
+let a=77;
+{
+let a=99;
+const b=88;
+var x=88;
+}
+console.log(a); //in let/const case,a ki declaration global execution context me separate hu gi,block scope me separate hu gi,thats why,in ki value override ni hu gi,isy shadowing in js kehty ha(variables k name same ha ,but in ka scope separate ha)
+
+//illegal shadowing
+=>Illegal Shadowing
+let a=77;
+{
+var a=99;
+}
+console.log(a); 
+This is illegal shadowing,because let bhi global me jai ga,var bhi global me jai ga,aur js me  same name k variables same scope me ni bn skty
+
+
+----------
+let a=77;
+{
+    console.log(a);
+    
+let a=99;
+const b=88;
+var x=88;
+}
+console.log(a); 
+after getting reference error,it stop execution remaining program because ReferenceErrors are uncaught exceptions and halt execution.(ye hamesa further execution ko stop kr dta ha,agr in errors ko caught na kiya jaiy,inhai caught try/catch k zariye he kiya jata ha)
+🧠 Does it "stop the call stack"?
+Yes — the call stack is unwound, meaning:
+
+If this is in a function, it exits the function.
+
+If it's in global scope (like your example), it stops the script entirely.
+
+No further calls or logs will run unless wrapped in a try/catch.
+
+imp:syntax error b execution ko ruk dta ha ,but ye execution sy phly pkra ni ja skta but ap ka editor(vscode) apko guide kr dta ha
+
+See summary image of errors
+--------------------------------
+
+=>Function Statement /Function declaration (Function declaration & Function Statement are same things )
+This way of creating a Function is called Function Statement/Function declaration 
+function data(){
+    console.log("HI");
+}
+
+=>Function Expression
+This way of assigning a Function to a variable is called Function Expression
+
+var a =function (){
+        console.log("HI");
+}
+
+=>What is anonymonous functions?
+A function without name is called anonymonous function.
+
+How u can use anonymonous function?
+anonymonous functions are used when the function are used as value
+
+For example:
+var a =function (){
+        console.log("HI");
+}
+
+=>What is Named Function Expression?
+
+var a =function bcd(){
+        console.log("HI");
+}
+this is very weird but u can do it in js
+a();  //HI
+bcd();//Reference error:bcd is not a function //u cannot call directly bcd in named function Expression
+Reason why we cannot call directly bcd()?
+Because when u assign a value to function,Js does not consider it as a function,it consider it as a local value.So it is not in its outer/global scope(Means when execution context created,this function is not in its memory,when program run in thread of execution,this function is treated as a local value)
+
+As we say,it is treated as a local value so we can access it in function 
+Example:
+var a =function bcd(){
+    console.log("HI",bcd);
+}
+a()
+
+Output:
+HI ƒ bcd(){
+    console.log("HI",bcd);
+}
+
+Remember:we cannot call bcd outside of function e.g console.log(bcd)//Reference error:bcd is not function
+
+=>What is difference btw arguments and parameters?
+A values which we pass inside a function when we a calling it is known as arguments
+A labels/identifiers which get arguments values is called parameters
+
+=>What is First class function/First class citizens?
+The ability of functions to used as a value is called First class function
+Used as a value means
+a) passed as an argument to another function        b)return from the functions 
+
+point a example:
+var a =function bcd(param1){  
+    console.log(param1);
+}
+a(function(){})
+
+
+point b example:
+var a =function bcd(){  
+return function(){}
+}
+    console.log(a());
+------------Why async programming is important
+=>Js has only one call stack.callstack is also known as main thread
+=>Everything executing in your program is executing through callstack
+=>If any operation blocks the callstack,that is known as blocking of main thread
+=>Suppose in your code,you have many functions.If any one function has heavy operations which take 20 to 30 seconds to complete that function,so by that time we know we have one call stack,so it wont be able to do any other work in the code thats mean Everything is blocked in the code.So thats why we should never block our main thread/call stack.So we should always use async things to that which takes time
+
+----------
+=>Function which takes another function as an argument and return a function from itself is called higher order functions
+=>The function passed in higher order functions is known as callback function which is used/called somewhere  in the program
+Map,filter,foreach,reduce,some,every ,find is also a higher order js function
+-------

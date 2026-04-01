@@ -1,0 +1,41 @@
+=>Temporal dead zone is a space in which this let/const are hoisted and till it initialized a value,it is called a Temporal dead zone
+ye global execution ki trah ek space ha jisy temporal dead zone kehty ha ,is me variables hoisted zror huty ha mgr uninitialize he rehty ha,so wo time jab inko declare kiya gya aur jab tak unko value assign ni ki gyi,tab tak ye Temporal dead zone me he rehty ha
+
+=>if you want to access Variables of temporal dead zone,it will give reference error:Cannot access 'a' before initialization
+ 
+ Example:
+console.log(a); //now a is in a Temporal dead zone so it give Uncaught ReferenceError: Cannot access 'a' before initialization
+let a=10;//ab a Temporal dead zone sy niqal gya ha
+
+=>REFERENCE ERROR EXPLAINED
+1)wo variables jo isy apny global scope/execution scope me na mily,tab ye reference error dta ha
+ab ye reference error b 2 trah sy dta ha
+   =>1st case:
+      If variables are in temporal dead zone,then it says ReferenceError: Cannot access var before initialization
+   =>2nd Case:
+      if variables are not used in whole code,then it says ReferenceError:var is not defined
+
+=>let/const cannot be redeclared
+if you do that it will give syntax error
+example:
+let a=10;
+let a=7;
+result:Uncaught SyntaxError: Identifier 'a' has already been declared
+similarlly,
+let a =10;
+var a=8; //again give syntax error because you cannot declare the same name in the same scope
+
+=>Important Difference btw let & const
+let can be declared first and after some code,we can initialize it while in case of const,it is compulsory that declaration and initialization should be taken at same point
+example:
+let a;
+const b; //gives error here, result:Uncaught SyntaxError: Missing initializer in const declaration
+a=9;
+b=10;
+
+=>Type error
+const data=88;
+data=99;// yaha typeerror aiy ga because data const ki type ka ha aur const me hum dobara value ni dy skty,srf 1 he time us ki declaration k waqt dy skty ha  output:Uncaught TypeError: Assignment to constant variable.
+
+=>How to avoid Temporal dead zone errors?
+Its best solution to do declaration and initialization at the top of the program.So you can easily get rid of errors

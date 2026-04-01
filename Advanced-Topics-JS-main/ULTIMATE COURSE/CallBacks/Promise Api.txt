@@ -1,0 +1,188 @@
+Promise Api
+It has some methods
+1-Promise.all
+
+let promise = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(5);
+  }, 2000);
+});
+let another = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(7);
+  }, 8000);
+});
+let promise3 = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(9);
+  }, 3000);
+});
+
+let promises = Promise.all([another, promise, promise3]);  
+promises.then((value) => {
+  console.log(value);      [7,5,9]   //result is pattern sy aiy ga jo  promise.all me jis promise ko phly likha,usi ki value result ki array me phly aiy gi
+});
+
+Note:
+Promise.all takes a iterateable(array) of promises and it runs all the promises in parallel.
+It has a 2 scenarios
+
+a)All the promises are successfully resolved
+Promise.all will return an array with the value of all the results.
+Promise.all will run all the promises in parallel but it wait for all of them to be finished
+After all the promises are successfully resolved,it will collect all the results and give it inside an array and give it back to us.
+In this scenario,Promise.all k successfully resolved ki total timing 8s hu gi kyu k sab sy late call usy he kya gya ha 
+
+b)If any of these promise are failed or get rejected
+As soon as any of these promises will get rejected,promise.all will throw an error.It will throw the same error which failed or rejected promise are returning to it.
+It will not wait for other promises to get successfull or rejected.It will immedjiately throw the error as soon as as possible
+Agr koi promise fail hu k ya reject hu k  error throw kr dta ha tu ye baqi promises k result ko b ignored kr k srf error he show krwaiy ga
+--------------------------------------------------------
+
+
+nichay k 3 promises me always use a settled key word
+=>"Our promise has been resolved",instead of saying this,always says "Our promise has been Settled".
+=>When you say a promise is settled,that means you have got the result.Now once the promise is settled,it can be of two possibilities.
+=>It can either resolved or reject,either it can be a failure or success && either it can be a fullfilled or rejected.(SEE IMAGE SETTLED PROMISE.png)
+=>Sometimes people thinks that settled is always a success.No,settled can be a failure as well as success.Generally,our promise is fullfilled or rejected
+
+
+
+---------------------------------------------------------
+
+2-Promise.allSettled
+In case of any promise failed or rejected,it still wait for other promises to get settled.Settled means Whether they(other promises) are success or failed,it will give you all the results.
+Agr kisi promise  me koi error aya b ha tu b hamaray dosary results ko show krwao along with that error
+let promise = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(5);
+  }, 2000);
+});
+let another = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(7);
+  }, 2000);
+});
+let promise3 = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    reject(new Error("HI"));
+  }, 2000);
+});
+
+let promises = Promise.allSettled([another, promise, promise3]);
+promises.then((value) => {
+  console.log(value);
+});
+Result:
+(3) [{…}, {…}, {…}]
+0:{status: 'fulfilled', value: 7}
+1:{status: 'fulfilled', value: 5}
+2:{status: 'rejected', reason: Error: HI at http://127.0.0.1:5500/variables.js:13:12}
+
+3-Promise.race
+Jnsa promise phly settled hu jai,uska result phly show kr du.Settled means Whether that promise are success or failed ,show their result
+
+let promise = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(5);
+  }, 2000);
+});
+let another = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(7);
+  }, 4000);
+});
+let promise3 = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(9);
+  }, 1000);
+});
+
+let promises = Promise.race([another, promise, promise3]);   
+promises.then((value) => {
+  console.log(value);
+});
+//promise3 sab sy phly resolve hu ga,is lye uski value sab sy phly show krwa dy ga
+Result: 9
+
+Note:
+In this scenario,agr promise3 error throw krta ha tab ye result me error throw krwa dta ha
+upr wala baqi sara code same,srf promise3 me error throw krwa diya ha
+let promise3 = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    reject(new Error("HI"));
+  }, 1000);
+});
+In result ,it will show error
+
+4-Promise.any(seeking for first success)
+It will wait for the first promise to get successfull 
+or 
+In any,u will wait for the first success/fulfilled/resolved.
+It is same like race but the difference is that race me sab sy phly settled huny wala promise me agr error aiy tu wo error throw kr dta ha but any k case me agr error aya
+tu us promise ko chor k agly resolve promise ka result show krwa dta ha.Let suppose agr 3no promise me he error a jai tu 3no errors ki collection bna k error throw kr dta ha.We can call this aggregate errors(collection of errors).Aggregate error only come in promise.any case.Remember,in Promise.allSettled,we get a error collection too but this error comes in .then in array,not in catch.
+
+let promise = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(5);
+  }, 2000);
+});
+let another = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    resolve(7);
+  }, 4000);
+});
+let promise3 = new Promise(function (resolve, reject) {
+  setTimeout(() => {
+    // resolve(7);
+    reject(new Error("New Error"));
+  }, 1000);
+});
+
+let promises = Promise.any([another, promise, promise3]);
+promises.then((value) => {
+  console.log(value);
+});
+
+Aggregate error example:
+let promise = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+        console.log('promise');
+        reject(new Error("HI"));
+    }, 2000);
+  });
+  let another = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+        console.log('another');
+        reject(new Error("HI"));
+    }, 2000);
+  });
+  let promise3 = new Promise(function (resolve, reject) {
+    setTimeout(() => {
+        console.log('promise3');
+      reject(new Error("HI"));
+    }, 2000);
+  });
+  
+  let promises = Promise.any([another, promise, promise3]);
+  promises.then((value) => {
+    console.log(value);
+  }).catch((err)=>{
+    console.log(err.errors);
+  })
+
+5-Promise.resolve 
+promise.resolve ek value lta ha and then us promise ko resolve kr k value show krwa dta ha
+let promise = Promise.resolve(6);
+promise.then((value) => {
+  console.log(value);
+});
+
+6-Promise.reject
+promise.reject ek value lta ha and then us promise ko reject kr k error show krwa dta ha
+let promise = Promise.reject(6);
+promise.then((value) => {
+  console.log(value);
+});
+
+

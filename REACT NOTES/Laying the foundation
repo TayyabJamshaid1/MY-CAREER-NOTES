@@ -1,0 +1,229 @@
+Package.json me browsersList ki array huti ha us me versions specify huty ha.Is ka matlab ye ni ye srf unhi versions me chly ga.Ye dosry browsers me b chly ga lekin jo waha list me browsers mention ha ,udr lazmi chly ga.
+  "browsersList":[
+    "last 2 versions"
+  ]
+  
+When we installing a bundler(parcel,webpack),a babel is installed as a dependency  with it  
+Babel:
+A babel is just a node package or library.Babel is just like another piece of js code which is reading our code and convert it to another code.It is just like a black box which is taking some code and splitting/throw out some code.The incoming code is the latest code of modern js version and outgoing js code is the older version of code.The conversion of new code to a old code is also known as POLYFill.
+
+REACT.createElement
+let heading=React.createElement('h1',{
+id:'id1',key:'h1heading'},'Heading 1')
+console.log(heading)
+When we console it,we see that React.createElement returns an object,our react code convert that object to html code and show it in dom in this format
+<h1 id='id1'>Heading 1</h1>
+
+for multiple items,our REACT.createElement our code is very difficult to manage the code and difficult to read,thats why react gives us a JSX
+
+JSX:
+Jsx is a html like syntax but it is not html nor html inside JS
+
+History of Jsx:
+When fb created react,the major theory behind bringing react was that we want to do a lot of html and handle it with JS in a better way.SO they figure out that create a html element by React.createElement.Then it happened that for multiple elements creating using React.createElement,our code become very much messy and diffult to read & manage
+
+Jsx example:
+let heading=(<h1 id='id1'>Heading 1</h1>)  
+
+JSX uses REACT.createElement behind the scenes,
+babel convert Jsx code into REACT.createElement which returns an object and react convert that obj into html and show it on dom
+JSX============================>React.createElement============================>Object====================================>HTML(DOM)
+       babel converts                                  returns an object                 react convert it in html
+
+
+Important:
+U can also say (<h1 id='id1'>Heading 1</h1>) is a react element        
+Benefits of JSX
+1-Readability
+2-Less code
+3-Easy to Maintain
+4-No Repitation
+5-U can use Js & html like code together
+---------------------------------------------------------------
+
+Component:
+A common saying "Everything in react is a component"
+There are 2 types of component in react
+1-Functional component           2-Class based component
+
+History:
+Functional component is a new way of writing code.Class based component has allways being existed since a long time in  react.U can also say that Class based component is a old way to write code
+
+Functional component is a function that returns some piece of jsx or a react element or composition of react element.
+U can also use below approach like
+const header=()=>{
+return React.createElement()
+}
+but we will use latest approach which is Jsx
+const header=()=>{
+return <h1 id='id1'>Heading 1</h1>;
+}
+Function Component name allways start with a capital letter (Not manadatory but a good practice)
+Function Component is a normal function which is returning some piece of code
+
+Suppose u have to cover multiple elements like in below example
+const header=()=>{
+ return <div><h1>kess</h1><h1>kess</h1><h1>kess</h1><h1>kess</h1><h1>kess</h1><h1>kess</h1><h1>kess</h1><h1>kess</h1></div>
+}
+
+In this breaking the line scenario,u have to use brackets but if your line is not breaking,then not need to use brackets
+const header=()=>{
+  return (
+    <div>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+    </div>
+  );
+}
+
+U can also write header function without curly brackets and return keyword,below is a example
+const header=() =>(
+    <div>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+      <h1>kess</h1>
+    </div>
+ )
+ -------------------------
+ Diff btw react element and react componnet
+ 
+ React Element:
+ React element is a normal variable which has assigned a some jsx.
+ let heading=(<h1 id='id1'>Heading 1</h1>)  
+ heading is a normal variable which is now known as react element because it is returning a Jsx which will convert in an object by babel,so we can also say that it is returning a object
+Both the statements are true
+ a)It is returning a Jsx   b)it is returning a object
+
+Below is react component(As u see,its a proper function)
+const heading=()=>{
+return <h1>Kesa</h1>
+}
+
+So react element is object && react component is a function
+--------------------
+How to use react element in react component?
+
+ let heading=(<h1 id='id1'>Heading 1</h1>)  
+ 
+const headingComponent=()=>{
+return (<>
+<h1>Kesa</h1>
+{heading}
+</>)
+}
+
+How to use react component in another react component?
+
+const headingComponent1=()=>{
+return (<>
+<h1>Kesa</h1>
+{heading}
+</>)
+}
+
+1st way:
+
+const headingComponent2=()=>{
+return (<>
+<h1>Kesa</h1>
+<headingComponent1/>
+</>)
+}
+
+2nd Way:
+
+
+const headingComponent2=()=>{
+return (<>
+<h1>Kesa</h1>
+{headingComponent1()}  //so this proves that functional componet is a normal js function  which will be called as same as other functions called
+</>)
+}
+
+3rd way:
+
+const headingComponent2=()=>{
+return (<>
+<h1>Kesa</h1>
+<headingComponent1></headingComponent1>
+</>)
+}
+-------------------
+JSX Scenarios
+1-U can write any string/number in jsx
+
+let name="Noman";
+let age=98;
+const headingComponent=()=>{
+return (<>
+<h1>{name} {age}</h1>
+<headingComponent1/>
+</>)
+}
+
+2-U can directly write console.log or any Js code in jsx
+const headingComponent=()=>{
+return (<>
+{console.log("Called")}
+{6+9}
+<headingComponent1/>
+</>)
+}
+
+3-JSX prevents us from xss attack(cross sight scriptting attack)
+
+Suppose my api is hacked and it is returning a wrong data
+
+const data=api.getData();    //getData api is hacked and returning a unreal data,it is known as xss attack.This attack gives a lot of info like your address,cookies,data etc.Jsx prevents us from this kind of attacl
+
+const headingComponent=()=>{
+return (
+<>
+{data}
+<headingComponent1/>
+</>)
+}
+
+--------------------
+Component Composition
+When we  using a component inside another component, it is known as component composition
+const Title=()=>{
+return <h1>Kesa</h1>
+}
+
+const headingComponent=()=>{
+return (<>
+<Title/>            //this is known as component composition
+</>)
+}
+
+------------
+Conclusion:
+Jsx returns a react.createElement && react.createElement returns a object .
+
+Question :
+Kya JSX parcel/bundler k bgair chl skta ha?
+No,kyu k jsx ko smajny k liye babel ka huna zrori ha.agr ap jsx ko bundler k bgair chlana chahty ha tu babel ko as a separate dependency use kr lein.
+
+Kya Jsx manadatory ha react me?
+No,u can write your code in React.createElement
+
+Kya typescript manadatory ha react me?
+No
+
+Kya Es6 manadatory ha react me?
+No,ap js ka old version ka code b likh skty ha
+
+
+

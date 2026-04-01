@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    background-color: yellowgreen;
+    width: 30vw;
+    height: 60vh;
+}
+.box{
+    width: 34px;
+    height: 45px;
+    background-color: aqua;
+                margin-top: 50px;
+
+    /* animation-name: tayyabstyle;
+    animation-duration: 3s;
+    animation-delay: 2;
+    animation-iteration-count: 4; */
+}
+@keyframes tayyabstyle {
+    from{
+
+    } to{
+
+        transform: translateX(1000px);
+    }
+}

@@ -1,0 +1,377 @@
+=>Global Scope
+Now,see,how this behaves inside global space
+console.log(this);//it prints a window object
+
+Why the value of this is window object?
+let me tell you very important point
+
+"this keyword in global space,will always have the value of global object"
+
+so `this` keyword in global space represents the global object. Now the question is what is global object? The answer is Js does not run only in browsers,it runs in nodejs,in smart watches,in your smart phones,anywhere where Js is running,it have its own global object.Every Js platform has different global object.For example global object avaiable in browsers is different to global object in nodejs.
+
+Whatever the global object is,`this` keyword always represents it. Now,in case of browsers,the global object is windows thats why in upper console,you see window object.but in nodejs,the value of global object is global.So,every js runtime has different value of global object.
+
+So,if your interviewer ask about what is the value of `this` in global space?You should answer that value of `this` in global space is global object which can be different in different platforms.
+
+=> `this` keyword inside a function
+
+function data(){
+console.log(this)
+}
+data();
+
+the value of this in function is again window.In global space of browsers,it was also a window.Is both are same or different?
+
+The answer is both are different.Inside a function,
+This keyword works differently in strict mode as well as in non strict mode
+Strict mode has some strict rules in js.By using "use strict" keyword on the top of the program,u will gone in strict mode.
+
+In strict mode,the value of `this` in function is undefined while in non strict mode,it was a window
+
+"use strict"
+function data(){
+console.log(this)  //undefined
+}
+data();
+ 
+IMPORTANT:
+The value of `this` inside a function depends on strict/non strict mode.In strict mode,the value of `this` in function is undefined while in non strict mode,it was a window. 
+
+Why this is happened?Why `this` keyword is behaved differently in non strict mode?
+This happening is due to the `this substitution` phenomenon/process. According to `this substitution`,If the value of `this` keyword is undefined or null,`this` value will be replaced with global object by JS ONLY IN NON STRICT MODE.
+
+So,if the interviewer will asks you what is the value of this keyword inside a function?
+You should say the value of `this` keyword inside a function is undefined but because JS have something known as `this substitution` process,this process replace undefined with global object in non strict mode.
+
+
+In strict mode,as we discussed,in normal calling function,its value is undefined
+
+"use strict"
+function data(){
+console.log(this)  //undefined
+}
+data();
+
+while if we call data function with window keyword,then it will be a window object
+
+"use strict"
+function data(){
+console.log(this)  //window object
+}
+window.data();
+
+So we can say that value of `this` keyword depends on how the function is called
+
+Why this is happening that calling function with window keyword,`this` value is window object while when calling without reference,it gives undefined.
+
+The answer is when you call it without any reference then it is undefined but if you call it with window keyword,its value is window object.The reason is In JavaScript, when you define a function , it belongs to the global context, which in browser environments is the window object. Inside the data function, this refers to the object that the function is called on, which in this case is window.
+So, this inside the data function refers to the window object, and when you log it, you see the window object logged to the console.
+
+=>this inside a object method
+`this` keyword can be called inside a object method
+Here we are using term "method" instead of function,why?What is the difference btw method & function
+
+"If you make a function as a part of an object,then it is known as method"
+(at the end,method b ek function he huta ha but isy method terminology kehty ha)
+In below example,b is the method of obj
+ "use strict"
+let obj={
+a:78,
+b:function(){  
+     console.log(this)
+     }
+  }
+  
+  what is the value of this?Remember,as we said,the value of this is also depends on how the function is called.If we call the function like this 
+  
+  obj.b();
+  the value of this in upper scenario is that object.
+  
+  Output:
+     {a: 78, b: ƒ}
+     
+ IMPORTANT POINT:
+ let obj={
+a:78,
+b:function(){  
+     console.log(this.a)//u can access the object varaiables too
+     }
+  }
+      
+    obj.b();
+    Output:
+    78
+     
+ =>Whenever you talk about this keyword,there are 3 important functions you should know
+ 
+ a)call         b)apply   c)bind
+ 
+ Interviewer can ask you that what is the difference btw this methods?
+ call,apply & bind method is used where you have to share methods.
+ 
+ For example,
+ let student={
+name:"Tayyab",
+printName:function(){  
+     console.log(this)
+     }
+  }
+  
+  let student2={
+name:"Ali",
+  }
+Now i want to share/reuse method of printName of student with student2.There is one way we can do that.
+That way is by overiding the value of `this` keyword in student.
+student.printName.call(student2)
+{name: "Ali"}
+before calling call,its value is {name:"Tayyab"} but now it has been overrided.
+This call function will take the value of this keyboard inside it.By using .call ,the value of this is modified/updated/override by new object
+--------------------------------------------------------------------------
+MORE EXAMPLE OF CALL,APPLY,BIND
+Example 1:
+normally,if methods are shareable then we make it separate
+Scenario 1:(WITHOUT PARAMETER IN FUNCTION)
+let student={
+    firstName:"Tayyab",
+    lastName:"Jamshaid"
+      }
+    let  printName=function(){  
+        console.log(this.firstName," ",this.lastName)
+        } 
+      let student2={
+        firstName:"Amir",
+        lastName:"Attari"  
+        }
+  
+   printName.call(student)
+   printName.call(student2)
+
+Scenario 2:(WITH PARAMETERS)
+let student={
+    firstName:"Tayyab",
+    lastName:"Jamshaid"
+      }
+    let  printName=function(location){  
+        console.log(this.firstName," ",this.lastName,"location is "+location)
+        } 
+      let student2={
+        firstName:"Amir",
+        lastName:"Attari"  
+        }
+  
+   printName.call(student,"lahore")
+   the first paarameter in call will allways be the reference of `this` value,later will be the arguments of printName function
+   printName.call(student2,"karachi")
+
+
+   APPLY METHOD:
+   Apply Method:
+The only difference btw call and apply method is the way we passed the arguments.Instead of write arguments individually,wrap it in array
+let student={
+    firstName:"Tayyab",
+    lastName:"Jamshaid"
+      }
+    let  printName=function(location){  
+        console.log(this.firstName," ",this.lastName,"location is "+location)
+        } 
+      let student2={
+        firstName:"Amir",
+        lastName:"Attari"  
+        }
+  
+   printName.apply(student,["lahore"])//the first paarameter in call will allways be the reference of `this` value,later all the arguments of printName function will be in array
+   printName.apply(student2,["karachi"])
+
+   Bind Method:
+The only difference btw call and bind method is instead of directly calling the method over here,the bind method binds the method(printName) with object(student/student2) and returns the copy of function to us which will be invoked/called later .The main difference is call/apply directly  called(jesy he hum .call/.apply likhty ha tu function khud ba khud call hu jata ha) while bind give us the copy of function which will be called later.
+let student={
+    firstName:"Tayyab",
+    lastName:"Jamshaid"
+      }
+    let  printName=function(location){  
+        console.log(this.firstName," ",this.lastName,"location is "+location)
+        } 
+      let student2={
+        firstName:"Amir",
+        lastName:"Attari"  
+        }
+  
+  let fun1= printName.bind(student,"lahore")
+  let fun2= printName.bind(student2,"karachi")
+  fun1();
+  fun2();
+
+  ---------------------------------------------------------------------------------
+  =>This in arrow function
+  Arrow functions do not have their own this.They take the value of their lexical environment where they are enclosed.
+
+  Explanation:
+  Example 1:
+What is the value of this in below function?
+
+Here we used a regular function,so the value of this is a  object
+let student={
+name:"Tayyab",
+printName:function(){  
+     console.log(this)
+     }
+  }
+
+      console.log(student.printName());
+    Output:
+    {name: 'Tayyab', printName: ƒ}
+
+    now,move on arraow function instead of regular function
+
+    let student={
+name:"Tayyab",
+printName:()=>{  
+     console.log(this)
+     }
+  }
+
+      console.log(student.printName());
+      Now the value of this is not the below object
+      ( {name: 'Tayyab', printName: ƒ})
+But its value will be its enclosing lexical context. lexical context means how it is written in the code(in which scope  the student obj is avaiable in your code).In our example,it is present in global scope.As we know,in global scope of browsers,the global object is window.So the value of this will be the window object.
+
+Example 2:
+Now,what is the value of this in below example?
+let student={
+    name:"Tayyab",
+    printName:function(){  
+    const printAge=()=>{
+    console.log(this);
+}   
+printAge()
+}
+      }
+      student.printName();
+
+      Output:
+      {name: 'Tayyab', printName: ƒ}
+    Whenever you see an arrow function,the value of this keyword will be where this arrow function is lexically enclosed.The enclosing lexical context in this example is printName function
+
+
+=>This keyboard in DOM
+
+<body> 
+ <h1 class="click" >Learn Advanced Js</h1>
+ <h1 id="heading">Click me!</h1>
+
+<button id="data" onclick="alert(this)">Click Me</button>
+   <script src="./variables.js">
+  
+
+   </script>
+ </body>
+
+ if i click on btn,alert opens and it says
+ "[object HTMLButtonElement]"
+
+ So basically,this button element itself is the value of this.If you try to find out what is value of `this`,`this` value will be the button html element itself.`this` will be reference to this html button element
+
+So if your interviewer ask about what is `this` inside dom element?
+
+Your answer is the `this` value in dom is the reference to html element itself.`this` value represents the button element.
+---------------------------------------
+
+
+In regular function,this depends on how a function is called, not how it is defined.
+
+=>function normal() { console.log(this); }
+normal();         // window / undefined
+let obj={}
+obj.fn = normal;
+obj.fn();         // obj
+=>
+
+let obj={
+  name:'usman',
+  items:['a','b','c'],
+  show:function(){
+    this.items.map(function(data){
+      console.log(this.name,' is ',data);
+      
+    })
+  }
+}
+console.log(obj.show());
+
+What is the value of this in callback function of items.map?
+The answer is as we know,value of this in function is determine by how the function is called,now this function is called as a callback function,not called by an object thats why now this is pointing to window object.
+Similarly in below example
+
+let obj={
+  name:'usman',
+  items:['a','b','c'],
+  show:function(){
+   function another(){
+    console.log(this);  
+    
+   }
+   another() //hum khud isy call kr rhy ha thats why the value of this is window object
+  }
+}
+console.log(obj.show());
+
+
+Now the question is how to access the value of this in callback function of items.map,the answer is use arrow function
+let obj={
+  name:'usman',
+  items:['a','b','c'],
+  show:function(){
+    this.items.map((data)=>{
+      console.log(this.name,' is ',data); //now this pointing to object
+      
+    })
+  }
+}
+console.log(obj.show()); 
+
+
+Now if anyone says , use this in regular function without arrow function,Remember this should be point out to object,not on window,how can you do this
+
+There are two ways
+
+1-Assign this to variable 
+let obj={
+  name:'usman',
+  items:['a','b','c'],
+  show:function(){
+    let self=this;
+    this.items.map(function(data){
+      console.log(self.name,' is ',data);
+      
+    })
+  }
+}
+console.log(obj.show());
+
+2-bind(this)
+
+By using bind(this), you force the callback’s this to always equal the this of show (which is obj).
+let obj={
+  name:'usman',
+  items:['a','b','c'],
+  show:function(){
+    this.items.map(function(data){
+      console.log(this.name,' is ',data);
+      
+    }.bind(this))
+  }
+}
+console.log(obj.show());
+
+let obj={
+  name:'usman',
+  items:['a','b','c'],
+  show:function(){
+   const kesa=function another(){
+    console.log(this);  
+    
+   }.bind(this)
+   kesa() //hum khud isy call kr rhy ha thats why the value of this is window object
+  }
+}
+console.log(obj.show());

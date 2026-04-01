@@ -1,0 +1,69 @@
+1. Rest Operator (...)
+
+👉 Collects multiple elements into a single array or object. (many → one)
+
+In function scenario,
+
+function sum(...nums) {
+  return nums.reduce((a, b) => a + b, 0);
+}
+
+console.log(sum(1, 2, 3, 4)); // 10
+
+==>In destructuring:
+
+a)Arrays
+let arr = [1, 2, 3, 4];
+let [first, ...rest] = arr;
+
+console.log(first); // 1
+console.log(rest);  // [2, 3, 4]
+
+b)Objects
+let user = { name: "Tayyab", age: 27, country: "PK" };
+let { name, ...details } = user;
+
+console.log(name);    // "Tayyab"
+console.log(details); // { age: 27, country: "PK" }
+
+
+2. Spread Operator (...)
+
+👉 Expands an array or object into individual elements. (one → many)
+
+a)In arrays:
+let arr1 = [1, 2];
+let arr2 = [3, 4];
+let combined = [...arr1, ...arr2];
+
+console.log(combined); // [1, 2, 3, 4]
+
+b)In objects:
+let user = { name: "Tayyab", age: 27 };
+let updated = { ...user, country: "PK" };
+
+console.log(updated);
+// { name: "Tayyab", age: 27, country: "PK" }
+
+c)In function calls:
+let nums = [5, 6, 7];
+console.log(Math.max(...nums)); // 7
+
+
+
+
+
+--------------
+| Feature          | **Rest (`...`)**                            | **Spread (`...`)**                          |
+| ---------------- | ------------------------------------------- | ------------------------------------------- |
+| Purpose          | Collects values                             | Expands values                              |
+| Direction        | Many → One                                  | One → Many                                  |
+| Common use cases | Function params, destructuring              | Arrays merge, objects merge, function calls |
+| Example          | `function f(...args) {}` → `args = [1,2,3]` | `f(...[1,2,3])` → `f(1,2,3)`                |
+
+
+A good way to remember:
+
+Rest = gather (pack values together)
+
+Spread = scatter (unpack values apart)

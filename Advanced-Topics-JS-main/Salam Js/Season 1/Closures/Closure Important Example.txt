@@ -1,0 +1,196 @@
+Closure Important Concept explained:
+Example:
+function check(){
+    for (var i=1;i<=5;i++){
+        setTimeout(function(){
+            console.log(i);
+        }, i*1000);
+    }
+    console.log('tayyab');
+}
+check()
+
+Output :
+tayyab
+6
+6
+6
+6
+6
+ i want to print numbers 1 to 5 instaed of 6 all the time?
+Why this behaviour?
+ First understand k ye kam kesy kary ga.Js setTimeout k time complete huny ka wait ni kary ga,ye loop ko 5 times chla dy ga bs is ki execution tab hu gi jab in ka time complete hu ga.Ab yaha var datatype k through variable bnaya gya ha aur settimeout ka function as a closure k tor pr kam kary ga(means is k pas i ka reference avaiable rhy ga).Is lye pory loop me 5 times ye srf i k reference me ja k us ki value ko update krta rhy ga .Ab jab 5 time loop chly ga tu is ki value 6 hu gai hu gi ,is lye ye 6 print krta ja rha ha
+ (ALL 5 FUNCTIONS ARE POINTING THE SAME i VARIABLE,THATS WHY ON EVERY ITERATION i VALUE IS CONTINUOUSLY UPDATING)
+ 
+ To control this behaviour,use let instead of var because let block scope ko approach krta ha.On each iteration,i is a new variable.So each time in loop, setTimeout run,this callback function(function inside setTimeout) has a new copy of i in it.Is wajah sy jab phli dfa loop chla,tu us ki value 1 hu gai aur ye loop sy bhr a k i ki value me increment kary ga,jab dobara loop me jai ga tu ab i as a new variable k tor pr treat kiya jai ga,then phr us ki value me increment hu ga and ye process 5 time chly ga
+ Example:
+function check(){
+    for (let i=1;i<=5;i++){
+        setTimeout(function(){
+            console.log(i);
+        }, i*1000);
+    }
+    console.log('tayyab');
+}
+check()
+
+Output : 1
+2
+3
+4
+5
+
+ Second approach to do this,if your interviewer say that please do it with var,not by let.So here is how u can do it
+ Example:
+ var k case me ye hr dfa same i ki value ko point out krta ha,ab hamai krna ye ha k somehow we have to give a new copy of i everytime to setTimeout and form closure with it.
+function check(){
+    for (var i=1;i<=5;i++){
+    function close(x){
+        setTimeout(function(){
+            console.log(x);
+        }, x*1000);
+        }
+        close(i);
+    }
+    console.log('tayyab');
+}
+check()
+
+Output : 1
+2
+3
+4
+5 
+
+https://www.youtube.com/watch?v=eBTBG4nda2A&list=PLlasXeu85E9cQ32gLCvAvr9vNaUccPVNP&index=13
+
+EXAMPLE 2:
+function counter(){
+    let count=0;
+return function incrementCounter(){
+    count++;
+    console.log(count);
+}
+}
+let counter1=counter();
+counter1();
+counter1();
+
+let counter2=counter();
+counter2();
+
+
+
+
+//hr dfa function k call huny pr us ka execution context separate bny ga,e.g counter 2 dfa call huwa ha,2 dfa us ka separately execution context bny ga
+SEE IMAGES
+
+EXAMPLE 3:
+if interviewer says i want a decrementCounter function also by using closure,how u can do it?
+we can easily do it by using constructor 
+function counter(){
+    let count=0;
+ function incrementCounter(){
+    count++;
+    console.log(count);
+}
+function decrementCounter(){
+    count--;
+    console.log(count);
+}
+return {incrementCounter,decrementCounter}
+}
+let counter1= new counter();
+counter1.incrementCounter();
+counter1.incrementCounter();
+counter1.incrementCounter();
+counter1.decrementCounter();
+
+another better way to do it without return any function is to use this
+
+function counter(){
+    let count=0;
+ this.incrementCounter=function(){
+    count++;
+    console.log(count);
+}
+this.decrementCounter=function(){
+    count--;
+    console.log(count);
+}
+}
+let counter1= new counter();
+counter1.incrementCounter();
+counter1.incrementCounter();
+counter1.incrementCounter();
+counter1.decrementCounter();
+
+-----------------------------------------IMP POINT------------------------------------------
+Jab b hum function return krty ha aur us ko koi variable assign krty ha,tu return function ki copy us variable ko assign kr dty ha,although us function k andr use hauy parent k variables ka us k pas reference huta ha,not copy
+Example:
+function counter(){
+    let count=0;
+ return function incrementCounter(){
+    count++;
+    console.log(count);
+}
+
+}
+let counter1=  counter();  //incrementCounter ki copy counter1 me assign kr di gai ha,lkn incrementCounter me jo count ha,wo as a reference ap k pas avaiable ha
+-----------------------------------------IMP POINT------------------------------------------
+
+Disadvantages of Closure:
+1-Over consumption of memory
+2-If closures cannot handled properly,it can be a memory leak
+
+
+GARBAGE COLLECTOR:
+garbage collector is a program in js engine which takes out the unutilized memory.like jo variables kafi dr sy use he ni huay,unhai memory sy niqal dta ha
+
+RelationShip btw Closure and GARBAGE COLLECTOR
+Let suppose,we created a function and make a variables in it,when that funcion is called and its execution is completed,then that variables go in garbage collector(jo un variables ko memory sy niqal dta ha)
+Example:
+function data(){
+    let a=6;
+    console.log(a)
+}
+data(); //after the execution of this function,a moves in garbage collector
+
+but when we use closure,it cannot move in garbage collector
+function data(){
+    let a=6;
+return function incrementCounter(){
+    console.log(a)
+}
+}
+let catchData=data(); //ab a ki value garbage collector me ni jai gi kyu k is ka reference hum closure me use kr rhy ha but jesy he catchData ki execution complete hu jai gi,ye b garbage collector me move kr jai ga
+
+Important
+Latest browsers me garbage collector boht smartly work krta ha,see example
+function data(){
+    let a=6,b=9; //ab yaha pr b ka closure function me koi use ni ha,is lye js engine smartly b ko garbage collector me dal dy ga
+return function incrementCounter(){
+    console.log(a)
+}
+}
+let catchData=data();
+
+----------------
+Closure concept:
+function delayedCounter() {
+  const counters = [];
+
+  for (var i = 0; i < 3; i++) {
+    counters.push(function () {
+      return i;
+    });
+  }
+
+  return counters;
+}
+
+const funcs = delayedCounter();
+
+console.log(funcs[0]()); // ?
+console.log(funcs[1]()); // ?
+console.log(funcs[2]()); // ?

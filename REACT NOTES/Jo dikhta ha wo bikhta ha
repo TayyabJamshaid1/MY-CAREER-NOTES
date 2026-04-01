@@ -1,0 +1,6 @@
+Everything in tailwind works with class name like text-sm,text-md etc
+
+=>Post css file is used to tell bundler that bind a tailwind css with your self
+
+Benefits of Tailwind
+Easy to debug

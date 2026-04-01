@@ -1,0 +1,235 @@
+When you make a container flex,it is known as flex container.It is 1 demensional layout.The items in flex container,is known as flex items. 
+By default it has two axis/directions,
+a)Horizontal axis(Which is also known as main axis)
+b)Vertical axis(which is also known as cross axis)
+
+See flex box.png image
+Html:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+ <div class="container">
+  <div class="box" id="box1">Box 1</div>
+  <div class="box" id="box2">Box 2 </div>
+  <div class="box" id="box3">Box 3</div>
+  <div class="box" id="box4">Box 4</div>
+ </div>
+</body>
+
+</body>
+</html>
+
+
+Properties
+1-Flex direction
+2-Justify content & align items
+3-flex-wrap & align content Example
+
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-size: 10px;
+}
+.container{
+  border: 5px solid red;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+}
+.box{
+  width: 200px;
+  height: 200px;
+  border: 2px solid brown;
+}
+#box1{
+  background-color: aqua;
+}
+#box2{
+  background-color: blueviolet;
+}
+#box3{
+  background-color: cadetblue;
+}
+#box4{
+  background-color: chocolate;
+}
+
+Now my question is what if i use align items instead of align content? or what is the difference btw align-items and align-content?
+Align items property align items with  respect of rows while align-content works with respect of flex container
+.container{
+  border: 5px solid red;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items:center;
+  //align-content: center;
+}
+
+
+(see align items and align content image)
+
+Now we will discuss flex items properties
+4-Order
+The order property in Flexbox controls the visual order of individual flex items within a flex container
+
+=>By default, all flex items have an order value of 0
+=>Flex items with lower order values will appear earlier in the visual layout than those with higher order values.(agr - me koi order ha tu phly wo aiy ga,phr 0 waly jo by default ha and last pr jitna zyada order number huta jai ga wo sab sy agay ata jaiy ga)
+=>You can use both positive and negative integers. For example, an item with order: -1 will appear before items with order: 0, and an item with order: 1 will appear after items with order: 0.
+
+#box2{
+  background-color: blueviolet;
+    order: -1;    //box 2 sab sy ph
+}
+#box3{
+  background-color: cadetblue;
+  order: 400;
+}
+
+5-Flex grow 
+
+The flex-grow property specifies how much the item will grow relative to the rest of the flexible items inside the same container.
+
+1-If given equal value,then sab equal width k sath divide hu jai gi
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-size: 10px;
+}
+.container{
+  border: 5px solid red;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
+    /* align-content: center; */
+
+  align-items: center;
+}
+.box{
+  width: 200px;
+  height: 200px;
+  border: 2px solid brown;
+}
+#box1{
+  background-color: aqua;
+  flex-grow: 1;
+}
+#box2{
+  background-color: blueviolet;
+    flex-grow: 1;
+
+}
+#box3{
+  background-color: cadetblue;
+    flex-grow: 1;
+
+}
+#box4{
+  background-color: chocolate;
+    flex-grow: 1;
+
+}
+
+2-If given more value to any item,it will grow more relative to other items
+#box1{
+  background-color: aqua;
+  flex-grow: 1;
+}
+#box2{
+  background-color: blueviolet;
+    flex-grow: 1;
+}
+#box3{
+  background-color: cadetblue;
+    flex-grow: 2;   //it will grow 2 times more then other items
+}
+#box4{
+  background-color: chocolate;
+    flex-grow: 1;
+}
+
+
+6-Flex shrink
+Jab hum screen ko chota kr rhy huta tu hamari items ki width b kam huti jati ha,agr hum chahty ha k screen chota krty waqt koi specific item jldi shrink hu jai then use this.
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-size: 10px;
+}
+.container{
+  border: 5px solid red;
+  height: 500px;
+  display: flex;
+  /* flex-wrap: wrap; */
+    /* align-content: center; */
+
+  align-items: center;
+}
+.box{
+  width: 200px;
+  height: 200px;
+  border: 2px solid brown;
+}
+#box1{
+  background-color: aqua;
+}
+#box2{
+  background-color: blueviolet;
+
+}
+#box3{
+  background-color: cadetblue;
+   flex-shrink: 5;  //it will shrink 5 times faster then other items
+}
+#box4{
+  background-color: chocolate;
+
+}
+
+
+7-flex basis
+It is used to set the dimension(width) of flex item
+
+
+8-align-flex
+It is used to place flex item in cross axis if direction is row.If direction is column,it  place flex item in main axis.
+
+Example:
+
+.container{
+  border: 5px solid red;
+  height: 500px;
+  display: flex;
+  /* flex-wrap: wrap; */
+    /* align-content: center; */
+
+  align-items: center;
+}
+.box{
+  width: 200px;
+  height: 200px;
+  border: 2px solid brown;
+}
+#box1{
+  background-color: aqua;
+}
+#box2{
+  background-color: blueviolet;
+
+}
+#box3{
+  background-color: cadetblue;
+}
+#box4{
+  background-color: chocolate;
+align-self: flex-end;
+}

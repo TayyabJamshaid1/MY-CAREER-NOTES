@@ -1,0 +1,63 @@
+                          Variable Hoisting
+
+Example:
+console.log(x);
+call();
+var x=9;
+function call(){
+console.log('call');
+}
+
+Output:
+undefined
+call
+
+
+Now if, var x=9 is not aviable
+
+console.log(x);
+call();
+function call(){
+console.log('call');
+}
+
+OutPut;
+Referrence Error:x is not defined
+call
+
+why this behaviour?
+because js me sab sy phly phase me memory allocation huti ha and then code line by line chlta ha(thread of execution).
+So jab humny var x=9 ko remove kiya tu ye memory allocation me ye save he ni huwa,thats why jab hum ny x ko console kiya tu usny apny execution context me dkha,waha ni mila tu window object me dikha jab usko mila he ni tab Referrence error diya k ye tu bilkul b ni ha else agr var x=9; likha huta tu memory allocation k process me ye undefined value k sath zror save huta aur hum isy undefined value k sath easily get kr lty
+
+Now let suppose,agr function ko hum var k sath arrow function bna k lkhty is ka behaviour kya huwa
+console.log(data)  //undefined 
+var data=()=>{
+    console.log("data");
+}
+
+undefined is lye kyu k jab humny var k sath function bnaya tu ye isy as a function ki bjaiy as a variable he consider krta ha aur memory allocation me undefined rkhwa dta ha,is lye OutPut is undefined.
+
+//NOTE:THIS CASE IS ONLY FOR VAR, not for LET/CONST
+
+
+-------------------
+Scenario 1:
+data()
+var data=()=>{
+    console.log("data");
+}
+
+Output:
+variables.js:77 Uncaught TypeError: data is not a function (yaha type error is liye kyu k ye data ko as a variable consider kr rha ha,as a function ni,is liye keh rha ha k data is not a function)
+
+Scenario 2:
+data()
+let data=()=>{
+    console.log("data");
+}
+
+Output:
+ReferenceError: Cannot access 'data' before initialization
+    at variables.js:77:1
+
+    Reference error is liye aya kyu k temporal dead zone k variable ko initialize sy phly get kiya ja rha ha

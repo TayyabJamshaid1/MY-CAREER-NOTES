@@ -1,0 +1,283 @@
+Color modes
+----------------------------- RGB (Red, Green, Blue)
+The RGB color model is used to define colors by mixing Red, Green, and Blue light.
+Syntax:
+rgb(red, green, blue)
+
+=>Each value represents the intensity of a color component and ranges from 0 to 255:
+
+Value	Meaning
+0	No intensity (dark)
+255	Full intensity (brightest)
+
+rgb(255, 0, 0) → full red
+
+rgb(0, 255, 0) → full green
+
+rgb(0, 0, 255) → full blue
+
+rgb(0, 0, 0) → black (no light)
+
+rgb(255, 255, 255) → white (full light from all three)
+
+The higher the values, the brighter the color. Lower values produce darker shades
+
+
+------------------------------------------RGBA (Red, Green, Blue, Alpha)
+
+RGBA works the same as RGB, but includes an additional Alpha channel for opacity (transparency).
+
+Syntax:
+
+rgba(red, green, blue, alpha)
+
+
+red, green, blue → 0 to 255 (same as RGB)
+
+alpha → 0 to 1
+
+1 = fully opaque (visible)
+
+0 = fully transparent (invisible)
+
+0.5 = 50% transparency
+
+Examples:
+
+Code	Output Meaning
+rgba(255, 0, 0, 1)	Fully opaque red
+rgba(255, 0, 0, 0.5)	Red with 50% transparency
+rgba(255, 0, 0, 0)	Fully transparent (invisible)
+
+Alpha does not change the brightness of the color — it affects how transparent the color is when placed on a background.
+------------------------------------------------------------------------------------------------------------------------------------------
+Background me ek sy zyda color dny hu then gradients use huty ha
+
+a)Linear gradient
+b)Radial gradient
+c)repeating linear gradient
+d)repeating radical gradient
+
+Linear gradient: 
+linear graient ek side sy dosri side pr chlta ha
+Linear gradient can be handle by 4 ways.
+to bottom (upr sy nichay)
+to top    (nichay sy upr)]
+to left   (right to left)
+to right  (left to right)
+You can also use the angles
+
+
+Radial gradient:
+Jab ap  center sy shuru hu ya kisi point sy shuru hu tab radial gradient ka use krty ha
+ 
+Radial gradient can be handle by 4 ways.
+center
+top left
+top right
+bottom left
+bottom right
+
+
+-----------------------------------------------------------linear gradient explanation-----------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+    <div class="box">jjj</div>
+</body>
+</html>
+
+CSS:
+1- Default behaviour
+  by default top sy bottom huta ha(to bottom)  
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( blue,red);
+}
+
+2-Giving linear gradient values
+a)to right
+box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to right ,blue,red);  //left to right   blue will show left side and then red will be right side
+}
+
+b)to left
+box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to left ,blue,red);  //right to left   red will show left side and then blue will be right side
+}
+
+c)to bottom (default value)(top sy bottom)
+box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to bottom ,blue,red);  //top to bottom   blue will show top side and then red will be bottom side
+}
+
+d)to top (nichay sy upr)
+box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to top ,blue,red);  //bottom to top(reverse)   blue will show bottom side and then red will be top side
+}
+
+
+e)Horizontal sides(to left,to right) pr hum top ya bottom ko b sath likh skty ha,see  below example ,
+IMP:
+remember jo second value hum dty ha,wo from walay sy start ni huti blky end waly pr implement huti ha,
+
+.box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to right bottom,blue,red); // FROM left sy right wali side jaty huay bottom sy red color start kr du) 
+}
+
+similarly,
+box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to right top,blue,red); //FROM left sy right wali side jaty huay top sy red color start kr du)
+}
+
+same with to left
+.box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to left top,blue,red); //FROM right sy left wali side jaty huay top sy red color start kr du)
+}
+.box{
+    width: 50vw;
+    height: 50vw;
+    background:linear-gradient( to left bottom,blue,red);//FROM right sy left wali side jaty huay bottom sy red color start kr du)
+}
+
+f)Linear Gradient - Using Angles
+
+A value of 0deg is equivalent to "to top".
+A value of 90deg is equivalent to "to right".
+A value of 180deg is equivalent to "to bottom".
+A value of 270deg equivalent to "to left"
+
+Quick Conversion Table
+Angle	Normalized	Equivalent To
+0deg	0°	to top
+90deg	90°	to right
+180deg	180°	to bottom
+270deg	270°	to left
+360deg	0°	to top
+-90deg	270°	to right
+-180deg	180°	to bottom
+-270deg	90°	to right
+
+
+g)How to use transparency?
+.box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:linear-gradient(purple,rgb(255,0,0,0));     //half purple,next half because of 0 opacity,will not be visible
+}
+
+h)repeating linear gradient
+.box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:repeating-linear-gradient(to right,red,green 15%,yellow 40%)
+    -------------------------------------------------Radial gradient--------------------------------------------------------------------------
+   
+1-Default behaviour without specified direction(Center by default)
+
+   .box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:radial-gradient(red,blue,green)
+}
+
+2-You can also set the percentage
+.box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:radial-gradient(red 15%,blue 25%,green 50%)
+}
+    
+3-Shape 
+It has 2 shapes
+a-circle  
+b-ellipse (default)
+
+You can also set the shape by circle
+   .box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:radial-gradient(circle,red 15%,blue 25%,green 50%)
+}
+
+4-Radial gradient properties
+a)closest-side
+b)farthest-side
+c)closest-corner:
+d)farthest-corner (default):
+
+==>closest-side
+
+Closest side me iski shape eclipse he rehti ha aur ye ek side pr move  huta rehta ha
+.box{
+    margin: 20px;
+    width: 500px;
+    height: 600px;
+    background:radial-gradient(closest-side at 70% 50% ,red 15%,blue 25%,green 50%)   //first value(70%) is a horizontal value and second value(50%) is a vertical value
+}
+
+    
+    
+    
+    
+    a
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}

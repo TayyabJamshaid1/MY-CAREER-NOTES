@@ -1,0 +1,53 @@
+=>JS is every where like in your browsers,servers,smart watched,even in bulbs and robots.It is possible because of js runtime environment.Js runtime environment is like a big container which has all the things required to run js code.To run any kind of js code,you need a js engine.In Js runtime environment,There is also set of apis to connect to outer environment,also we have event loop,callback quene,micro task quene.Js runtime environment is not possible without js engine.U can say js engine is the heart of Js runtime environment.(See JS ENGINE Pics part 1).Our browser only run our js code because of Js runtime environment.Every browser has Js runtime environment.So let suppose,we want to run some js code in our water cooler,we need a Js runtime environment in it.It can have js engine,its apis etc.So because of this,js is running in even small devices 
+
+=>You can also create your own js engine.The most important protocol for a js engine is that following standards. There are ecmascript standards which needs to be followed by the engine.
+The first engine of js is created by Brendan Eich even js is also created by him.
+
+JS Engine IS NOT a machine .It is just a normal program code which is written in low level languages like google v8 js engine is written in c++.
+
+Now we will see what is happening in JS ENGINE(Architecture of js engine)
+
+So js engine takes code as a input.The human readable code what we write in js,it basically takes that code and this code is now goes through three major steps
+
+1-PARSING     2-COMPILATION  3-EXECUTION
+
+let see PARSING
+In parsing phase,the code which you write is broken down into tokens.Suppose we write   let a=8;  So it broke this line in tokens like let is one token,a is another token,= is another token same as 7.Also there is something known as syntax parser.The job of the syntax parser is basically takes the code and convert it into AST(Abstract syntax tree).See Part 2 image(Example of AST).In that example,JS engine takes the code,converted into tokens and  syntax parser creates the AST of that code.Now,our ast is passed into compilation phase.
+
+2 & 3 (COMPILATION & EXECUTION)
+BOth steps goes hand in hand(both are connected/related)
+
+We are discussing very important topic.JS has something known as "JIT COMPILATION"(JUST IN TIME COMPILATION).Before we understand,what is JIT compilation,first understand what is interpretor and what is compiler?
+Or js is interpreted language or compiled language?
+Interpretter:
+In many Interpretted programming languages,the code is executing using interpretter.Interpretter just takes your code and start executing the code line by line in the order.It does not know what will happen on next line.So thats why whole code is executed.
+
+Compiler:
+Also we have many languages which uses compiler to compile their code.In case of compiler,your whole code is compiled first of all even before the executing.So compiler compiled this code and it is converted into optimized version of this code and then this optimized code is execueted.
+So we can say that your original code is modified and then the new code is optimized version of the code which runs very fast and it has a lot of performance improvements.Thats how compiler works
+
+So there are both prons and cons of compiler and Interpretter.As of comparison, Interpretter is fastly executed and it does not have to wait for compiled first,it just immedjiately start executing line by line .In compiler,we have efficiency of our code
+
+So again come to the topic is js is interpreted language or compiled language?
+So answer is js can behave  interpreted language as well as compiled language.Everything is dependent on the js engine.So when js engine was intially created,it was suppose to be a interpreted language because initially,js majorlly used on browsers and browsers cant wait for the code to compiled before executing the code.So intially it was interpreted language but now in todays world,most of the modern browswers and js engines used an interpretter and compiler both together.So now it totally depends on js engine whether it is purely interpretted or it is just in time compiled.So as we already discussed the term "JIT COMPILATION" is that js engine can used interpretter along with compiler and that makes it as JIT COMPILATION.So it uses the both interpretter +compiler to execute the code.
+
+As we discuss compilation and execution goes hand by hand.So after parsing,we got AST.This ast goes to interpretter.Now this interpretter converts a high level code into byte code and that code moves to the execution.interpretter also takes the help of compiler to optimize the code.So compiler basically talks to the interpretter while the code is interpretting line by line,the compiler basically tries to optimize the code as much as it can.So it is not just one phase process,it can happen in multiple phases.All the javascript engines have their own algorithum of doing these.So the job of compiler of over here is to optimize the code as much as it can on the run time.Thats why it is also known as JIT compilation.
+
+In some Js engines,there is something known as AOT(AHead of time comilation).In that case,the compiler basically takes a piece of code which is going to be executed later and tries to optimize it  as much as it can and then after optimization,it converts it in byte code which is then goes to the execution phase.The execution over here is not possible without two major components of the js engine
+
+1)Call Stack       2)Memory Heap
+
+Now,can you imagine the major picture.We have Js runtime environment,inside it we have Js engine,inside js engine we have different phases like parsing , compilation,intepretor,execution and we also have memory heap and call stack.These are all the things that is present in our js engine
+
+Memory Heap:
+This is the place where all the memory is stored.So iot is continuously connected(Rabty me rehna) with call stack,garbage collector and a lot of other things.So we can say that
+
+"Memory heap is the space where all the variables and functions are assigned memory" 
+
+So now we have garbage collector into the picture.It basically tries to free up memory space whenever possible.Whenever some function is not being used or we clear the timeout,so it basically like collect all the garbage and sweep it(remove it).It basically uses the algorithum which is known as "Mark & Sweep".
+
+=>There are many form of optimizations(tasks/works) which a comiler does for the code.These tasks are like inlining,copy elision,inline caching and a lot of other things which this compiler is doing while it is compiling the code.
+
+=>The whole process of Js engine is very generic(common).All the js engines have their own way for implementing things but most of the modern js browsers engine  is similar to our discussed process(parsing,compilation,execution etc).So may be compilation logic in the google v8 engine is very different from spider monkey(a js engine of firefox).This is what different companies trying to achieve.They want to make the js engine as fast as possible.Their are engineers who are working day and night to make this optimizations as better as possible so that they can save your micro seconds.Thats why there are so many competion.
+
+Right Now,as present time,google v8 engine is consider to be fastest among the js engines ever created.google v8 engine interpretor name is "Ignition".Their compiler name is turbo fan.So Ignition along with turbo fan compiler,they both make yopur code very fast.SEE IMAGE OF V8 JS ENGINE ARCHITECTURE

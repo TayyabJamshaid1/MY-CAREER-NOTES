@@ -1,0 +1,365 @@
+1. What is Event Bubbling?
+
+Imagine you click a button that’s inside a div.
+
+The event first runs on the button, then moves upward (bubbles up) to its parent (div), then to the parent’s parent, and so on, until it reaches the document.
+
+👉 Example:
+
+<div onClick={() => console.log("Div clicked")}>
+  <button onClick={() => console.log("Button clicked")}>
+    Click Me
+  </button>
+</div>
+
+
+If you click the button:
+
+First: "Button clicked" logs.
+
+Then: "Div clicked" logs.
+
+This upward chain is called bubbling.
+
+2. What is Event Capturing (or Trickling)?
+
+The opposite of bubbling.
+
+The event starts from the outermost parent first, then trickles downward to the actual element you clicked.
+
+👉 Example:
+
+<div onClickCapture={() => console.log("Div capture clicked")}>
+  <button onClick={() => console.log("Button clicked")}>
+    Click Me
+  </button>
+</div>
+
+
+If you click the button:
+
+First: "Div capture clicked" logs (capturing phase).
+
+Then: "Button clicked" logs.
+
+3. React Specific Behavior
+
+By default, React events use bubbling phase.
+
+If you want capturing, add onClickCapture.
+
+4. Why is this asked in interviews?
+
+To test if you know how events travel in the DOM.
+
+They may also ask how to stop propagation:
+
+const handleClick = (e) => {
+  e.stopPropagation(); // stops bubbling
+};
+
+
+✅ Simple analogy:
+Think of throwing a stone into water:
+
+Bubbling = ripples move outwards from the center (child → parent).
+
+Capturing = water pressure moves inwards before the ripple (parent → child).
+
+
+-------------------------------------------------------------------
+Throttling vs Debouncing
+
+Both are about controlling how often a function runs, especially when events happen too frequently (like typing, scrolling, window resize).
+
+🔹 Debouncing
+
+👉 Wait until user stops before running the function.
+
+Example: Search box.
+
+If the user types h, he, hel, hell, hello → API should run only once, after they stop typing (say 500ms).
+
+Execution: Timer resets on every action. Runs only once after the last action.
+
+📌 Code:
+
+const debouncedSearch = debounce(() => console.log("API call"), 500);
+
+input.addEventListener("keyup", debouncedSearch);
+
+🔹 Throttling
+
+👉 Run at most once in a fixed time, even if user keeps doing the action.
+
+Example: Scroll event.
+
+If user scrolls like crazy → function runs once per second, not on every pixel scroll.
+
+Execution: Fires immediately, then waits X ms before running again. Stops when user stops.
+
+📌 Code:
+
+const throttledScroll = throttle(() => console.log("Scroll event"), 1000);
+
+window.addEventListener("scroll", throttledScroll);
+
+
+✅ Super Short Version (for interviews):
+
+Debounce → Runs after user stops (good for search boxes).
+
+Throttle → Runs at regular intervals while user continues (good for scroll/resize).
+
+-----------------------------------------------------------------------------------------------------------------
+1. Pagination (your answer 👍)
+
+Load data in chunks (say 20 items per page).
+
+Reduces memory and improves performance.
+
+Example: Page numbers or “Next/Previous” buttons.
+
+🔹 2. Infinite Scrolling (Lazy Loading)
+
+Instead of page numbers, load more data as the user scrolls down.
+
+Like Instagram or Twitter feeds.
+
+Reduces initial load, smooth user experience.
+Example:
+import { useState, useEffect } from "react";
+
+function InfiniteScrollList() {
+  const [items, setItems] = useState([]);
+  const [page, setPage] = useState(1);
+
+  // Fetch items from server
+  const fetchData = async () => {
+    const res = await fetch(`https://example.com/api/items?page=${page}`);
+    const data = await res.json();
+    setItems((prev) => [...prev, ...data]); // append new items
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [page]);
+
+  // Detect scroll near bottom
+  const handleScroll = () => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+      setPage((prev) => prev + 1); // load next page
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div>
+      {items.map((item, i) => (
+        <div key={i} style={{ padding: 20, border: "1px solid #ccc" }}>
+          {item.name}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+
+🔹 3. Virtualization / Windowing
+
+Render only the items visible on screen, not all 1000 at once.
+
+Libraries: react-window, react-virtualized.
+
+Example: Even if you have 1000 rows, only ~20 are in the DOM at a time → huge performance boost.
+
+import { FixedSizeList as List } from "react-window";
+
+function UserList({ users }) {
+  return (
+    <List
+      height={500}      // viewport height
+      itemCount={users.length} 
+      itemSize={50}     // row height
+      width={300}
+    >
+      {({ index, style }) => (
+        <div style={style}>
+          {users[index].name}
+        </div>
+      )}
+    </List>
+  );
+}
+
+🔹 4. Data Caching
+
+Use libraries like React Query, SWR, Apollo to cache data from the server.
+
+Prevents unnecessary re-fetching when navigating back & forth.
+
+Example: If user visits “page 2” again, data is already cached.
+
+------------------------------------
+an interviewer ask me that let suppose, you have 3 api request calling in react,one take 5 sec,one take 10 sec,one take 30 sec,how can i optimize the speed and his behaviour
+
+
+✅ Ideal Answer to the Interviewer
+
+If I have 3 API calls:
+
+API A → 5 sec
+
+API B → 10 sec
+
+API C → 30 sec
+
+1️⃣ Make All API Requests in Parallel (Not Sequential)
+
+Many beginners mistakenly do:
+
+await apiA();
+await apiB();
+await apiC();
+
+
+This takes 45 seconds total.
+
+To optimize, run them in parallel:
+
+Promise.all([apiA(), apiB(), apiC()]);
+
+
+Now total time is just 30 seconds (the longest one).
+
+2️⃣ Show Partial UI Rendering (Don’t Wait for All)
+
+Instead of blocking UI for 30 seconds, show data as soon as each API resolves.
+
+You can use Promise.allSettled:
+
+Promise.allSettled([apiA(), apiB(), apiC()]).then(results => {
+  // Render data as it arrives
+});
+
+
+Or load them individually:
+
+useEffect(() => {
+  apiA().then(setAData);
+  apiB().then(setBData);
+  apiC().then(setCData);
+}, []);
+
+
+This improves perceived speed.
+
+3️⃣ Add Caching (Avoid 30s wait on revisits)
+
+Use caching like:
+
+React Query / TanStack Query
+
+SWR
+
+LocalStorage caching
+
+Service Worker
+
+Example (React Query):
+
+useQuery('bigData', apiC, {
+  staleTime: 5 * 60 * 1000, // 5 min cache
+});
+
+
+Next visit → instant load.
+
+4️⃣ Prioritize Requests (Like React Concurrency)
+
+Not all data is equally important.
+
+Load critical API (5s) first
+Load non-critical API (30s) in background
+
+apiA(); // critical
+startTransition(() => apiC()); // less important
+
+5️⃣ Abort Long Requests if User Leaves
+
+Use AbortController to cancel the 30s request if component unmounts:
+
+const controller = new AbortController();
+fetch(url, { signal: controller.signal });
+
+return () => controller.abort();
+
+6️⃣ Use Lazy Loading for the 30 sec API
+
+If the 30s API is for some low-priority data (like reports, analytics):
+
+Load only when user scrolls
+
+Load after UI is interactive
+
+Load on hover or click
+
+🏆 Combined Final Strategy to Say in Interview
+
+“I will run all API requests in parallel using Promise.all to reduce total time. I will not block UI — instead I will render data as soon as each API completes. I will prioritize critical APIs first, and load the long 30-second API in background or lazily. To improve performance on revisits, I will use caching (e.g., React Query). Also, I will abort the long request if the user navigates away to avoid wasted network.”
+
+This shows:
+
+✅ Technical knowledge
+✅ UX thinking
+✅ Best practices (React Query, concurrency, caching)
+
+
+-----------------------------------
+
+“Any software can fail in production. The goal is not zero crashes, but quick detection, isolation, and recovery.
+
+On the backend, we use PM2 or Docker to keep a live health check on our Node.js application. If the app crashes due to any runtime error, it is automatically restarted, so downtime is minimal.
+
+For debugging and visibility, we use Winston for application-level error logging and Morgan to log API requests, which helps us identify which endpoint or service is causing the issue.
+
+On the frontend, we use React Error Boundaries so that if a component crashes, the entire application does not break and the user sees a fallback UI instead.
+
+We also integrate Sentry in React, which automatically captures runtime errors and notifies developers via email or Slack. Developers can then view detailed error information like stack traces and affected users on the Sentry dashboard website.
+
+This approach ensures system stability, good user experience, and fast issue resolution.”
+
+
+
+====>PM2 is an open-source process manager for Node.js applications.
+
+✔ Not purchased
+✔ Not a paid service (has optional paid monitoring, but core is free)
+✔ Installed via npm
+====>Winston is an open-source logging library for Node.js.
+====>Morgan is a request-level logging middleware for Express that logs incoming HTTP requests and response details.”
+
+
+
+------------
+
+A PWA is a progressive web application that behaves like a native mobile app, while still being built using web technologies (HTML, CSS, JavaScript, React, Next.js).A Progressive Web App enhances a normal web app with offline support, installability, and native-like performance using service workers and web APIs.
+the same app is enhanced with service workers and a manifest.To make your website pwa,you need to work on
+Service providers and web app manifest
+
+
+Service provider:
+Cache files
+
+Handle offline behavior
+
+Intercept network requests
+
+
+
+
+Chart.js is a ready-made charting library, while D3.js is a low-level data visualization framework that gives full control over how visuals are built.

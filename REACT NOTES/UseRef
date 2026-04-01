@@ -1,0 +1,163 @@
+UseRef:
+We can use useRef for 2 scenarios.
+1) For value Persistance                          2)To access or update the directly dom elements
+
+ For value Persistance :
+ 
+import { useState } from "react";
+
+const Body = () => {
+  const [count, setCount] = useState(0);
+  let val=1;
+  const incrementCount = () => {
+    val=val+1
+    console.log(val);      {/*val variable apni value ko persist/hold ni rkh pa rha kyu k ye har re-render pr 1 sy initialize hu jata ha,to prevent it,we can use useRef instead of local variable*/}
+    
+    setCount((count) => count + 1);
+  };
+
+  return (
+    <>
+      <h1>{count} Parent   {val}</h1>
+      <br />
+      <br />
+      <button onClick={incrementCount}>Increment Count</button>
+      <br />
+      <br />
+    </>
+  );
+};
+export default Body;
+
+Now ,how useRef persist the value even on re render because useRef returns an object.Its means below variable named val is an object.In this object,a  special field is avaiable by which you can set or get the data.That field is current.Its means ,currently 0 is avaiable in its current value.
+
+let val=useRef(0); 
+
+Now see below example:
+import { useEffect, useRef, useState } from "react";
+
+const Body = () => {
+  const [count, setCount] = useState(0);
+  let val = useRef(1);
+  const incrementCount = () => {
+    val.current = val.current + 1;
+    console.log(val);
+
+     setCount((count) => count + 1);
+  };
+
+  return (
+    <>
+      <h1>
+        {count} Parent {val.current}
+      </h1>
+      <br />
+      <br />
+      <button onClick={incrementCount}>Increment Count</button>
+      <br />
+      <br />
+    </>
+  );
+};
+export default Body;
+
+
+IMPORTANT:
+useState k change huny pr hamara componnet render huta ha while useRef k update huny pr hamara compoennt render ni huta.See below scenario.
+import { useEffect, useRef, useState } from "react";
+
+const Body = () => {
+  const [count, setCount] = useState(0);
+  let val = useRef(1);
+  const incrementCount = () => {
+    val.current = val.current + 1; {/*yaha pr incrementCount k click huny pr hamari ref me value tu update huti jai gi lekin component render ni hu ga,component render na huny ki wajah sy hamai dome me ref ki actual value show ni hu gi*/}
+    console.log(val);
+
+    //  setCount((count) => count + 1);
+  };
+
+  return (
+    <>
+      <h1>
+        {count} Parent {val.current}
+      </h1>
+      <br />
+      <br />
+      <button onClick={incrementCount}>Increment Count</button>
+      <br />
+      <br />
+    </>
+  );
+};
+export default Body;
+-------------------------------
+
+2-To access or update the directly dom elements
+import { useEffect, useRef, useState } from "react";
+
+const Body = () => {
+  const [count, setCount] = useState(0);
+  let val = useRef();
+  const incrementCount = () => {
+    setCount((count) => count + 1);
+  };
+  const changeColor = () => {
+    val.current.style.backgroundColor = "red";
+  };
+  return (
+    <>
+      <h1>{count} Parent</h1>
+      <br />
+      <br />
+      <button onClick={incrementCount} ref={val}>
+        Increment Count
+      </button>
+
+      <br />
+      <br />
+      <button onClick={changeColor}>Change Increment background color</button>
+    </>
+  );
+};
+export default Body;
+
+------------------
+Small App regarding Stop watcher
+
+import { useEffect, useRef, useState } from "react";
+
+const Body = () => {
+  const [time, setTime] = useState(0);
+  let timeRef = useRef(null);
+  const startTime = () => {
+    timeRef.current = setInterval(() => {
+      setTime((prev) => prev + 1);
+    }, 1000);
+  };
+  const pauseTime = () => {
+    clearInterval(timeRef.current);
+    timeRef.current=null;
+  };
+  const stopTime = () => {
+    // setTime(0);
+   pauseTime()
+    setTime(0);
+  };
+
+  return (
+    <>
+      <h1>{time} Parent</h1>
+      <br />
+      <br />
+      <button onClick={startTime}>Start Time</button>
+      <br />
+      <br />
+      <button onClick={pauseTime}>Pause Time</button>
+      <br />
+      <br />
+      <button onClick={stopTime}>Stop Time</button>{" "}
+    </>
+  );
+};
+export default Body;
+

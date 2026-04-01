@@ -1,0 +1,422 @@
+Grid is a two dimesional system which we have divided in rows and columns format.
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+   <div class="container">
+<div class="item">item 1</div>
+<div class="item">item 2</div>
+<div class="item">item 3</div>
+<div class="item">item 4</div>
+<div class="item">item 5</div>
+<div class="item">item 6</div>
+   </div>
+</body>
+
+</body>
+</html>
+
+Properties:
+
+1- row-gap & column gap
+You can add gap btw rows and columns
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+ display: grid;
+ padding:4rem;
+ row-gap: 5px;
+  column-gap: 5px;
+}
+.item{
+  background-color: green;
+  border: 1px solid red;
+}
+
+
+Now if we want a 2D view,then we have to tell that how much rows and columns we required.
+For this we can use grid -template-columns and grid template rows properties.
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: 100px 100px;
+grid-template-columns: 100px 100px 100px;
+}
+.item{
+
+  background-color: green;
+  border: 1px solid red;
+}
+
+
+Now here comes into the picture Fractional unit(fr),hum chahty ha k hamari width/height k mutabiq ye khud ko adjust kr ly then we will use this.It is used for equal distribution of space .
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: repeat(2,1fr);
+grid-template-columns: repeat(3,1fr);
+}
+.item{
+
+  background-color: green;
+  border: 1px solid red;
+}
+
+
+Now if we want a proper header and footer ,then we will use  grid-row-start,grid-row-end and grid-column-start & grid-column-end
+
+
+<body>
+   <div class="container">
+<div class="item header">Header</div>
+<div class="item sidebar">Sidebar</div>
+<div class="item main-content">Main Content</div>
+<div class="item">Content 1 </div>
+<div class="item">Content 2</div>
+<div class="item footer">Footer</div>
+   </div>
+</body>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: repeat(4,1fr);
+grid-template-columns: repeat(3,1fr);
+}
+.item{
+  background-color: green;
+  border: 1px solid red;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+.header{
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+.footer{
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+.sidebar{
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.main-content{
+    grid-column-start: 2;
+  grid-column-end: 4;
+}
+
+
+Now we have to make it responsive,
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: repeat(6,1fr);
+grid-template-columns: repeat(1,1fr);
+}
+.item{
+  background-color: green;
+  border: 1px solid red;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+
+@media (min-width:768px){
+  .container{
+     grid-template-rows: repeat(4,1fr);
+grid-template-columns: repeat(3,1fr);
+  }
+  .header{
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+.footer{
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+.sidebar{
+  grid-row-start: 2;
+  grid-row-end: 4;
+}
+.main-content{
+    grid-column-start: 2;
+  grid-column-end: 4;
+}
+
+}
+
+=>justify-items & align-items
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: repeat(3,1fr);
+grid-template-columns: repeat(2,1fr);
+justify-items: center;
+align-items: center;
+}
+.item{
+  height: 120px;
+  width: 120px;
+  background-color: green;
+  border: 1px solid red;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+}
+
+
+
+---------------------------------------
+justify-self & align-self
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: repeat(6,1fr);
+grid-template-columns: repeat(1,1fr);
+}
+.item{
+  height: 150px;
+  width: 150px;
+  background-color: green;
+  border: 1px solid red;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  justify-self: center;
+
+  //you will see the align-self implementation,when you give a fixed or visible height,not on scrolling
+
+  algn-self:center;
+}
+
+See below,align-self example
+<div class="container">
+<div class="item ">
+   <div class="header">
+   Header</div></div>
+   </div>
+
+
+   .container {
+  width: 100vw;
+ height: 100vh;
+  padding:4rem;
+
+ display: grid;
+ row-gap: 5px;
+ column-gap: 5px;
+ grid-template-rows: repeat(6,1fr);
+grid-template-columns: repeat(1,1fr);
+}
+.item{
+  height: 150px;
+  width: 150px;
+  background-color: green;
+  border: 1px solid red;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
+  justify-self: center;
+}
+
+.header{
+  display: grid;
+  align-self: flex-end;
+}
+
+---------------------------------------------------------------------------
+RESPONSIVE GRID
+  grid-template-columns: repeat(auto-fit, minmax(350px, 400px));//kam sy kam 350,zyda sy zyada 400
+
+<body>
+   <div class="container">
+<div class="item">A</div>
+<div class="item">B</div>
+<div class="item">C</div>
+<div class="item">D</div>
+<div class="item">E</div>
+<div class="item">F</div>
+<div class="item">G</div>
+<div class="item">H</div>
+<div class="item">I</div>
+<div class="item">J</div>
+<div class="item">K</div>
+   </div>
+</body>
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100%;
+  height: 100%;
+}
+.container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  gap: 1rem;
+  background-color: rgb(71, 65, 65);
+  padding: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 400px));//kam sy kam 350,zyda sy zyada 400
+  justify-items: center;
+}
+.item {
+  width: 100%;
+  height: 100%;
+  border: 3px solid black;
+  background-color: greenyellow;
+  color: blue;
+
+  padding: 1rem;
+}
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+More approriate way to make grid complex design by using grid-template-area
+
+
+<body>
+   <div class="container">
+<div class="item header">Header</div>
+<div class="item sidebar">Sidebar</div>
+<div class="item main-content">Main Content</div>
+<div class="item content2">Content 1 </div>
+<div class="item content3">Content 2</div>
+<div class="item footer">Footer</div>
+
+   </div>
+</body>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  width: 100%;
+  height: 100%;
+}
+.container {
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  gap: 1rem;
+  background-color: rgb(71, 65, 65);
+  padding: 2rem;
+ grid-template-areas: "header header header" 
+ "sidebar maincontent maincontent" 
+ "sidebar content2 content3" 
+ "footer footer footer";
+}
+.item {
+  border: 3px solid black;
+  background-color: greenyellow;
+  color: blue;
+  padding: 1rem;
+}
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main-content { grid-area: maincontent; }
+.content2 { grid-area: content2; }
+.content3 { grid-area: content3; }
+.footer { grid-area: footer; }
+

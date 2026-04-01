@@ -1,0 +1,111 @@
+Map,filter & reduce are higher order functions in Js.
+=>Map
+Map function is basically used to transform an array.
+
+Example:1
+let data=[5,1,3,2,6];
+let output=data.map((item)=>item*2)
+console.log(output);
+Explanation:
+It will run this inner function over each and every value of an array and create a new array out of it.
+
+Example 2:
+Convert array into binary
+let data=[5,1,3,2,6];
+let output=data.map((item)=>item.toString(2))
+console.log(output);
+
+Filter:
+Filter function is used to filter the values inside an array
+Example 1:
+filter odd values from array
+let data=[5,1,3,2,6];
+let output=data.filter((item)=>item%2==1)
+console.log(output);
+
+Reduce:
+Reduce function is used at that place where you have to take all the array of elements of an array and come off with a single value out of them.
+Reduce function iterates over each and every element of an array.Reduce function takes two parameters.First is Accumulator (acc) and current(curr).
+Current is the current iterating value and Accumulator is used to accumulate the values and accumulate the result what we have to get out of those values which are avaiable in array.
+Whenever we need result in one value instead of array,then in this scenario,we mostly use reduce
+Example 1 with explanation:
+Let suppose,i want a function that takes the array and return sum of all the values of array.
+const sumData=(arr)=>{
+    let sum=0;
+    for (let i=0;i<arr.length;i++){
+        sum+=arr[i]
+    }
+    return sum;
+}
+let data=sumData([2,3,4])
+console.log(data );
+
+Now the same task will be done by reduce function
+let arr=[2,3,4];
+let output=arr.reduce((acc,current)=>{
+    return acc+=current
+})
+
+console.log(output);
+In this function,acc is behaving like a sum variable and it is just accumulating all these values.The inner call back function is being run against each of these values inside an array and basically accumulator is just appending a sum of current value to itself.So accumulator should be initialized with a 0 value.So we can pass initial value of accumulator at the end of it.
+let output=arr.reduce((acc,current)=>{
+    return acc+=current
+},0)
+
+Example 2:
+let suppose,we need to get highest number in array
+const maxData=(arr)=>{
+    let max=0;
+    for (let i=0;i<arr.length;i++){
+if (arr[i]>max){
+    max=arr[i]
+}
+    }
+    return max;
+}
+let data=maxData([4,5,2])
+console.log(data );//5
+
+now by reduce,
+let arr=[4,5,2];
+let output=arr.reduce((acc,current)=>{
+ if(current>acc){
+     acc=current
+}
+return acc
+},0)
+console.log(output);
+
+//similarly ,lowest value in array
+
+Infinity is a special value in JavaScript that represents positive infinity. It is a value greater than any other number
+
+const minData = (arr) => {
+    let min = Infinity; 
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] < min) {
+            min = arr[i];
+        }
+    }
+    return min;
+}
+
+let data = minData([4, 5, 2]);
+console.log(data); // Output: 2
+
+//now by redude
+let arr=[4,5,2];
+let output=arr.reduce((acc,current)=>{
+ if(current<acc){
+     acc=current
+}
+return acc
+},Infinity)
+console.log(output);
+
+
+TRICKY Map
+Add a new field in every object of array
+let arr=[{firstName:"tayyab",lastName:"jam",age:3,},{firstName:"usman",lastName:"maq",age:23,},{firstName:"amir",lastName:"abd",age:34,},{firstName:"osama",lastName:"ijaz",age:73,}]
+let output=arr.map((data)=>({...data,jm:90}))
+console.log(output);

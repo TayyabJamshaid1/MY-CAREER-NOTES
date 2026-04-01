@@ -1,0 +1,198 @@
+Arrow Function
+Arrow Function can also be written like this syntax in a single line
+
+Example 1:
+=>const hello = () => console.log("Hi");
+ 
+Example 2:
+const hello = (name) => console.log("Hello", name);
+hello("tayyab");
+
+Example 3:
+agr ek argument pass krna hu tu pranthesis lgana zrori ni,mgr more than one py zrori ha
+
+=>const hello = name => console.log("Hello", name);
+hello("tayyab");
+
+=>const hello2 = (name,age) => console.log("Hello", name,age);
+hello("tayyab",23 );
+
+
+Major differnce btw regular Function and arrow Function 
+
+=>const x = {
+  name: "tayyab",
+  role: "JS developer",
+  exp: 30,
+  show: function () {    //regular function jab object me dty ha,tu us k this me wo object he huta ha,is lye hum usy access kr skty ha
+    console.log(this.name, this.exp);
+  }, 
+};
+x.show();
+
+=>const x = {
+  name: "tayyab",
+  role: "JS developer",
+  exp: 30,
+  show: () => { //jab object me arrow function dty ha,tu us k this me object k arguments  ni huty blky us me window object huta ha,
+    console.log(this.role);
+  },
+};
+x.show();
+
+Scenario:
+Case 1:
+Object k andr function keyword k sath bnaiy huay function me jab hum dosara function  bnaiy gy tu us  function me this us object window ko  point out kry ga
+
+const x = {
+  name: "tayyab",
+  role: "JS developer",
+  exp: 30,
+  show: function () {
+    console.log(this.name, this.exp);
+    setTimeout(function () {
+      console.log(this.role);    //ab ye this is object ko point out ni kr rha,blky ye window object ko point out kr rha ha kyu k hum isy ek function k andr dosra function bna k access kr rhy ha
+    }, 2000);
+  },
+};
+x.show();
+
+Case 2:
+Object k andr function keyword k sath bnaiy huay function me jab hum arrow function bnaiy gy tu us arrow function me this us object ko he point out kry ga
+const x = {
+  name: "tayyab",
+  role: "JS developer",
+  exp: 30,
+  show: function () {
+    console.log(this.name, this.exp);
+    const data = () => {
+      console.log(this);   //result:{name: 'tayyab', role: 'JS developer', exp: 30, show: ƒ}
+    };
+    data();
+  },
+};
+x.show();
+
+Case 3:
+const car = {
+  model: "Tesla",
+  start: function() {
+    setTimeout(() => {
+      console.log(this.model); // "Tesla" (arrow function, this is from parent()'s scope)
+    }, 100);
+  }
+};
+
+car.start();
+
+
+
+NOte:
+Agr hum event k andr function keyword k sath this ko call krty ha tu wo this us element ko point out kry ga jo us event ko receive kr rha ha
+example:
+let data = document.querySelector(".click");
+data.addEventListener("click", function (event) {
+  console.log(this);
+  // `this` will point to `element`
+});
+
+Agr hum function keyword ki bjaiy arrow function k sath likhy gy tu wo this window object ko point out kry ga
+let data = document.querySelector(".click");
+data.addEventListener("click", () => {
+  console.log(this);  //window object
+});
+
+
+OTHER DIFFERENCES btw arrow function vs regular function
+
+1-Syntax differnce
+2-Arrow functions lexically bind this (inherit from parent scope), whereas regular functions dynamically determine this based on their execution context."Dynamically determine this" means the value of this changes based on how the function is called.
+Example:
+function showCar() {
+  console.log(this.model);
+}
+
+const car1 = { model: "Toyota", show: showCar };
+const car2 = { model: "Honda", show: showCar };
+
+car1.show(); // "Toyota" (this = car1)
+car2.show(); // "Honda" (this = car2)
+
+
+Memory Aid:
+
+Regular functions: "How am I being called?" (dynamic)
+
+Arrow functions: "Where was I born?" (lexical)
+3-Arrow functions do not have their own arguments object. 
+
+Example:
+=>Arrow Function (no arguments object):
+
+const showArgs = () => {
+  console.log(arguments); // ReferenceError: arguments is not defined
+};
+showArgs(1, 2, 3);
+
+=>Regular Function (has arguments object):
+
+function showArgs() {
+  console.log(arguments); // Arguments(3) [1, 2, 3, ...]
+}
+showArgs(1, 2, 3);
+
+
+4-Arrow functions cannot be used as constructors with the new keyword while Regular functions can be used as constructors with new.
+
+Example:
+
+=>Arrow Function (cannot be used as constructor):
+
+const Person = (name) => {
+  this.name = name; // TypeError: Person is not a constructor
+};
+const john = new Person("John");
+
+=>Regular Function (can be constructor):
+
+
+function Person(name) {
+  this.name = name;
+}
+const john = new Person("John");
+console.log(john.name); // "John"
+
+5-Arrow functions with a single expression can have an implicit return while Regular functions require an explicit return statement.
+
+6-Arrow function do not have prototype property
+ Prototype Property
+Arrow Function (no prototype):
+
+javascript
+const foo = () => {};
+console.log(foo.prototype); // undefined
+Regular Function (has prototype):
+
+function foo() {}
+console.log(foo.prototype); // {constructor: ƒ}
+
+--------------------------------------
+=>Use arrow functions when:
+
+You need lexical this binding
+
+Writing short callback functions
+
+You want concise syntax for simple operations
+
+=>Use regular functions when:
+
+You need to use this dynamically
+
+Defining object methods
+
+Creating constructors
+
+You need access to the arguments object
+
+You need to use function hoisting

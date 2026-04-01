@@ -1,0 +1,273 @@
+How to export component?
+There are 2 ways to do it
+a)export default    b)export
+
+=>export default
+
+//App component
+import Header from "./Header";   //this type of import is also known as default import,default export krty huay jo nam humny component ka dia tha,yaha use krty huay uska nam hum different rkh skty ha like NewHeader etc
+const App = () => {
+  return (
+    <>
+      <Header />
+    </>
+  );
+};
+
+export default App;
+
+//Header Component
+import React from 'react'
+
+const Header = () => {
+    return (
+      <div className="header">
+        <img
+          src={`https://foodvilla.no/src/img/logo.png`}
+          style={{ width: 100, height: 50, objectFit: "contain" }}
+        />
+        <ul>
+          <li>Home</li>
+          <li>About</li>
+          <li>Contact</li>
+          <li>Cart</li>
+        </ul>
+      </div>
+    );
+  };
+  export default Header;
+
+=>Suppose we have 2 components in one file.In that case,we can use export default  with only 1 component
+
+b)export
+=>export default
+
+//App component
+import {Header} from "./Header";   //this type of import is  known as named import //it looks like it is a object destructuring,but in real ,it is not.
+const App = () => {
+  return (
+    <>
+      <Header />
+    </>
+  );
+};
+
+export default App;
+
+//Header Component
+import React from 'react'
+
+const Header = () => {
+    return (
+      <div className="header">
+        <img
+          src={`https://foodvilla.no/src/img/logo.png`}
+          style={{ width: 100, height: 50, objectFit: "contain" }}
+        />
+        <ul>
+          <li>Home</li>
+          <li>About</li>
+          <li>Contact</li>
+          <li>Cart</li>
+        </ul>
+      </div>
+    );
+  };
+  export  {Header};
+
+Imp:
+import {Header} from "./Header";    //it looks like it is a object destructuring,but in real ,it is not.We can prove that in below scenario
+In object destructuring, we can take keys in curly brackets or by any var name.If it is object destructuring,we can also get it by variable name in below
+
+import obj from "./Header"; //give any variable name,we give obj here
+let {Header}=obj   =>You can't do that because it is not a obj destructuring
+
+Important Scenarios:
+
+Scenario 1:
+let suppose,in my file ,i have 2 components and i want to export both of them with both export methods,1 is with export default and other one is with export.
+
+//Header Component
+import React from 'react'
+const Title=()=>{
+return (<>
+<h1>Tayyab</h1>
+</>
+)}
+export const Header = () => {
+    return (
+      <div className="header">
+        <img
+          src={`https://foodvilla.no/src/img/logo.png`}
+          style={{ width: 100, height: 50, objectFit: "contain" }}
+        />
+        <ul>
+          <li>Home</li>
+          <li>About</li>
+          <li>Contact</li>
+          <li>Cart</li>
+        </ul>
+      </div>
+    );
+  };
+
+export default Title;
+
+//App component
+import * as obj from "./Header";   //by using *,you can use both export methods
+const App = () => {
+  return (
+    <>
+      <obj.Header />
+      <obj.default />
+    </>
+  );
+};
+
+export default App;
+
+Scenario 2:
+//App component
+import Title,{Header} from "./Header";   //you can also import functions on same time with this way
+const App = () => {
+  return (
+    <>
+      <Header />
+      <Title />
+    </>
+  );
+};
+
+export default App;
+
+------------------------------
+Sometimes we give our component name using .jsx or js like index.jsx or index.js,its completly your choice ,also while importing you can use .js or .jsx with file name like 
+import Title,{Header} from "./Header.js"; //if file name is end with .js,use .js here,if end with .jsx ,use with .jsx,its your choice,not manadatory to write complete file name with js/jsx
+
+------------------------------------------
+Why we need useState?
+let suppose,we try to update value in react as we update value in normal html
+
+  const Body = () => {
+    let namee='lfc'
+    return (
+      <>
+      <div className="search-container">
+      <input type="text" placeholder="Enter your value" value={namee} onChange={(e)=>{
+        console.log(e);
+        
+        namee=e.target.value  //Value is not updating because It dont work like this in react,so how you will make it work?To make this work,keep in mind that this kind of local variable (let namee='lfc') is not preferable in react.We can use local variable in react in just that case if we will not update that variable value ever in future,like directly use {namee} in my file.But if you want to update a variable,then you have to use a react kind of variable
+      }}/>
+      <button>Search</button>
+      </div>
+
+      </>
+    );
+  };
+  export default Body
+
+Important Points:
+Every Component in react maintains a state.You can put any variables to that state and Every  time you have to create local variables to use state inside react.So if i have to create a local variable in my component,then i have to create it by using useState hook . 
+
+So if you have to create a local variable in react,you need to use  state variables like useState in react.These local state variables are created by using a useState hook.
+
+What is hooks?
+Hooks are nothing but  a normal js function.That is why we use brackets on every hook like useState(); Every hook in react has a special functionality for it. We can get useState function/hooks by react.This functions is written for us by a react/facebook developers.The basic functionality of useState function is to create local state variables.Basically useState function returns an array.The first variable of this array is the variable name.
+import {useState} from "react"
+const [namee]=useState(); //so we can say that namee is  a local state variable
+
+So,in summary,
+in normal js,we can create local variable like let namee="tayyab" while in react,we can create local variable by const [namee]=useState();
+
+So if we have to update the namee state variable,react cannot allow us to directly update the namee.So useState array returns the second variable which is a function which functionality is to update the variable value.You can set his name whatever you want.
+Below is a example:
+
+import { useState } from "react";
+
+ const Body = () => {
+   const [namee,setNamee]=useState("kesa") 
+    return (
+      <>
+      <div className="search-container">
+      <input type="text" placeholder="Enter your value" value={namee} onChange={(e)=>{
+        console.log(e);
+        
+        setNamee(e.target.value)
+      }}/>
+      <button>Search</button>
+      </div>
+      </>
+    );
+    export default Body
+Imp Point:
+There are 2 ways of array destructuring.One is ( const [namee,setNamee]=useState("kesa")) which is recommended .Another one is below
+   or
+   const searchData=useState("kesa"); 
+   const [namee,setNamee]=searchData; //you can also destructure data like this    
+  };
+  
+  Note:
+  As we say it is a data destructuring then we cant destructure our data like this const {namee,setNamee}=useState("kesa").The answer is its a react developer choice.According to their recommendations,we have to use array destructuring instead of object destructuring for useState
+----------------------------------------  
+  Two way data binding:
+ I am updating my text and also read it at a same time.See below example
+ 
+ const Body = () => {
+   const [namee,setNamee]=useState("kesa") 
+    return (
+      <>
+      <div className="search-container">
+      <input type="text" placeholder="Enter your value" value={namee} onChange={(e)=>{
+        console.log(e);
+        
+        setNamee(e.target.value)  //here i am updating
+      }}/>
+      <h1>{namee}</h1> //here i am reading too
+      <button>Search</button>
+      </div>
+      </>
+    );
+    export default Body
+  Value change b hu rhi ha aur us change value ko hum dikh b pa rhy ha
+  
+  ---------------------------------------------------
+  Interview Question:
+  We have a facility of local variables  then why we need state variables in react?
+  let suppose we make  a local variable in react and we updated it in anywhere in app,in that case react does not show its updated value in ui because react does not keep a track of this local variables.React does not even know that  variable value has been created or even updated.React has not idea that what is happening with your variables even if you created thousand of variables.So if we want that react should keep a track of our local variables or  our local variables should always sync/connected with the ui ,for this u need to use state variables.When i updated my state variables ,it will automatically re render my component.Now question is what is happening behind the scenes when state variable is updated?The answer is when you created a state variable,react continuously watching that variable.So whenever my variable is updated,my whole component re renders( re renders means react destroys the whole body component and  creating the body once again.It is happening very fast.basically reconsiliation happening here)
+  
+  const Body = () => {
+let username="tayyab";
+    return (
+      <>
+      <h1>{username}</h1> //if username is updated anywhere in app,react ko pta he ni hu ga k username ki value update hu chuki ha 
+      </>
+    );
+    export default Body
+----------------------------------------------------
+Imp point:
+boolean values are not printable in react ui
+
+const Body = () => {
+    const [kesa,setKesa]=useState(false)
+
+    return (
+      <>
+      <h1>{kesa}</h1> //it does not print any thing bcoz boolean is not printable 
+      </>
+    );
+    export default Body 
+---------------------------------------------------
+Imp point:
+Whenever useState updating function is called,it  re-render all the component
+
+const Body = () => {
+    const [kesa,setKesa]=useState("kesa)
+     console.log("render");
+    return (
+      <>
+      <button onClick={()=>setKesa("mera")}>  //whenever setKesa is called,it will render all the component,we can detect it by console.log.This process is done by reconsilation process(as we discuss previous video).It is very fast. 
+      <h1>{kesa}</h1> 
+      </button>
+      </>
+    );
+    export default Body 

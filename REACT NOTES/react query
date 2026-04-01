@@ -1,0 +1,92 @@
+Queries ka hamesha tab use krna ha jab b data ko fetch krna ha
+
+=>mutations ka use tab krna ha jab b data ko  post ya update krna ha server pr
+
+stale time:
+=>normally huta ye ha jab b mai ek page sy dosry page pr jata hu,tu jis page pr ja rha hu waha api call hu jati ha ya dosry tab sy apni app tab pr ata hu tab b api call huti ha,mai chahta hu k bar bar api call na hu blky ek given time k bad,agr koi user hamary page pr aiy tab api call hu,hr dfa us k any pr call na hu ,then use slate time.
+ stale time means data jab ek dfa fetch hu gya,ab diye gaiy time k tak chahy jitna mrzi screen navigate hu ya focused hu,data hamaray pas save rhy ga,diye gaiy time k bad jab b user page screen pr focus kary(move another tab to current screen) or navigate back to screen,api call chli jai gi
+ 
+ 
+ useQuery
+ 
+ =>When a component using useQuery renders, React Query immediately checks its cache. If cached data exists and is still fresh (within staleTime), it returns that data instantly without any API call. If cached data exists but is stale, it returns the cached data immediately for a fast UI, but also triggers a background refetch to update the data. If no cached data exists, it triggers an API call and shows a loading state. This makes useQuery excellent for server state management because it provides instant cached data while ensuring eventual consistency with the server.
+ 
+Summary
+=>useQuery runs during render, not after like useEffect
+=>It provides instant cached data when available
+=>Stale data doesn't automatically block rendering - it shows cached data and refetches in background
+=>It's designed for optimistic UI - fast displays with background updates
+=>The "server state" name comes from its ability to sync client cache with server data automatically
+
+Also useQuery works the same when screen is focused && internet reconnectivity.
+
+U can also control/stop all these behaviours by below keys:
+refetchOnMount, refetchOnWindowFocus and refetchOnReconnect
+
+=>Jo page abi open ni but us ka data cache me ha ,its mean wo inactive ha
+
+
+=>useQueries
+Background:
+import React from "react";
+import { useQuery, useQueries } from "@tanstack/react-query";
+
+const Parallel = () => {
+  const [userIds, setUserIds] = React.useState([1, 2]);
+
+  userIds.forEach((id) => {
+    const data = useQuery({
+      queryKey: ["userId", id],
+      queryFn: async () => {
+        const data = await fetch(`https://dummyjson.com/users/${id}`).then(
+          (res) => res.json()
+        );
+
+        return data;
+      },
+    });
+    console.log(data.data);
+  });
+
+  return (
+    <div>
+      <button
+        onClick={() =>
+          setUserIds((prev) => {
+            return [...prev, Date.now()];
+          })
+        }
+      >
+        Load more
+      </button>
+
+      {userIds.map((id) => (
+        <h1 key={id}>{id}</h1>
+      ))}
+    </div>
+  );
+};
+
+export default Parallel;
+
+Problem:
+1-when click on load more,it gives error on below logic"Rendered more hooks than during the previous render.".Its mean react hooks ka rule ha k jitny hooks previous render me render huay ha utny he hr render me same quantity pr hooks render huny chahiye.Means current example me  phly statically 2 dfa for loop chla ha (userIds),but after "load more" click, it becomes 3,now it will run 3 times for loop which means it will render 3 times .This render quantity is differen then previous quantity.Thats why it give error
+
+2-Rules of Hooks Violation
+javascript
+// ❌ WRONG - This breaks React's Rules of Hooks
+userIds.forEach((id) => {
+  const data = useQuery({ // useQuery called in a loop
+    queryKey: ["userId", id],
+    queryFn: async () => { /* ... */ },
+  });
+});
+React Hooks Rules:
+
+Hooks must be called at the top level
+
+Hooks cannot be called inside loops, conditions, or nested functions
+
+Your code will throw an error or behave unpredictably
+
+

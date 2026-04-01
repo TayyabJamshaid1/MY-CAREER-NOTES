@@ -1,0 +1,209 @@
+We use useMemo whenever we have to store/cache result/value of aur calculation while useCallback can store/cache/freeze any function reference.
+
+By using useCallback,we can stop the recreation of function or want to call it on dependency change.
+Remember,useMemo k zariye ap value/result ko memoize/store krty thy aur function k re run ko rok lty thy while in useCallback,is me ap function k reference ko memoize krty ha aur function ko re creation sy rukty ha(It does not stop function re run,it stop recreation) 
+We use useCallback in two scenarios
+
+1)When we have to prevent un necessary re renders of child components
+
+Explanation:
+
+import React,{ useContext, useMemo, useState } from "react";
+import UserContext from "./Utils/userContext";
+
+const ChildComponent=(props)=>{
+  console.log("child render");
+  
+return(<>
+<h1>{props.btnName}</h1>
+</>)
+}
+const Body = () => {
+
+  const [count,setCount]=useState(0)
+
+   const incrementCount=()=>{
+    console.log('render');
+    
+    setCount(count=>count+1)
+   }
+
+  return (
+    <>
+    <h1>{count} Parent</h1>
+<br/><br/>
+    <button onClick={incrementCount}>Increment Count</button>
+
+    
+    <br/>
+<br/>
+<ChildComponent btnName="tayyab" />       {/**Child compoenent is unnessary re rendering here whenever count updates */}
+
+     </>
+  );
+};
+export default Body;
+
+
+To prevent child component from re rendering,we use memo in Child component.
+
+const ChildComponent=React.memo((props)=>{
+  console.log("child render");
+  
+return(<>
+<h1>{props.btnName}</h1>
+</>)
+})
+const Body = () => {
+
+  const [count,setCount]=useState(0)
+
+   const incrementCount=()=>{
+    console.log('render');
+    
+    setCount(count=>count+1)
+   }
+
+  return (
+    <>
+    <h1>{count} Parent</h1>
+<br/><br/>
+    <button onClick={incrementCount}>Increment Count</button>
+
+    
+    <br/>
+<br/>
+<ChildComponent btnName="tayyab" />     
+
+{/**By using React.memo,now child component will only render after initial render or when the props change(See below example) 
+<ChildComponent btnName={count} />     
+
+*/}
+
+     </>
+  );
+};
+export default Body;
+
+Solution:
+import React, { useCallback, useContext, useMemo, useState } from "react";
+import UserContext from "./Utils/userContext";
+
+const ChildComponent = React.memo((props) => {
+  console.log("child render");
+
+  return (
+    <>
+      <h1>{props.btnName}</h1>
+    </>
+  );
+});
+const Body = () => {
+  const [count, setCount] = useState(0);
+
+  const incrementCount = useCallback(()=>{
+console.log("function called");
+
+    setCount(count=>count+1)
+
+  },[])
+  return (
+    <>
+      <h1>{count} Parent</h1>
+      <br />
+      <br />
+      <button onClick={incrementCount}>Increment Count</button>
+      <br />
+      <br />
+      <ChildComponent btnName="tayyab" incrementCount={incrementCount} />{" "}
+      {/**Now child component is not rendering but remember incrementCount function is called on every re render while it does not update the state untill we pass that state as  a dependency*/}
+    </>
+  );
+};
+export default Body;
+--------------------------------------
+Now,let suppose ,we pass a function in child component
+
+import React, { useContext, useMemo, useState } from "react";
+import UserContext from "./Utils/userContext";
+
+const ChildComponent = React.memo((props) => {
+  console.log("child render");
+
+  return (
+    <>
+      <h1>{props.btnName}</h1>
+    </>
+  );
+});
+const Body = () => {
+  const [count, setCount] = useState(0);
+
+  const incrementCount = () => {
+    console.log("render");
+
+    setCount((count) => count + 1);
+  };
+
+  return (
+    <>
+      <h1>{count} Parent</h1>
+      <br />
+      <br />
+      <button onClick={incrementCount}>Increment Count</button>
+      <br />
+      <br />
+      <ChildComponent btnName="tayyab" incrementCount={incrementCount} />{" "}
+      {/**Child compoenent is unnessary re rendering again here after passing a function because on each render,it recreates the incrementCount function,thats why due to create a new function on each render,it render the child Component also*/}
+    </>
+  );
+};
+export default Body;
+
+2)To handle recreation of  expensive operations 
+
+const Body = () => {
+  const [searchText, setSearchText] = useState("");
+
+  const expensiveTask=useCallback(()=>  {    //yaha pr expensiveTask hr dfa re run zror hu ga but create srf 1 dfa he huwa ha
+    console.log("expensive card");
+    for (let i=0;i<1000000000;i++){
+  
+    }
+   console.log('done');
+    return 2;
+  },[])
+
+  return (
+    <>
+      <h1>{count} Parent</h1>
+      <br />
+      <br />
+      <input
+          type="text"
+          placeholder="Enter your value"
+          className="border border-red-500 focus:bg-green-50 p-2 m-2"
+          value={searchText}
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
+        {expensiveTask()}
+      <br />
+      <br />
+      {/**Now by using useCallback,our function referece is freeze ,so */}
+    </>
+  );
+};
+export default Body;
+
+
+
+
+
+
+
+
+
+
+

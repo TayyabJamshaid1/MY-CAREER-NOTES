@@ -1,0 +1,687 @@
+Imp points TypeScript
+1-TS khud kuch ni krti,ye at the end Js me he convert huti ha
+
+
+Har Programming language k andr lexer and parser huta he ha,ts me b code sab sy phly lexer me jata ha and then parser me jata ha.Then Parser sy ye binder me jata ha.Binder kuch programmig languages me avaiable huta ha.Then ye binder sy Checker me jata ha.Normally programming languages me Checker avaiable ni huta,agr huta tu hamai TypeScript ki zrort ni prti.Checker sy ye emitter/generator me chla jata ha jis me hamara ts ka code required language me convert huta ha like (.js,.map etc)
+
+TS----->Lexer----->Parser----->Binder------>Checker------>Emitter/Generator---->JAVASCRIPT
+
+
+
+LEXER:
+Lexer ka kam tokenize krna huta ha.Hamara pora ts ka code tokenize k through chlta ha,like ts sab sy phly hamary code ka tokens create krta ha.like in below example,the keywords (function,return etc are tokens created by ts)
+
+function data(str:string):string{
+return `Kesa ${str}`
+}
+
+data("tayyab)"
+
+
+PARSER:
+Parser ka kam hamary ts code ka AST(Abstract syntax tree) bnana huta ha.
+
+BINDER:
+NOW our ast is moving in binder.TYPEScript k andr binder k kuch specifix roles huty ha 
+a)It creates a Symbol tables.(Typescript k andr hum kuch additional symbols hum add krty ha like colon lga k type likhna(:string ya sometimes undefined b assign krty ha or interface)).Ts creates a table of this kind of types data(like interfaces or :string) and create a symbols of that tables. 
+b)Parent Pointers
+Tree me apko top sy bottom b jana prta ha aur bottom sy top b,in tamam kamo ko Parent pointers k zariye handle kiya jata ha.
+c)Flow nodes 
+Kisi b trah hamary code me  types ki if else condition ko manage krta ha.like in below example
+function data(str:string):string{
+
+if (typeof str=="string"){    //flow nodes will handle this kind of conditions
+return `Kesa ${str}`
+}
+}
+
+data("tayyab)"
+
+
+CHECKER:
+Strictly syntax checking
+
+
+Emitter
+It converts our ts code to js 
+
+
+
+----------------------------------------------------------
+Types Inferencing
+=>hamai type define krny ki zrort ni prta,comipler type ko khud he smaj jata ha assigned value or code usage sy
+=>Type inference in TypeScript is the compiler's smart ability to automatically figure out a variable's type (like string, number, boolean, array, object structure) from its assigned value or usage context
+
+Examples:
+let name = "Alice"; // Inferred as string
+let count = 100;    // Inferred as number
+let isActive = true; // Inferred as boolean
+let mixed = [1, "hello"]; // Inferred as (string | number)[]
+let person = { name: "Bob", age: 30 }; // Inferred as { name: string; age: number; }
+
+
+Types annotations:
+Khud sy he types ko define kr dna
+In TypeScript, type annotations are used to explicitly declare the type of a variable, function parameter, or other identifier using a colon (:) 
+
+Examples:
+let playerName: string = "Hero";
+const userCount: number = 42;
+let isActive: boolean = true;
+let numbers: number[] = [1, 2, 3];
+let names: Array<string> = ["Alice", "Bob"]; // Alternative syntax
+
+
+--------------------------------------------------------------
+Union & any
+
+Union:
+In TypeScript, a union type allows a variable, function parameter, or return value to accept multiple possible types.
+
+Example:
+let data: string | number="tayyab"
+let respone:"pending"|"success"|"error"="success"
+response="done" //It gives error
+
+Any:
+In TypeScript (TS), the any type is a special, flexible type that disables all type checking for the variable or expression it is applied to.
+
+Example
+let notSure: any = 4;        // notSure is a number initially
+notSure = "maybe a string";  // No error, assignment is fine
+notSure = false;  
+
+------------------------------------------------------------
+ Type Narrowing & type Guards
+ 
+ ===Type Narrowing
+ Type Narrowing apko ye kehti ha k ap pta lgao k data kis type ka ha aur us ki basis pr ap data return kr skty hu.Jab ap upcoming data ki type ka pta kr lty hu tu ye us type k mutabiq apko methods suggest krna shuru kr dta ha,isy type narrowing kehty ha
+ 
+ Techiques of type narrowing
+ 
+ 1)typeof checks
+function printValue(value: string | number) {
+  if (typeof value === "string") {
+    console.log(value.toUpperCase()); // TypeScript knows 'value' is a string here,thats why it gives here a string methods
+  } else {
+    console.log(value.toFixed(2)); // TypeScript knows 'value' is a number here,thats why it gives here a number methods
+  }
+}
+
+2)Truthy/Falsy checks:
+function greet(name: string | undefined) {
+  if (name) {
+    console.log(`Hello, ${name}!`); // 'name' is narrowed to string (not undefined)
+  } else {
+    console.log("No name provided."); // 'name' is undefined
+  }
+}
+
+3)Exhaustive checks
+function greet(order: "small" | "medium" |"large"|number) {
+  if (order=="small") {
+    return `ORDER SIZE, ${order}!`
+  } else if (order=="medium"||order=="large") {
+ return `ORDER SIZE, ${order}!`
+  }else{
+    return `ORDER SIZE, ${order}!`
+  }
+}
+
+4)instanceof checks
+function logValue(x: Date | string) {
+  if (x instanceof Date) {
+    console.log(x.toUTCString()); // 'x' is a Date
+  } else {
+    console.log(x.toUpperCase()); // 'x' is a string
+  }
+}
+
+
+Now typescript also provides you to create your own type and yaha pr apki custom type ki checking/type guard boht interesting hu jati ha
+
+Example 1:
+
+type chaiOrder={
+    type:string;
+    size:number
+}
+
+function typeCheck(obj:any):obj is chaiOrder{     
+ return   typeof obj =="object" && obj!=null && typeof obj.type=="string" && typeof obj.size=="number"
+ 
+}
+
+function ServeOrder(obj:chaiOrder|string){
+    if (typeCheck(obj)){
+        return `${obj.size} && ${obj.type}`
+    }
+    return `${obj} is simply a  string`
+}
+
+Example 2:
+
+type MaslaChai={
+    type:"masala";
+    size:number
+}
+type GingerChai={
+    type:"ginger";
+    amount:number
+}
+
+type ElachiChai={
+    type:"elachi";
+    aroma:number
+}
+
+type ChaiType=MaslaChai | GingerChai | ElachiChai;
+ function CheckingChaiType(chai:ChaiType){
+switch (chai.type){
+    case "elachi":
+      return `${chai.type} & ${chai.aroma}`;break;
+       case "ginger":
+      return `${chai.type} & ${chai.amount}`;break;
+       case "masala":
+      return `${chai.type} & ${chai.size}`;break;
+        
+}
+ }
+ 
+ Example 3:
+By in method
+
+type MaslaChai={
+    type:"masala";
+    size:number
+}
+type GingerChai={
+    type:"ginger";
+    amount:number
+}
+
+type ElachiChai={
+    type:"elachi";
+    aroma:number
+}
+
+type ChaiType=MaslaChai | GingerChai | ElachiChai;
+ function CheckingChaiType(chai:ChaiType){
+if ("amount" in chai){
+    return `${chai.type} && ${chai.amount}`
+}
+ }
+ 
+ 
+ Example 4:
+ try catch example
+ below is a bad practice we do in try catch because let suppose if message property is not avaiable in error, real error will be visible.
+ try{
+
+}catch(error:any){     
+        console.log(error.message);
+}
+
+So below is a great practice
+ try{
+
+}catch(error){
+
+    if (error instanceof Error){
+        console.log(error.message);
+        
+    }
+     console.log(error);
+}
+-----------------------------------------------------
+Type Assertion
+
+Type assertions in TypeScript allow you to tell the compiler to treat a value as a specific type. 
+
+//Example 1
+let response:any ="52"
+let length:number=(response as string).length //Here,string method suggestion is not coming because we have assigned  any type to response.Now yaha pr "as" ka use kr k  forcefully hum keh rhy ha k  response ki type string ha.Isy type assertion kehty ha.Now we it easily suggest string methods.
+
+
+//Example 2
+type Book={
+    type:string
+}
+
+let bookObj="{type:'kesa'}";
+let resData=JSON.parse(bookObj) as Book;  //forcefully type assertion
+console.log(resData.type);  //here it give suggestions
+
+
+//Example 3
+const data=document.getElementById("username") as HTMLInputElement
+
+//Example 4
+let bookName:unknown="Good boy";
+let bookProp:string=bookName as string; //if we do not use a type assertion here,we will face a  error here
+------------------------------------------------
+Any vs unknown
+
+In TypeScript, the primary difference is that any disables all type checking, whereas unknown is a type-safe alternative that forces you to perform type checks or assertions before you can use the value in any meaningful way. A common analogy is that any means "I don't care about the type," while unknown means "I don't know the type yet, so force me to be safe". 
+
+Unknown be any ka alternative he huta ha but ye apsy demand kr rha huta ha k meri type define kro while any me kisi qism ka koi error ni ata.
+
+
+//any example
+let value:any=[23,22]
+value="tayyab";
+value=89;
+console.log(value.length)  //jab hum ye program run karay gy tab definately yaha pr error aiy ga but code likhty huay kahi pr b isny hamai warn ni kiya k ab value ki andr number assign ha is liye yaha ab ap length  ki property use ni kr skty.Yehi any ka sab sy bara drawback ha
+
+//unknown example
+let newValue:unknown=[23,22]
+newValue="tayyab";
+newValue=89;
+console.log(newValue.length)   //by using unknown type here,atleast yaha pr error ki suggestion a rhi ha
+
+----------------------------------------------------------
+Types and Interface 
+
+We have a  same type for multiple functions,then we separatized it and assigned it to all functions.See below example
+
+type Chai={
+    name:string
+}
+function makeChai(order:Chai){
+return order.name
+}
+function serveChai(order:Chai){
+return order.name
+}
+
+
+Now question is why we need interface?
+ type Chai={
+     name:string;
+ type:string;
+ }
+
+ class Tayyab implements Chai{    //currently here type works fine 
+     name: string="danedar";
+     type: string="tea"
+ }
+
+
+//now type will not work in below scenario kyu k ye kahay ga k mai custom types k upr kam ni krta ,mai known types jesy number,string k upr he kam krta hu.
+
+type Chai="danedar"|"tea"
+
+class Tayyab implements Chai{
+    name: string="danedar";
+    
+}
+
+
+Ab yaha interface ki zrort prti ha
+
+interface Chai {size:"danedar"|"tea"}
+
+class Tayyab implements Chai{
+    size: "danedar"|"tea"="danedar";
+    
+}
+
+imp:So allways try to use interface when dealing with classes
+
+----------------------------------------------
+Union vs intersection vs optional values vs readonly
+//Union example , only one value is considered valid in given values
+type data="masla"|"noman"   
+
+const upcomingData:data="masla"  
+
+
+//Intersection
+
+type chaiName={
+    name:string;
+}
+
+type chaiType={
+    type:string;
+}
+type IntersectionSample=chaiName & chaiType //& represents intersection,now both the properties(name,type) will required who use IntersectionSample
+
+let intersectionExample:IntersectionSample={   
+    name:"kesa",type:"tea"
+}
+
+
+//optional values
+It is written by ?
+type chaiType={
+name?:string;  //name is optional now here
+    type:string;
+}
+
+
+//readonly
+type chaiName={
+    name:string;
+   readonly appName:string
+}
+
+
+
+let intersectionExample:chaiName={   
+    name:"kesa",appName:"tea formula"  //readonly me bs ek dfa apny value assign krni ha,bad me kabhi b ap isko update ni kr skty
+}
+
+intersectionExample.appName="ss"; //now it give error here that we cannot assign a value here
+
+-----------------------------------------------
+Object behaviour Discussion:
+
+Scenario/Case # 1
+1-Mainy ek type cup bnai jis me ek he property ha,ab agr mai another object bnao jis me name ki property ha aur jis variable ko assign kro ,uski type cup ha tu ye error ni dy ga kyu k is ki requirement complete ha k atleast name zror huna chahiye.
+
+type Cup={
+    name:string;
+}
+
+let bigCup={
+    name:"ANdroid",type:"android cups"
+    
+}
+
+Another example:
+type Brew={
+    brewTime:number;
+}
+const coffee={brewTime:5,beans:"kesa"}
+const chaiBrew:Brew=coffee;    //it works perfectly fine
+
+let miniCup:Cup=bigCup;
+
+Scenario/Case # 2
+
+By using a Partial keyword,you make all the key optionals in type
+type Cup={
+    name:string;
+    type:string
+}
+
+const updates=(item:Partial<Cup>)=>{
+    console.log(item);
+    
+}
+
+updates({name:"kesa"})
+
+One problem in using partial is that you can only send a empty object also
+updates({})
+
+Scenario/Case # 3
+
+By using a Required keyword,you make all the key required in type even if you use optional sign (?) in it
+
+type Cup={
+    name?:string;
+    type?:string
+}
+
+const updates=(item:Required<Cup>)=>{
+    console.log(item);
+    
+}
+
+updates({name:"kesa",type:"tea"})
+
+Scenario/Case # 4
+
+By using a Pick keyword,you can pick some selective values from any type.
+type Cup={
+    name:string;
+    type:string;
+    price:number
+}
+
+type BasicCup=Pick<Cup,"name"|"price">   //now in BasicCup,only name & price are compulsory
+
+let example:BasicCup={
+    name:"danedar",
+    price:34
+}
+
+Scenario/Case # 5
+
+By using a Omit keyword,you can omit/remove some selective values from any type.
+
+type Cup={
+    name:string;
+    type:string;
+    price:number
+}
+
+type BasicCup=Omit<Cup,"type">    //now except type key,all other values has been declared for type BasicCup
+
+let example:BasicCup={
+    name:"danedar",
+    price:34
+}
+
+------------------------------------------------------------
+Array,Enums 
+
+=>Arrays can be wrritten by two ways
+const names:string[]=["err",'eee']
+const ages:Array<number>=[33,22,11]
+
+
+=>Array of objects can be written  by below way
+type chai={
+    name:string;
+    price:number;
+}
+
+const example:chai[]=[{
+    name:'usman',price:222
+}]
+
+=>Readonly arrays:
+By using this arrays,ap ek first time he values initialize kr skty ha,us k bad dobara ni
+
+type chai={
+    name:string;
+    price:number;
+}
+
+const example:readonly chai[]=[{
+    name:'usman',price:222
+}] 
+example.push({name:'noman',price:22})   //gives error here
+
+
+=>Two dimensional arrays
+let data:number[][]=[
+    [1,2,3],
+    [4,5,6]
+]
+
+Tuples
+
+=>Tuples ki values array k andr handle kiya jata ha.
+=>Jis sequence me order define kiya ha,usi sequence me values dni ha
+
+let chaiType:[string,number,boolean?]
+chaiType=["kesa",89,true]
+chaiType=[89,"kesa",true]  //dont allow in tuples because sequence is wrong
+
+
+Readonly tuples:
+let data:readonly [string,number]=["kesa",99]
+data=["noman",89]   //u cant change here
+console.log(data);
+
+
+Named Tuples:
+let data:[name:string,price:number]=["kesa",99]
+console.log(data);
+
+ENUM:
+
+=> Example 1
+enum CupSize{
+    Small,Medium,Large
+}
+let size=CupSize.Medium
+
+=>Example 2
+enum CupSize{
+    Small="small",Medium="medium",Large="large"
+}
+
+function data(type:CupSize){
+    console.log(type);
+    
+}
+
+data(CupSize.Medium)
+
+--------------------------------------------------------------------------
+Interface & generies
+
+Interface and type are 70% similar to each other but both have their own pros and cons.
+
+Example 1:
+interface data{
+ id:number;
+name:string
+}
+
+let username:data={
+    id:8,name:"kesa"
+}
+
+==>Readonly interface
+interface data{
+readonly id:number;
+name:string
+}
+
+let username:data={
+    id:8,name:"kesa"
+}
+username.id=9 //it will give error here that cannot assign a id again because you can only assign on first time
+
+
+Example 3:
+Interface with functions.
+As we know hum interface me function ki whole functionality ni likhty.Sometimes we also do not write function name and we can still use the functions in interface in below scenario
+interface discountCalculator{
+(price:number):number  //is interface me hum function ki defination dy rhy ha, paramater type is also a number as well as return type is also a number
+}
+
+let calculation:discountCalculator=(p)=>p*2
+console.log(calculation(5));
+
+Example 4:
+how we can normally use functions in interfaces
+
+interface discountCalculator {
+  start(price: number): number;
+  end(): void;
+}
+
+let calculation: discountCalculator = {
+  start(price: number) {
+    console.log(price, "in start");
+    return price;
+  },
+  end() {
+    console.log("end");
+  },
+};
+
+==>index signature
+
+normally developer ignore them but we should know about it
+
+interface teaChecker {
+ [flavour:string]:number
+}
+
+const ratings:teaChecker={
+    "masala":6,
+    "ginger":99
+}
+calculation.start(7);
+
+===>Same name interface 
+//interfaces can easily merge togother if we use  a same name
+interface User{
+    name:string
+}
+interface User{
+    age:number
+}
+
+let user:User={  //now here it will require the age too because it is merge together due to same name
+    name:"usman"
+}
+
+
+Generics
+Generics are the templates which make our code reusable .It is commonly used when you make libraries and frameworks.Also used in apis responses and react forms.
+Generics means chezo ko general kro taky uski resueability increase hu jai
+
+Example 1:
+//<T> is generic symbol,
+function WrapInArray<T>(item:T):T[]{    //upcoming data type and return type will also the same   
+    return [item]
+}
+console.log(WrapInArray("masala"));
+console.log(WrapInArray(78));
+console.log(WrapInArray({id:1,name:"Tayyab"}));
+
+
+Now by this example,we can see that we can easily pass any kind of data by using generics
+
+Example 2:
+
+function WrapInArray<A,B>(a:A,b:B):[A,B]{      
+    return [a,b]
+}
+console.log(WrapInArray("masala",89));
+console.log(WrapInArray(78,"meraa"));
+console.log(WrapInArray({id:1,name:"Tayyab"},87));
+
+Now here also we can send any kind of data
+
+==>Generic Interface
+You can also create a generic interface here
+
+Example 1:
+
+interface Box<T>{
+    content:T
+}
+
+let boxQuantity:Box<string>={
+content:"Hundred boxes"
+}
+
+let boxQuantityInNumber:Box<number>={
+content:100
+}
+
+
+Example 2:
+interface response<T>{
+    status:number;
+    data:T
+}
+
+let res:response<{flavour:string}>={
+status:200,
+data:{
+    flavour:"masala"
+}
+}
+
+console.log(res);

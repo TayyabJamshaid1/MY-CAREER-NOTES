@@ -1,0 +1,564 @@
+Class based component at the end is a class
+
+The most important part of your class base component is a render method.You cannot create a class base component without render method.This render method returns a Jsx
+
+=>How to access props in class component:
+We can access props like this.props.name
+
+Example:
+import React from "react";
+
+class ProfileComponent extends React.Component {
+  render() {
+    return (
+      <div>
+        ProfileComponent <h1>{this.props.userName}</h1>{" "}
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+When we pass props in class base components, react will collect all this props and will attached it to this of ProfileComponent class.
+
+----------------------------------------------------
+
+How to create state in class component?
+
+Class has a constructor function.Whenever you create a class,create a constructor and call super function in it
+"Constructor is a place that is used to do initialization"
+class ProfileComponent extends React.Component {
+constructor(props){           //hamesa aisa he likha jai ga
+super(props);                 //hamesa aisa he likha jai ga
+}
+  render() {
+    return (
+      <div>
+        ProfileComponent <h1>{this.props.userName}</h1>{" "}
+      </div>
+    );
+  }
+}
+
+Whenever a new instance of class is created or Whenever a class is invoked or whenever  a component is rendered,constructor is automatically called.This is the best place to create your state.React give us access to create state by this.state.See below example
+
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        this.state={
+            count:0
+        }
+    }
+  render() {
+    return (
+      <div>
+        ProfileComponent <h1>{this.props.userName}</h1>{" "}
+        <h2>{this.state.count}</h2>
+        <button>Change Count 
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+=>We can update our state by setState method (see below example)
+
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        this.state={
+            count:0
+        }
+    }
+  render() {
+    return (
+      <div>
+        ProfileComponent <h1>{this.props.userName}</h1>{" "}
+        <h2>{this.state.count}</h2>
+        <button onClick={()=>{
+        //  this.state.count=1; we cannot mutate/change state directly because in this case ,react did not take a track of it, we have to use react given methods
+         this.setState({
+            count:1
+         })
+        }}>Change State</button>
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+---------------------------------------------------------------
+
+Which is called first? constructor or render, lets check it by console.log
+
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        console.log('constructor called');
+        
+    }
+  render() {
+    console.log('render called');
+    return (
+      <div>
+        ProfileComponent
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+Always rememeber ,constructor is called first and render function is called
+
+-------------------------------------
+=>componentDidMount
+
+In function based component,as we know if we want to call api,we can do it in useEffect after first time rendering the component.After getting the data,we can re render the component again.In class based component,we want a same approach that initially render the page first then call the api and then again re render the component.For this , class based component ,provide us a  method of componentDidMount.
+
+So constructor is called first then render is called and then componentDidMount is called.see below example
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        console.log('constructor called');  
+    }
+    componentDidMount(){
+        console.log('component did mount call');       
+    }
+  render() {
+    console.log('render called');
+    return (
+      <div>
+        ProfileComponent 
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+Result:
+constructor called
+render called
+component did mount call
+
+-------------------------------------------------------------------------------------
+Important scenario:
+let suppose,i make a parent class base compoent about and add a children compoent of Profile which is also class base.I want to know,in which sequence,the life cycle methods will be called
+
+
+//parent AboutComponent
+ import React from 'react'
+import { Outlet } from 'react-router-dom'
+import ProfileComponent from './ProfileComponent'
+
+class AboutComponent extends React.Component {
+  constructor(props){
+    super(props);
+    console.log('parent constructor called');  
+}
+componentDidMount(){
+    console.log('parent component did mount call');       
+}
+render() {
+console.log('parent render called');
+return (
+  <div>AboutComponent
+
+      {/* <Outlet/> */}
+      <ProfileComponent userName={"tayyab"}/>
+    </div>
+);
+}
+}
+export default AboutComponent;
+
+//child profile component
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        console.log('child constructor called');  
+    }
+    componentDidMount(){
+        console.log('child component did mount call');       
+    }
+  render() {
+    console.log('child render called');
+    return (
+      <div>
+        ProfileComponent 
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+Results:
+
+parent constructor called
+ parent render called
+ child constructor called
+ child render called
+ child component did mount call
+ parent component did mount call
+ 
+ Explanation:
+So initially parent constructor called,then parent render called .In render method,it move to child component because it is a part of render method of parent compoent.Then  child constructor called,then child render called and then child component did mount call,at last it will call componentDidMount of parent which is parent component did mount call
+
+------------------------------------------------------------------------------
+Imp Scenario:
+In parent component,i called ProfileComponent twice a  time,now you have to tell me how life cycle methods will work?
+
+//parent AboutComponent
+
+ import React from 'react'
+import { Outlet } from 'react-router-dom'
+import ProfileComponent from './ProfileComponent'
+
+class AboutComponent extends React.Component {
+  constructor(props){
+    super(props);
+    console.log('parent constructor called');  
+}
+componentDidMount(){
+    console.log('parent component did mount call');       
+}
+render() {
+console.log('parent render called');
+return (
+  <div>AboutComponent
+
+      {/* <Outlet/> */}
+       <ProfileComponent userName={"first Comp"}/>
+      <ProfileComponent userName={"Second Comp"}/>
+    </div>
+);
+}
+}
+export default AboutComponent;
+
+//child component
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        console.log('child constructor called '+this.props.userName);
+        
+    }
+    componentDidMount(){
+        console.log('child component did mount call ' + this.props.userName);
+    }
+  render() {
+    console.log('child render called '+this.props.userName);
+    return (
+      <div>
+        ProfileComponent <h1>{this.props.userName}</h1>{" "}
+ </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+Results:
+parent constructor called
+parent render called
+child constructor called first Comp
+child render called first Comp
+child constructor called Second Comp
+child render called Second Comp
+child component did mount call first Comp
+child component did mount call Second Comp
+parent component did mount call
+
+Now imp question arrise that why react did not call componentDidMount of first comp and run constructor,render function of second comp?
+How this life cycle methods called?
+
+Explanation:
+There are 2 phase when react reconsilation process is happening or when react is rendering,this process takes place in 2 process
+1-Render Phase                 2-Commit phase
+=>Render phase includes your constructor and render method while commit is the phase where react is actually modifying your dom.In this phase,component did mount is called
+=>In render phase,your constructor is called and render function is called.
+=>In commit phase,component did mount is called
+
+So what happens is render phase appears where react first called constructor method,then render is called.Render method  show the iniial dom screen.After that commit phase appears,component did mount called.This is how life cycle method is worked.See the image of Life cycle method.
+
+=>Which phase is fast? render phase or commit phase ? answer is render phase is fast becasue updating the dom is a difficult task
+
+Now in our example,when there are 2 children (ProfileComponent in about),so  react first tries to patch up the render phases of all the childrens then it will come to commit phase one by one.The reason of this process is that let suppose,if the first children  continues the commit phase ,which means componentDidMount is called and api request is gone.This is the time taken process because api result can be delay and it also delay the render methods of other childrens.Thats why react decided to implement the render phases of all the childrens then move to commit process one by one
+
+---------------------------
+Scenario #2:
+Let suppose,i call api in componentDidMount of child component.Now you have to observe that how the life cycle methods work?
+
+//AboutComponent 
+
+import React from 'react'
+import { Outlet } from 'react-router-dom'
+import ProfileComponent from './ProfileComponent'
+class AboutComponent extends React.Component {
+  constructor(props){
+    super(props);
+    console.log('parent constructor called');  
+}
+componentDidMount(){
+    console.log('parent component did mount call');       
+}
+render() {
+console.log('parent render called');
+return (
+  <div>AboutComponent
+      {/* <Outlet/> */}
+      <ProfileComponent userName={"first Comp"}/>
+    </div>
+);
+}
+}
+export default AboutComponent;
+
+//ProfileComponent 
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        this.state={
+            userInfo:{
+                avatar_url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBdUgYMuF1sHbyFGUDn7yxGatIRvCCuZOa2A&s",
+                name:"dummy",
+                location:'lhr'
+            },
+        }
+        console.log('child constructor called '+this.props.userName);
+        
+    }
+   async componentDidMount(){
+       console.log('child componentDidMount start'  + this.props.userName);
+    const data=await fetch("https://api.github.com/users/akshaymarch7")
+    const json=await data.json()
+    console.log(json)
+    this.setState({
+        userInfo:json
+    })
+        console.log('child component did mount call ' + this.props.userName);
+        
+    }
+  render() {
+    console.log('child render called '+this.props.userName);
+    return (
+      <div>
+        ProfileComponent
+        <img src={this.state.userInfo.avatar_url}/>
+         <h1>{this.state.userInfo.name}</h1>{" "}
+        <h2>{this.state.userInfo.location}</h2>
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+
+We assume that results is like
+Results:
+parent constructor called
+parent render called
+child constructor called first Comp
+child render called first Comp
+child componentDidMount start first Comp
+{name:""}   //json object console.log
+child component did mount call first Comp
+parent component did mount call
+
+but in reality ,results are different
+
+Real Results:
+parent constructor called
+parent render called
+child constructor called first Comp
+child render called first Comp
+child componentDidMount start first Comp
+parent componentDidMount call
+{login: 'akshaymarch7', id: 12824231, node_id: 'MDQ6VXNlcjEyODI0MjMx', avatar_url: 'https://avatars.githubusercontent.com/u/12824231?v=4', gravatar_id: '', …}
+child componentDidMount end first Comp
+child render called first Comp
+
+=>here we see that  `parent componentDidMount call` is called before making a api call .Why? the reason is React finishes your render phase first then it moves to commit phase.This has a api call and async await will take some time to load the data.In the commit phase,it will take some data to load.Thats why it did not stop there and then move to parent component did mount.So this is the reason of this result sequence.
+
+
+=>Also note that `child render called first Comp` runs once in render phase and it again run.Why it runs again? It run again because we use this.setState in componentDidMount and as we know,whenever our state is change,our component will be rendered again,thats why it runs
+
+
+=>See LifeCycle Summary Image
+
+
+Explanation of Lifecycle method image:
+
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+        this.state={
+            userInfo:{
+                avatar_url:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBdUgYMuF1sHbyFGUDn7yxGatIRvCCuZOa2A&s",
+                name:"dummy",
+                location:'lhr'
+            },
+        }
+        console.log('child constructor called '+this.props.userName);
+        
+    }
+   async componentDidMount(){
+    console.log('child componentDidMount start '  + this.props.userName);
+    
+    const data=await fetch("https://api.github.com/users/akshaymarch7")
+    const json=await data.json()
+    console.log(json);
+    
+    this.setState({
+        userInfo:json
+    })
+        console.log('child componentDidMount end ' + this.props.userName);
+        
+    }
+  render() {
+    console.log('child render called '+this.props.userName);
+    return (
+      <div>
+        ProfileComponent
+        <img src={this.state.userInfo.avatar_url}/>
+         <h1>{this.state.userInfo.name}</h1>{" "}
+        <h2>{this.state.userInfo.location}</h2>
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+Initially,mounting phase comes in which our component will be mount and constructor will be called.Then our render method call .That render method update the dom and after that componentDidMount function will called.In componentDidMount,we use this.setState which will called render function again which will update the ui and then at last,componentDidUpdate will be called
+
+
+constructor()
+↓
+render()
+↓
+componentDidMount()
+↓
+setState() → triggers re-render
+↓
+render() (again with new data)
+↓
+componentDidUpdate() (if defined)
+
+--------------------------------------------------------
+What is the difference btw componentDidMount and componentDidUpdate? (Point why this difference not occur in function component because useEffect in function component why state is called also after first render)
+The major difference is that componentDidMount will  called only after first  render and componentDidUpdate will called after every next render(excluding the first render).This thing is very easy in functional component by useEffect.If we give empty dependency array then that is equilvalent to componentDidMount and if we give dependency data,then that is equilvalent to componentDidUpdate
+-------------------------------------
+componentWillUnmount()
+It is used for "CLEAN UP"
+It will be called when your component is out of dom ui/or when we are leaving the page.
+
+=>I am sharing a use case scenario of componentWillUnmount in which let supposse ,i started a interval and move to another component,that interval still runs.It should stop.To stop it,we can call clear interval in componentWillUnmount.
+import React from "react";
+
+class ProfileComponent extends React.Component {
+    constructor(props){
+        super(props);
+       
+        console.log('child constructor called '+this.props.userName);
+    }
+   async componentDidMount(){
+    this.timer=setInterval(()=>{
+      console.log('called');
+      
+    },1000)
+    
+        console.log('child componentDidMount end ' + this.props.userName)
+    }
+
+    componentDidUpdate(){
+        console.log('componentDidUpdate called'); 
+    }
+    componentWillUnmount(){
+      clearInterval(this.timer)
+    }
+  render() {
+    return (
+      <div>
+        ProfileComponent
+        
+      </div>
+    );
+  }
+}
+export default ProfileComponent;
+
+Now ,let discuss,componentWillUnmount in functional component
+import React, { useEffect } from 'react'
+
+"By returning a return statement in useEffect will act as same as componentWillUnmount"
+export default function ProfileComponent() {
+  useEffect(()=>{
+
+console.log('in useEffect');
+return ()=>{
+  console.log('in unmount component');
+}
+  },[])
+  console.log('render');
+  
+  return (
+    <div>ProfileComponent</div>
+  )
+}
+
+Results:
+render
+in useEffect
+in unmount component   //it wil be called when you change your component
+
+Now,we will discuss class based interval scenario in function component 
+
+import React, { useEffect } from 'react'
+
+export default function ProfileComponent() {
+  useEffect(()=>{
+
+   let timer= setInterval(()=>{
+      console.log('kesa');
+      
+      },1000)
+      
+  },[])
+  console.log('render');
+  
+  return (
+    <div>ProfileComponent</div>
+  )
+}
+
+
+ab hoga ye k dosary components pr move krny pr b setInterval chlta ja rha ha,how to unmount.stop it in function component .To stop it,use return in useEFfect.
+
+ useEffect(()=>{
+
+   let timer= setInterval(()=>{
+      console.log('kesa');
+      
+      },1000)
+      return ()=>{
+  console.log('in unmount component');
+  clearInterval(timer)      //it will stop the interval when component changes
+
+}
+  },[])
+
+

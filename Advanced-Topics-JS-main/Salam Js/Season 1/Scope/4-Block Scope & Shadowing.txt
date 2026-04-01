@@ -1,0 +1,56 @@
+A Block is defined by curly brackets{} 
+Another name of a block is Compound Statement
+A Block is used to define multiple javascript statements in one group
+
+Why we need to group multiple statements?
+We group multiple statements in a block together so that we can use it where javascript expects one statement
+
+Now we will see the behaviour of variables in block scope
+{
+let a=10;
+const b=90;
+var c=78;
+}
+
+Example:
+now in backside,in 3no me sy a and b ko block ki wajah sy separate space allocate ki gai ha while x is in a global execution, ye block ki zone me avaiable ni ha.So is reason ki wajah sy let & const ko block scope variables kaha jata ha
+
+example
+{
+let a=99;
+const b=88;
+var x=88;
+}
+console.log(x); //88
+console.log(a);//Uncaught ReferenceError: a is not defined
+console.log(b);//Uncaught ReferenceError: b is not defined
+
+So,block k khatam huty he hum let & const ko access ni kr skty while var can easily be accessible outside
+
+=>What is shadowing in js?
+var x=77;
+{
+let a=99;
+const b=88;
+var x=88;
+}
+console.log(x); //var x block sy phly he declared aur initialized ha aur global execution context me b is ki 77 value saved ha,jab ye block me jaiy ga tu x jo k again declared aur initialized ha aur is ki value already global execution context me hai,tu ye us value ko override kr dy ga,usy 77 sy 88 kr dy ga
+output:88
+
+now let suppose,
+let a=77;
+{
+let a=99;
+const b=88;
+var x=88;
+}
+console.log(a); //in let/const case,a ki declaration global execution context me separate hu gi,block scope me separate hu gi,thats why,in ki value override ni hu gi,isy shadowing in js kehty ha(variables k name same ha ,but in ka scope separate ha)
+output:77
+
+=>Illegal Shadowing
+let a=77;
+{
+var a=99;
+}
+console.log(a); 
+This is illegal shadowing,because let bhi global me jai ga,var bhi global me jai ga,aur js me  same name k variables same scope me ni bn skty

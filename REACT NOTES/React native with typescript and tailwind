@@ -1,0 +1,49 @@
+nvm use 24
+npx @react-native-community/cli@latest init DemoProductProject
+
+cd DemoProductProject
+
+npm install @reduxjs/toolkit react-redux @react-native-async-storage/async-storage nativewind@2.0.11 tailwindcss-react-native  
+
+npm i --save--dev tailwindcss
+
+
+=>create tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./App.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}"
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+
+
+=>babel.config.js
+
+
+module.exports = {
+  presets: ['module:metro-react-native-babel-preset'],
+  plugins: [
+    
+      'nativewind/babel',
+    
+    
+  ],
+};
+
+
+=>create nativewind-env.d.ts
+
+/// <reference types="nativewind/types"/>
+
+
+cd android
+./gradlew assembleRelease
+
+
+

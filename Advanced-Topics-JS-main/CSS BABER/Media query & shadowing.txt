@@ -1,0 +1,176 @@
+<body>
+<div class="box">
+    kesa
+</div>
+</body>
+
+
+
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+.box{
+  background-color: aqua;
+  border:3px solid black;
+  height:500px;
+  width: 500px;
+}
+
+/* jesy he screen width 500 sy upr jaiy,is ka color green kr du */
+/* @media (min-width:500px){ 
+  .box{
+    background-color: green;
+  }
+} */
+
+/* jesy he screen width 500 sy nichay jaiy,is ka color green kr du */
+
+ /* @media (max-width:500px){ 
+  .box{
+    background-color: green;
+  }
+} */
+
+/* mai chahta hu k screen width agr 350 sy 500 tak rehti ha tu is ka color green kr du */
+ /* @media (min-width:350px) and (max-width:500px){ 
+  .box{
+    background-color: green;
+  }
+}
+ */
+
+
+
+--------------------------------------------------------
+
+Shadows in css 
+There are 2 types of Shadows in css
+1-Text shadow        2-Box shadow
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+    <div class="container">
+<div class="box">
+<img src="./kesa.png" width="300" height="300" />
+<h2 >welcome</h2>
+<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem, numquam mollitia? Odit architecto molestias in voluptatibus corporis provident aliquam numquam.</p>
+</div>
+</div>
+</body>
+
+</body>
+</html>
+
+=====>BOX SHADOW
+
+Scenario 1:
+=> first parameter belongs to x-axis(horizonatal),second parameter belongs to y-axis(vertical).By default ,x axis with positive value is on right side and y axis with positive value is on bottom side. 
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+.container{
+  background-color: aqua;
+  border:3px solid black;
+  height:600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box{
+  background-color: aquamarine;
+  width: 330px;
+  height: 430px;
+  border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 10px 20px red; 
+}
+p{
+  text-align: center;
+}
+
+
+Scenario 2:
+If first parameter gives negative value,it moves on left ,similarly ,if second value gives negative value,it moves on top.
+
+
+.box{
+  background-color: aquamarine;
+  width: 330px;
+  height: 430px;
+  border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -10px -20px red; 
+}
+
+
+Scenario 3:
+If third parameter is avaibale,it reflects blur effect and if fouth parameter is avaibale,it represents spread-radius
+
+
+.box{
+  background-color: aquamarine;
+  width: 330px;
+  height: 430px;
+  border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -10px -20px 10px 10px red; 
+}
+
+Scenario 4:
+If inset is used,then shadow  andr ki trf aiy gi 
+.box{
+  background-color: aquamarine;
+  width: 330px;
+  height: 430px;
+  border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow:inset -10px -20px  red; 
+}
+
+
+Scenario 5:
+If want to add multiple shadows,then use below syntax
+.box{
+  background-color: aquamarine;
+  width: 330px;
+  height: 430px;
+  border: 1px solid green;
+    display: flex;
+    flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 10px 20px  red,15px 25px green; 
+}
+
+
+====>Text SHADOW
+
+h2{
+    box-shadow: 4px 5px  red,6px 6px green; 
+
+}

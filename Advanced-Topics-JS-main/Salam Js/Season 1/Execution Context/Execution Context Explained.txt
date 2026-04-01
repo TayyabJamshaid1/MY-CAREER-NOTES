@@ -1,0 +1,18 @@
+=>js me sab sy phly phase me memory allocation huti ha and then code line by line chlta ha(thread of execution)
+=>thread of execution ko call stack k through handle kya jata ha jis me by default global execution stack bnta ha,us k sath he window object b bnta ha aur this object b (this b window object ko he point out kr rha huta ha),even agr hum function bnaty ha tu us function ka b  execution stack bnta ha,but a new window object is not created for each function call. Instead, functions share the same window object that belongs to the global context.
+=> console.log(window===this)//OutPut:true bcoz this window ko he point out kr rha huta ha
+
+IMPORTANT CONCEPT
+var x=10;
+function call(){
+    var data=99;
+}
+call();  
+
+ x and call ko global space me rkha ha,is lye ye global execution context me avaiable hu gy while data variable call k execution context ka part ha, ye global execution context ka part ni hu ga
+
+Imp:
+window is a global object which is created along with global execution context
+
+//Myth:
+Window object global execution context ni ha,blky window object is a part of global execution context.

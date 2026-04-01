@@ -1,0 +1,102 @@
+Talk is cheap ,show me the code
+
+React.fragment is a component that is exported by react
+1-Any piece of Jsx that we are writing must have its parent if it have multiple childs,so we use React.fragment in this case
+
+const data=()=>{
+return(             //it will give error that it must have its parent
+<h1>Kesa</h1>
+<h2>Mer</h1>
+)}
+
+IMP:
+React.fragment is like a empty tag
+Reason:
+jab hum react me code div parent k sath likhty ha tu browser me ye is trah sy dikhta ha
+const data=()=>{
+return(
+<div>           
+<h1>Kesa</h1>
+<h2>Mer</h1>
+</div>
+)}
+BROWSER:
+<div id="root>
+<div>               //yaha pr div show huta ha         
+<h1>Kesa</h1>
+<h2>Mer</h1>
+</div>
+</div>
+
+While using React.fragment as  a parent,yaha pr kuch b show ni huta
+const data=()=>{
+return(
+<React.fragment>           
+<h1>Kesa</h1>
+<h2>Mer</h1>
+</React.fragment>
+)}
+BROWSER:
+<div id="root>                
+<h1>Kesa</h1>
+<h2>Mer</h1>
+</div>
+
+Sometimes using React.fragment,our code looks ugly,thats why we can also write it as a empty tag.We also called these empty tags "React.fragment".Both are same. Empty tag is  a shorthand to written React.fragment.
+ const data=()=>{
+return(
+<>           
+<h1>Kesa</h1>
+<h2>Mer</h1>
+</>
+)}
+
+==>Props
+Props is shorthand of properties.By using it, i am passing some data to my component or if i have to pass data from parent component to child component,it is known as props
+
+Example:
+ const AnotherComponent=({name,age})=>{  
+return(
+<>           
+
+</>
+)}
+ const data=()=>{  //data is the parent component
+ let dataSend={name:"tayyab",age:23};
+return(
+<>           
+<h1>Kesa</h1>
+<h2>Mer</h1>
+<AnotherComponent data={...dataSend} />   //AnotherComponent is a child component
+</>
+)}
+
+------------Virtual dom
+Virtual dom is not just a react concept.It is a software engineering concept.but react has its own concept
+"It is the representation of dom in our code" (See Dom Virtual image)
+
+Why do we need it?
+We need virtual dom because of Reconsilitation in react
+What is Reconsilitation/diff algorithum?
+Reconsilitation is a algorithum that react uses to diff one tree from other.
+=>React uses a Reconsilitation algorithum to differ one tree from other.It determines what needs to change in ui and what is not.
+React behind the scenes real dom pr changes/data dikhany k liye virtual dom ko use krta ha.Let suppose app render hui,react ny uska virtual dom bnaya,jab b us me koi change hui tu react ny ek aur new virtual dom bnaya.By comparing the new virtual DOM with a old virtual DOM, React figures out exactly which virtual DOM objects have changed. This process is called “diffing.”
+
+Once React knows which virtual DOM objects have changed, then React updates those objects, and only those objects, on the real DOM.
+Thats makes the react FAST.This process also knowns as Reconsilitation.
+=>React uses a Reconsilitation algorithum to find out the difference btw your latest virtual dom and previous virtual dom and then it finds out what needs to be updated and then update that specific part only in real dom instead of all the root.It does not re render all app.It just re render that small part.(see virtualImage1 in which not all the dom will update,see virtualImage2 in which only specific part will be updated)
+
+SUMMARY
+
+"Reconsilitation is the algorithm React uses to diff one tree with another to determine which parts need to be changed."
+
+Read Article:
+https://www.codecademy.com/resources/docs/react/virtual-dom
+
+In react 16 ,the diff algorithum has been changed.It has now introduced a react fiber 
+"React fiber is a new Reconsilitation engine which is used for a diff task"
+
+
+Imp Points:
+Never use index as a key in map if any unique key(id) is avaiable
+if no unique key(id) is avaiable,then use index

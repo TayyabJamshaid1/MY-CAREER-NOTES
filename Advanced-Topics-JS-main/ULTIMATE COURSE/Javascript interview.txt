@@ -1,0 +1,95 @@
+====>PRO
+
+console.log(3>2>1); //false
+
+You thought → true
+JS actually → false
+
+Why?
+
+Operators evaluate left to right.
+
+Step 1: 3 > 2 → true.
+
+Step 2: Now we check: true > 1.
+But true is coerced to 1.
+→ 1 > 1 → false.
+
+====>PRO
+
+console.log('2'-1) //1
+
+You thought → error
+JS actually → 1
+
+Why?
+
+- operator forces numeric conversion.
+
+'2' (string) → 2 (number).
+
+2 - 1 → 1.
+
+⚠️ It would only be an error if the string can’t be converted:
+
+'hello' - 1 // NaN
+
+
+✅ Final answer = 1.
+====>PRO
+
+console.log(true+true) //true
+
+====>PRO
+if (''){
+  console.log('if');    
+  
+}else{
+  console.log('else'); //run
+  
+}
+====>PRO
+
+if (' '){
+  console.log('if');    //run
+  
+}else{
+  console.log('else');
+  
+}
+
+====>PRO
+
+if (undefined){
+  console.log('if');
+  
+}else{
+  console.log('else'); //run
+  
+}
+====>PRO
+
+if (null){
+  console.log('if'); //run
+  
+}else{
+  console.log('else');
+  
+}
+
+====>PRO
+
+
+if (5){
+  console.log('if'); //run
+  
+}else{
+  console.log('else');
+  
+}
+
+Write an HOC which will render its child after 5 seconds
+
+Write an HOC that adds a border around its child component
+
+Write an HOC that shows a loading spinner for 3 seconds before rendering the wrapped component

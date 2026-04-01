@@ -1,0 +1,68 @@
+Js ia a single scyronous threaded Language.It just do one thing at a time in its call stack.It does not wait for anything. 
+Suppose,we have this code
+
+console.log("Salam");
+console.log("Javscript");
+console.log("Season 2");
+
+Suppose,we want to execute this (console.log("Javscript")) after 5 seconds,to do this,we wrap it inside the  function and pass it as a callback function in setTimeout.
+
+First add code in function and pass it to setTimeOut
+
+setTimeOut(function(){
+console.log("Javscript");
+},5000)
+
+we gave this callback function to setTimeOut,now it is the job of setTimeout to execute this callback function after 5 seconds.So using callback is the powerfull way to do async programming.So we can take piece of code inside a function and we can pass it as a callback which can be executed later point of time.So our task is done.So thats how callback plays a very important role in async programming in js.Now take another example.
+
+Suppose we are building a eccommerce website.This type of websites cant exist without a cart.So lets create a array of items named cart.
+
+const cart=["shoes","pants","kurta"];
+
+so once we have this items into cart,now as we know we have to create its order,then we have to pay his payment.Now suppose,we have 2 apis(createOrder ,createPayment).So after creating a order,we will move to proceed to payment.So with these 2 backend apis,we first create an order by using createOrder api.Once the order is created,then only we can proceed to payment.So there is a dependency between them.So here callback come into the picture.So we will wrap our createPayment api inside  a callback function and pass it in createOrder function along with cart array
+
+api.createOrder(cart,function(){
+   api.createPayment()
+})
+
+So when js engine executes all the code,it will all call the createOrder api,Now it is the responsibility of createOrder api to create an order and call the callback function we passed.Thats the way we can handle async operations in js.So now let make things little more complicated.So we created an order,after that we moved to createPayment.After the success of createPayment,we need to show summary of that order.So we can pass showSummary  in createPayment function as a callback function
+
+api.createOrder(cart,function(){
+   api.createPayment(
+   function(){
+   api.showOrderSummary()
+})
+})
+now its the responsibility of createPayment api to complete the payment and call showOrderSummary function.Thats how we can manage this dependency flow which happens one after the other.So now we have created the order,we have done the payment and we have showed the order summary .After showing the summary,suppose we can also want to update the waller.So we can pass updateWaller function as a callback function
+
+api.createOrder(cart,function(){
+   api.createPayment(
+   function(){
+   api.showOrderSummary(
+   function(){
+   api.updateWaller()
+})
+})
+})
+  did you notice the problem here that we can face?.When we have large number of code and we have so many apis here and there,also apis are dependent one after another.So we are falling in "CALLBACK HELL".
+  
+  What is callback hell?
+  One callback inside the other callback,inside other callback,we have also some if statements and some other code.This all makes the callback hell and our code starts to grow horizontally.Callback hell is also known as pyramid of dom.  This type of code is very unreadable and unmaintainable.U cant maintain it properly,its a very tough to handle it.
+  
+  So callback hell is the first problem in callbacks,the other problem is "Inversion of control"
+
+
+"Inversion of control is defined as you are losing your contol on code when we are using callbacks" 
+
+Now we are thinking how do we loose our control in callbacks?Lets take an example
+api.createOrder(cart,function(){
+   api.createPayment()
+})
+In this example,we are creating a order and we pass a callback function as a argument in createOrder function and we as a developer sitting back as relax and we are blindly trusting on createOrder function.We gave our callback function to createOrder function.Now we are expecting that createOrder function at some point of time will create an order and will call our callback function.This approach is very very risky.How it is risky?Because createPayment function is the important piece of code.What we did is we gave the control of our program to createOrder function.Now it is the responsibility of createOrder function to call our function back and we are blindly trusting createOrder function.Now we dont know createOrder function must have been another task doing or may be it have a lot of bugs or may be it call twice time our callback function or may be our callback function is never called.U dont know what code is written in createOrder function,u r blindly trusting on it.So what i am trying to says that whenever we have this callback function and we pass it as an argument in another function,we are losing our control to that callback function and giving the control of our callback function to other function.We dont know what is happening behind the scenes now.So this is the very important problem that we face when we are using callbacks
+
+Conclusion:
+1-Callbacks are super powerfull way to handle async operations in js.Infact async programming in js exists because of callbacks exist.
+
+2-while we are writing callbacks,we are facing some issues.
+a)Callback hell(a nested callbacks,thats why code is unmaintainable)   
+b)Inversion of control(We loose the control of our program because we passed that callback function to another function and now we giving the control of our function to some other function.Now we dont know whether that callback function will ever be executed or not)

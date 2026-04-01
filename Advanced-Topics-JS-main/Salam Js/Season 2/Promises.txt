@@ -1,0 +1,120 @@
+Promises are used to handle async operations in js.
+lets take an example,
+const cart=["shoes","pants","kurta"];
+api.createOrder(cart,function(){
+   api.createPayment()
+})
+In this example,we are creating a order and we pass a callback function as a argument in createOrder function.Now we are expecting that createOrder function at some point of time will create an order and will call our callback function.So,Whenever we have this callback function and we pass it as an argument in another function,we are losing our control to that callback function and giving the control of our callback function to other function.We dont know what is happening behind the scenes now.So this is the very important problem that we face when we are using callbacks
+
+So here comes the promises
+
+We can write createOrder function in such a way that we cannot pass any callback function as a argument in createOrder function,we only pass the cart array.In this situation,it will return a promise
+
+let promiseData=api.createOrder(cart)
+console.log(promiseData);
+We will get the promise in  promiseData variable.Whenever this line is executed by js,this createOrder will return us a promise.Initially,promise is an empty object with some data along with value in it.This data along with value will hold whatever this createOrder function is returning to us.Now we can understand that createOrder is an async operation.It will take some time to execute but we do not know the exact time but initially when this line(let promiseData=api.createOrder(cart)) is executed,It will return as an object with a data of empty/undefined.
+
+{data:undefined}
+
+Suppose after some time,createOrder  will create an order and give us the order details,it will filled this promiseData object back with data.
+
+Conclusion:
+Whenever js engine is executed this line(let promiseData=api.createOrder(cart)),this createOrder api will return  a promise.Initially,promise is nothing but an empty object.After that,our rest of the code is start executing.After some time,what will happen is our empty/undefined promise object will filled with data automatically and we have orderdetails in it whatever async time it takes.This is what promise is.
+
+{data:orderDetails}
+
+So,next part is what will happen when we get the data in promise object.How do we continue our program?
+
+So the answer is that we will attached a callback function  to this promise object.We will use the function(.then)
+.This is a function(.then) which is avaiable over promise object.We will attached the createPayment callback function in  .then like
+
+promiseData.then(function(){
+   api.createPayment()
+})
+
+Conclusion:
+Earlier  promise data is undefined/empty when initially js run this line(let promiseData=api.createOrder(cart)),but after some time,it will be filled with exact data that will be returned by createOrder function.We will insert our callback function in .then,Once we have data in promise object,our callback function automatically called
+
+                         =>Callback Vs Promises
+
+
+In callback approach,we passed callback function(createPayment) in another function(createOrder) by trusting on another function(createOrder) blindly.
+
+api.createOrder(cart,function(){
+   api.createPayment()
+})
+
+while in promises,we are attaching a callback function(createPayment) to our promise object.In callbacks scenario,we are passing the function to another function while in promises we are attaching a callback function to our promise object.(Jab hum .then me callback function dalty ha,is ka matlab ye ha k hum promise object me usy attach kr rhy ha).
+promiseData.then(function(){
+   api.createPayment()
+})
+In callback scenario,it will call the callback function whenever it wants while in case of promises,we have a control of our program that createOrder will do its job which is create the order and filled the promise object with the data and as soon as this promise object is filled with data,it will automatically call our callback function.
+
+=>Importance of Promises
+
+In Promises,we have a control of our program.Promises gives us this trust and it will gives the guarantee that it will call this callback function whenever the data in promise object is filled.Also we have doubts that in case of callback scenario,may be our callback function will called never or twice while promise handle its beautifully.As soon as the data filled in promise object,it will call this callback function definately only once that is the guarantee that given by js.
+
+=>Promise Object in Browsers
+
+So as we discuss that promise object is an empty object or undefined or with some data filled.No,it is much more advanced then that. 
+
+In browser,promise object is looks like this
+
+[[Prototype]]:Promise
+[[PromiseState]]: "pending"
+[[PromiseResult]]: undefined
+
+Upr topic smajty huay jab hum keh rhy thy k hamara object ka data undefined ha,wo real me PromiseResult me huta ha
+
+In promises,there are 2 things which needs to be understand.
+a)State of the Promise(it tells you,in what state the promise is,initially the promise will be pending state and once we got the data back,it changed to fullfilled state)
+b)Result of the promise(Result will store whatever the data is returned from fetch method)
+
+EXAMPLE:
+Lets try to understand this by using fetch and a dummy user link
+we are trying to fetch the user information by this link and by design,  fetch function returns us the promise
+
+const link="https://api.github.com/users/akshaymarch7";
+const user=fetch(link);
+console.log(user);
+
+when i console this,initially it looks like this
+
+Promise {<pending>}
+
+when i expand this object,it looks like this
+Promise {<pending>}
+[[Prototype]]:Promise
+[[PromiseState]]: "fulfilled"
+[[PromiseResult]]: Response
+
+Agr hum gor karain,tu object ko expand krny sy phly ye pending state show kr rha ha,jesy he expand krty ha tu state me ye fullfilled show kr rha ha.  WHY THIS BEHAVIOUR???? 
+
+Actually what happens is when this console statement is executed,At this point of time,the pending object(user) is in a pending state.How?because js engine is executes,it does not wait for anything,just quickly executes whatever is there.In code line(const user=fetch(link))
+,fetch returns a promise .Promise at that time is in a pending state.It takes some time to get the data and fill it back.Tu is lye initially pending state he hamai show hu rha huta ha,jesy he hum usy expand krty ha tu promise me actual current state ko show krta ha jo k data any k bad fullfilled me change hu jati ha.Similarly,the promise result is undefined initially,as soon as the data filled,it changes from undefined to Response.
+
+Now,we can also attach a callback to this promise object.
+
+const link="https://api.github.com/users/akshaymarch7";
+const user=fetch(link);
+user.then((data)=>{
+    console.log(data);
+})
+
+Promises are the special objects in js.This special object brings a lot of trust in this transaction/way because js guarantees that this promise object can be resolved once,either it will be a success or failure,over here its state can be pending,fullfilled & rejected
+
+Once important thing is promise objects are immutable(unchangeable).Whenever its state is fullfilled and whenever we have a data in promise object.We can just pass it here and there in our code.We dont have to worry that someone can mutate the data .(Promise object k andr ka data kabhi b change/update ni hu skta).This is so great because you have control over this object.This is immutable,resolved just once & u can pass it anywhere u want.So finally,in interviews,mostly they asked about what is promises?There is different definations avaiable.Some people called the promise object as a "Placeholder" which will be filled later with a value.Some definations of different peoples like
+
+"Promise object is a placeholder for a certain period of time until we receive a value from a asyncronous operation"
+
+"A Container for a future value"
+
+mdn web docs defination(Best defination)
+"A promise is an object representing the eventual completion or failure of an asyncronous operation"
+
+IMPORTANT POINT:
+whenever there is a promise inside the promise chain(.then),u have to use a return statement to return it otherwise u might loose some data inside the chain.See Image (Promises Return.png)
+
+Conclusion:
+To avoid the problems of inversion of control/callback hells in callbacks,we have the promise object.Promise object will eventually filled with a result of async operations.In promises,we dont pass a function inside any other function 
+but we do is to attach a callback function to that promise object and whenever we have the data inside or the promise is resolved,that callback function will automatically called by promises.Promises gives us the guarantee and trust that it can be resolved just once & it is immutable(if it is resolved).It has the two major properties(Promise state,promise result).You only have 3 states of promises (pending,fullfilled,rejected).Promise result holds your data which is initially undefined and then eventually get filled.You can pass promise whereever u want to without caring about the mutability about it.To resolve the problem of callback hell,we use the promise chaining.We attached a .then to handle a lot of callback handlers.Also whenever there is a promise inside the promise chain,u have to use a return statement to return it otherwise u might loose some data inside the chain.

@@ -1,0 +1,34 @@
+Function along with its lexical scope is called closures
+
+Explaination:
+As we know function can return another function.Closure ka zyada implement huta he tab ha jab function dosry function ko return karay.
+Example:
+function x(){
+let a=9;
+function y(){
+console.log(a);
+}
+return y;
+}
+
+let data=x();
+ In backward, 
+ sab sy phly global execution context bna,data and x ko memory me rkha gya,then thread of execution me data ko uninitialized rkha gya aur x k call huty he ek second execution context bna,second execution context me a and y ko memory me rkha gya,then thread of execution me a ko 9 dya gya aur y ko return kr dia,y k return huty he data me y function(as a string) a gya aur x ka execution context khatam hu gya.Ab yaha closure ka concept implement hu ga k x k khatam huny k bawajod jab hum data ko call karain gy tu is k andr a ki value hu gi,isny apny lexical scope ko secure he rkha ha jis ki wajah sy a ki value print hu jai gi.So isy he closure kehty ha(function along with its lexical scope).
+ Also,returnted function k pas direct variables ki value ni hu gi blky un k pas un variables ka reference hu ga,in our example, y k pas a ka reference mujood ha na k as a 7 value mujood ha.
+
+
+
+
+ ----
+ function x(){
+let a=9;
+function y(){
+console.log(a);
+}
+return y(); //y does not return any thing,its why it return undefined here
+}
+
+let data=x();
+console.log(data);
+
+data() //data is not a function

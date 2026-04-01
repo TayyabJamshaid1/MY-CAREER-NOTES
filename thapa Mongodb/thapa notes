@@ -1,0 +1,941 @@
+Mongodb is  a open source, document oriented no sql database management system.(Mongodb mei sara data documents ki form me manage kiya jata ha,now question is document kis type ka hu ga pdf,text etc,the answer is it is in the form of json )
+
+Mongodb is created by 10gen company,later they change their name to mongodb
+
+
+sql mei sara data boht he structural way me handle huta ha,is me  phly sy he hum fields fix kr lty ha,un fields ka data rows and columns me proper tariqy sy save huta ha, is me kisi b row k liye koi separate data add ni hu skta while mongodb me hum un structured or semi structured way me kam krty ha,is me json documents ki sorat me data save huta ha aur kisi b particular object mei koi b separate field add hu skti ha
+
+JSON (JavaScript Object Notation)
+
+A text-based format for representing structured data.
+
+Human-readable, lightweight, language-independent (though inspired by JavaScript).
+
+Jab tak ap k database me data enter ni hu ga,tab tak showdbs ki command me wo database show ni hu ga
+
+
+
+logical operator
+db.data.find({$and:[{'age':{$gt:10}},{'name':'tayyab'}]});
+db.data.find({$or:[{'age':{$gt:210}},{'name':'tayyab'}]})
+db.data.find({$nor:[{'age':{$gt:210}},{'name':'tayyab'}]}) //nor means jis ki age 210 sy zyada ha aur jinka nam tayyab ha ,in dono ko chor k baqi sara data dy do
+
+db.data.find({'age':{$not:{$eq:20}}}) //jinki age 20 k equal ha,unko chor k baqi data dy do,we can also do this by comparison operator in short
+db.data.find({'age':{$ne:20}})
+
+
+elements operator (exists,type,size)
+
+db.data.find({'age':{$exists:true}})   //aisy documents do,jin me age ki field exist krti hu
+
+db.data.find({'age':{$exists:false,$gt:10}}) ////aisy documents do,jin me age ki field exist krti hu aur age b 10 sy zyada hu
+
+db.data.find({'age':{$type:'number'}})   //aisy documents do jin ki age ki type number hu
+db.data.find({'name':{$type:2}}) //2 represts string,8 represensts boolean etc,we can also implement the condition based on the numbers(see in pic)
+
+db.data.find({'age':{$size:1}})  //let suppose,age ek array ha aur is k andr multiple number of objects hain,size command k zariye mai isy ye keh rha hu k aisy documents do jis ki field age k  array k andr srf ek object ha
+-------
+Projection 
+Kisi b document k andr knsi field dkhani ha aur kn si ni dkhinani,ye projection k zariye handle krty ha
+Agr hum chahty ha k sary document me sari fields ki bjaiy koi specific field k sath sara data show hu ,then projection ka use krty ha (see below)
+=>Jnsi field dkhani ha ,us k agay 1 likh dna ha  example: db.data.find({'age':{$exists:true,$gt:10}},{name:1})  //we r using projection in last curly bracket,_id ki field hamesha aiy gi,kyu k ye default khud he create huti ha
+[
+  { _id: ObjectId('68b828aff8f6716c23fa3350'), name: 'tayyab' },
+  { _id: ObjectId('68b82902f8f6716c23fa3351'), name: 'tayyab' },
+  { _id: ObjectId('68b82902f8f6716c23fa3352'), name: 'ali' },
+  { _id: ObjectId('68b829b7f8f6716c23fa3353'), name: 'tayyab' }
+]
+
+=>Kisi b field ko agr hum chahty ha k result me show na hu,us k liye field name k agay 0 assign kiya jata ha 
+Upr k case me agr hum chahty ha k _id ki field b na iy,tu _id likh k 0 assign kr dein
+It means agr hum chahty ha k sara data show hu siwaiy ek specific field k tu ye kam projection k zariye kr skty ha
+
+Example 1:
+db.data.find({'age':{$exists:true,$gt:10}},{name:1,_id:0})
+[
+  { name: 'tayyab' },
+  { name: 'tayyab' },
+  { name: 'ali' },
+  { name: 'tayyab' }
+]
+
+Example 2:
+ db.data.find({'age':{$exists:true,$gt:10}},{name:0}) //saray documents me sy name ki field niqal du
+[
+  { _id: ObjectId('68b828aff8f6716c23fa3350'), age: 23 },
+  { _id: ObjectId('68b82902f8f6716c23fa3351'), age: 23 },
+  { _id: ObjectId('68b82902f8f6716c23fa3352'), age: 34 },
+  {
+    _id: ObjectId('68b829b7f8f6716c23fa3353'),
+    age: 23,
+    kesa: 'pta ni'
+  }
+]
+
+
+IMP POINT:
+=>ek he waqt me results k document me hum field ko show or hide krny k query ni lkh skty,ek waqt me ek he query likhy gy,ya tu field show krwany ki ya hide krwany ki,see below example
+
+db.data.find({'age':{$exists:true,$gt:10}},{name:0,kesa:0,age:1})
+MongoServerError[Location31253]: Cannot do inclusion on field age in exclusion projection
+
+*yaha pr _id k liye ek exception ha,
+db.data.find({'age':{$exists:true,$gt:10}},{name:1,_id:0})//here we are using both approaches(showing & hiding of data,it is only possible for _id)
+[
+  { name: 'tayyab' },
+  { name: 'tayyab' },
+  { name: 'ali' },
+  { name: 'tayyab' }
+]
+=>agr hum same trah ka operation multiple fields pr implement krna chahty tu kr skty ha,like mai chahta hu k specific fields result me show na hu ya specific fields he mere result me show hu,see below example
+
+Example 1:
+ db.data.find({'age':{$exists:true,$gt:10}},{name:1,kesa:1})
+[
+  { _id: ObjectId('68b828aff8f6716c23fa3350'), name: 'tayyab' },
+  { _id: ObjectId('68b82902f8f6716c23fa3351'), name: 'tayyab' },
+  { _id: ObjectId('68b82902f8f6716c23fa3352'), name: 'ali' },
+  {
+    _id: ObjectId('68b829b7f8f6716c23fa3353'),
+    name: 'tayyab',
+    kesa: 'pta ni'
+  }
+]
+
+
+Example 2:
+  db.data.find({'age':{$exists:true,$gt:10}},{name:0,kesa:0,age:0})
+[
+  { _id: ObjectId('68b828aff8f6716c23fa3350') },
+  { _id: ObjectId('68b82902f8f6716c23fa3351') },
+  { _id: ObjectId('68b82902f8f6716c23fa3352') },
+  { _id: ObjectId('68b829b7f8f6716c23fa3353') }
+]
+
+IMPORTANT POINT:
+In projection ,i tried to find the data without filter query and just adding projection query,and the result is nothing,see below
+db.data.find({name:1,_id:0})
+
+so core reason is the find() method has two parameters:
+
+query (first parameter): The filter condition to select which documents to find.
+
+projection (second parameter): The rules for which fields to include or exclude in the results.
+
+so if we want to project the data without filtering,use below syntax
+
+db.data.find(
+  {},           // FIRST ARGUMENT: Empty Query Filter (find everything)
+  {name: 1, _id: 0} // SECOND ARGUMENT: Projection
+)
+------------------------------------------------
+
+How to find the data for embeded documents
+Let suppose,mere document ki field ek array of objects ha,mai us array of objects me sy kisi specific object ki specific key k zariye data find krna chahta hu .For example,mere documents me age ek array of objects ha,hr object  me name ki field ha,mai kisi specific name ki bina pr data find krna chahta hu,then we use this approach
+
+ db.data.find({'age.user':'tayyab'})
+
+IMP: agr age ek array of objects k bjaiy ek simple object b huta tab b hum same query k zariye he condition lga k data access kr skty ha
+ db.data.find({'age.user':'tayyab'})
+ 
+ (same for array of objects or simple objects)
+ 
+ ----
+ =>$all
+ Now let suppose,mjy age array ki objects me jin user ka name umar aur usman ha ,wo document chahiye , for multiple, we use $all,see below
+ db.data.find({'age.user':{$all:['umar','usman']}})
+ 
+ =>$elemMatch
+ 
+ now,i want that age ki array of objects me mjy aisa data chahiye jis me user ka name tayyab hu aur wo married hu,for this we,use,elemMatch.Its means agr multiple filters/conditions lgany then $elemMatch is recommended
+ 
+ db.data.find({'age':{$elemMatch:{'name':'tayyab','status':'married'}}})
+ 
+ or we can do it simply
+  db.data.find({'age.name':'tayyab','age.status':'married'})
+ 
+ 
+ 
+ ------------------------------------------------------------------------
+ 
+=>updateOne:
+By update one,we can update any field and also we can add any new field,depend on the filter condition
+jis user ki age 34 ha ,us ka name update kr du aur us me kesa ki new field b add kr du
+
+db.data.updateOne({'age':34},{$set:{'name':'jim','kesa':'pta ni'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+=> updateMany
+similar to updateOne but only one difference is updateMany works for multiple
+ db.data.updateMany({'age':23},{$set:{'name':'jim'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 3,
+  modifiedCount: 3,
+  upsertedCount: 0
+}
+
+=>$rename
+Agr mai kisi b field k name ko rename krna chahta hu,then rename condition will be used.
+
+db.data.updateMany({'age':34},{$rename:{'kesa':'kesaa'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+ 
+=>unset
+kisi b key ko document me sy completly remove krna ho tu use unset
+db.data.updateMany({'age':23},{$unset:{'kesa':1}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 3,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+ =>in case if we want to add key which may be a string/number/array of objects in any specific or all documents,we can add by below syntax,here i am adding array with its objects in all documents
+ 
+ db.data.updateMany({},{$set:{'comments':[{ name: "tayyab", status: "married" },{name:"noman",status:'single'}]}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+or if we want to add single key,below is a syntax
+
+ db.data.updateMany({},{$set:{'kesa':'pta ni'}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 4,
+  modifiedCount: 4,
+  upsertedCount: 0
+}
+
+Now let suppose,we want to add/remove/update in array of objects of the documents,for this we have to use $push,$pop 
+let suppose,we have the following avaible documents
+db.data.find({})
+[
+  {
+    _id: ObjectId('68b828aff8f6716c23fa3350'),
+    name: 'jim',
+    age: 23,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68b82902f8f6716c23fa3351'),
+    name: 'jim',
+    age: 23,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68b82902f8f6716c23fa3352'),
+    name: 'jim',
+    age: 34,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' },
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68b829b7f8f6716c23fa3353'),
+    name: 'jim',
+    age: 23,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  }
+]
+
+1-$push
+now by using push,a new object will be added in array of objects.
+
+db.data.updateOne({age:34},{$push:{'comments':{name:'shehzad',status:"married"}}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+2-$pop
+by using pop,sab sy last element array sy remove hu jai ga
+db.data.updateOne({age:34},{$pop:{'comments':1}})
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+3-By set & dollar $
+Kisi b array ki field ko update krna chahta hu
+db.data.updateOne({age:34,'comments.name':'tayyab'},{$set:{'comments.$.status':'single'}}) //yaha $ me jis element me update huna,uski position number/index a jata ha,jis ki bina pr wo update krta ha
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+----------------------------------------
+Delete a document
+ db.data.deleteMany({age:34})
+{ acknowledged: true, deletedCount: 1 }
+
+ db.data.deleteOne({})
+{ acknowledged: true, deletedCount: 1 }// sab sy first wala delete hu jai ga
+
+-----------------------
+Indexes are specialized data structures that optimize data retrieval speed in Mongodb.
+Indexes are main kam ye hai k hamari query k tasks ko speed up kr dta ha or u can also say that hamary task ki speed ko increase kr dta ha.Indexes can speed up our tasks by creating a indexes.Indexes basically data ko smaller parts mei aisy store krta ha jis sy data ko search krny me aur zyada easy hu. By using this,hamary task ki speed boht achi hu jati ha agr phly isy 10 sec lgty thy tu ab isy use kr k 5 ya 3 second lg jaty ha.
+
+Imp:
+Indexes are separate from collections and multiple indexes can exist per collection.
+
+Benefits
+Faster speed
+Effecient sorting
+Improved aggregation
+Make a Easy searching because of indexing on multiple fields
+
+=>How Does an Index Work Behind the Scenes?
+
+When you create an index on a field (say title), MongoDB creates a B-tree (balanced tree) structure.
+
+This B-tree stores sorted values of that field and pointers (references) to the actual documents in the collection.
+
+👉 Example:
+Suppose your collection has:
+
+{ "_id": 1, "title": "Dog" }
+{ "_id": 2, "title": "Cat" }
+{ "_id": 3, "title": "Apple" }
+
+
+If you create an index on title:
+
+db.books.createIndex({ title: 1 })
+
+
+MongoDB internally creates something like:
+
+Index: title_1
+----------------
+"Apple" → points to _id: 3
+"Cat"   → points to _id: 2
+"Dog"   → points to _id: 1
+
+
+This index structure is stored efficiently (like another hidden data file).
+
+When you query db.books.find({ title: "Cat" }), MongoDB doesn’t scan all documents.
+
+Instead, it goes straight to "Cat" in the B-tree and fetches _id: 2.
+
+3. Does It Create Another Collection?
+
+No, not a collection you can see.
+
+Indexes are stored in special internal data files alongside your collection data, but not as a separate collection.
+
+That’s why you don’t see them in show collections.
+
+Types of indexes:
+=====>Single field index
+Created on one field.
+
+Can be ascending (1) or descending (-1).
+
+👉 Example:
+
+db.users.createIndex({ age: 1 })
+
+
+Queries like db.users.find({ age: 25 }) will be much faster.
+
+===>Compound index
+Index on multiple fields together.
+
+Order of fields matters!
+
+👉 Example:
+
+db.users.createIndex({ lastName: 1, firstName: 1 })
+
+
+Optimizes queries like:
+
+db.users.find({ lastName: "Smith", firstName: "John" })
+
+
+But only efficient if you query starting with the left-most field (here lastName).Indexes will work fine when You  give first field or first and last field together but not on alone second field(here firstName).
+
+====>Multikey index
+Created when you index an array field.
+
+MongoDB indexes each element of the array.
+
+👉 Example:
+
+db.products.createIndex({ tags: 1 })
+
+
+For this document:
+
+{ "tags": ["electronics", "phone", "android"] }
+
+
+The index stores each value separately → electronics, phone, android.
+db.articles.find().sort({ tags: 1 })
+
+
+Where not to use Indexes:
+Do not create index of that particular field which is rarely used
+do not Use indexes on small collections and on a very large collections.
+
+-----------------------------------------------------------------
+
+
+Aggregation:
+Aggregation in MongoDB is a way to process and transform data inside the database.
+a)It takes documents from a collection,
+b)Performs operations like filtering, grouping, sorting, summing, averaging,
+c)And gives you back the final processed result.
+
+Methods:
+1-$Match (similar to find)
+db.data.aggregate([{$match:{name:'jim',age:{$gt:21}}}])
+
+It can be done also by find
+ db.data.find({name:'jim',age:{$gt:21}})
+
+2-$group
+db.data.find()
+[
+  {
+    _id: ObjectId('68b82902f8f6716c23fa3351'),
+    name: 'jim',
+    age: 23,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68b829b7f8f6716c23fa3353'),
+    name: 'jim',
+    age: 23,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3350'),
+    name: 'Alice',
+    age: 21,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3351'),
+    name: 'Bob',
+    age: 25,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3352'),
+    name: 'Charlie',
+    age: 30,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3353'),
+    name: 'David',
+    age: 28,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3354'),
+    name: 'Eve',
+    age: 22,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3355'),
+    name: 'Frank',
+    age: 35,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3356'),
+    name: 'Grace',
+    age: 27,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3357'),
+    name: 'Hannah',
+    age: 24,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3358'),
+    name: 'Ivy',
+    age: 29,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3359'),
+    name: 'Jack',
+    age: 32,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335a'),
+    name: 'Kenny',
+    age: 26,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335b'),
+    name: 'Laura',
+    age: 31,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335c'),
+    name: 'Mike',
+    age: 23,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335d'),
+    name: 'Nina',
+    age: 34,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335e'),
+    name: 'Oscar',
+    age: 33,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335f'),
+    name: 'Paul',
+    age: 36,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3360'),
+    name: 'Queen',
+    age: 20,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3361'),
+    name: 'Robert',
+    age: 40,
+    comments: [
+      { name: 'tayyab', status: 'married' },
+      { name: 'noman', status: 'single' }
+    ],
+    kesa: 'pta ni'
+  }
+]
+
+let suppose ,hamary pas 10 users ha,jin users ka name same hu ga,un ko sum kr k dy dy ga
+ db.data.aggregate([{$group:{_id:'$name',totalPersons:{$sum:1}}}]) //_id:'$name' this checks jo apny id bnai ha,wo pory document me kitni bar repeat huwa ha
+ 
+db.data.aggregate([{$group:{_id:'$name',totalPersons:{$sum:1}}}])
+[
+  { _id: 'Sophia', totalPersons: 1 },
+  { _id: 'Eve', totalPersons: 1 },
+  { _id: 'Tom', totalPersons: 1 },
+  { _id: 'Hannah', totalPersons: 1 },
+  { _id: 'Oscar', totalPersons: 1 },
+  { _id: 'David', totalPersons: 1 },
+  { _id: 'Grace', totalPersons: 1 },
+  { _id: 'Ivy', totalPersons: 1 },
+  { _id: 'Nina', totalPersons: 1 },
+  { _id: 'Paul', totalPersons: 1 },
+  { _id: 'Laura', totalPersons: 1 },
+  { _id: 'Bob', totalPersons: 1 },
+  { _id: 'jim', totalPersons: 2 },  //jim is repeated 2 times
+  { _id: 'Kenny', totalPersons: 1 },
+  { _id: 'Jack', totalPersons: 1 },
+  { _id: 'Mike', totalPersons: 1 },
+  { _id: 'Alice', totalPersons: 1 },
+  { _id: 'Frank', totalPersons: 1 },
+  { _id: 'Queen', totalPersons: 1 },
+  { _id: 'Robert', totalPersons: 1 }
+]
+
+
+
+=>same nam k users ki age ko sum kr du
+
+db.data.aggregate([{$group:{_id:'$name',totalPersons:{$sum:"$age"}}}])  
+
+[
+  { _id: 'David', totalPersons: 28 },
+  { _id: 'Grace', totalPersons: 27 },
+  { _id: 'Hannah', totalPersons: 24 },
+  { _id: 'Oscar', totalPersons: 33 },
+  { _id: 'Tom', totalPersons: 38 },
+  { _id: 'Eve', totalPersons: 22 },
+  { _id: 'Sophia', totalPersons: 19 },
+  { _id: 'Bob', totalPersons: 25 },
+  { _id: 'Laura', totalPersons: 31 },
+  { _id: 'Paul', totalPersons: 36 },
+  { _id: 'Nina', totalPersons: 34 },
+  { _id: 'Ivy', totalPersons: 29 },
+  { _id: 'Jack', totalPersons: 32 },
+  { _id: 'Mike', totalPersons: 23 },
+  { _id: 'jim', totalPersons: 46 },  //only jim is 2 times
+  { _id: 'Kenny', totalPersons: 26 },
+  { _id: 'Charlie', totalPersons: 30 },
+  { _id: 'Queen', totalPersons: 20 },
+  { _id: 'Frank', totalPersons: 35 },
+  { _id: 'Alice', totalPersons: 21 }
+]
+
+=>AISY USERS do jin ki age 20 sy zyada hu aur same name k users ki age ko sum kr du
+
+db.data.aggregate([{$match:{age:{$gt:20}}},{$group:{_id:'$name',totalPerson:{$sum:'$age'}}}])
+[
+  { _id: 'Robert', totalPerson: 40 },
+  { _id: 'Tom', totalPerson: 38 },
+  { _id: 'Eve', totalPerson: 22 },
+  { _id: 'David', totalPerson: 28 },
+  { _id: 'Grace', totalPerson: 27 },
+  { _id: 'Hannah', totalPerson: 24 },
+  { _id: 'Oscar', totalPerson: 33 },
+  { _id: 'Nina', totalPerson: 34 },
+  { _id: 'Paul', totalPerson: 36 },
+  { _id: 'Ivy', totalPerson: 29 },
+  { _id: 'Bob', totalPerson: 25 },
+  { _id: 'Laura', totalPerson: 31 },
+  { _id: 'jim', totalPerson: 46 },
+  { _id: 'Kenny', totalPerson: 26 },
+  { _id: 'Jack', totalPerson: 32 },
+  { _id: 'Mike', totalPerson: 23 },
+  { _id: 'Frank', totalPerson: 35 },
+  { _id: 'Alice', totalPerson: 21 },
+  { _id: 'Charlie', totalPerson: 30 }
+]
+
+=>AISY USERS do jin ki age 20 sy zyada hu aur same name k users ki age ko sum kr du aur un users ki age ki average b du
+db.data.aggregate([{$match:{age:{$gt:20}}},{$group:{_id:'$name',totalPerson:{$sum:'$age'},totalAverage:{$avg:'$age'}}}])
+[
+  { _id: 'Robert', totalPerson: 40, totalAverage: 40 },
+  { _id: 'Tom', totalPerson: 38, totalAverage: 38 },
+  { _id: 'Eve', totalPerson: 22, totalAverage: 22 },
+  { _id: 'David', totalPerson: 28, totalAverage: 28 },
+  { _id: 'Grace', totalPerson: 27, totalAverage: 27 },
+  { _id: 'Hannah', totalPerson: 24, totalAverage: 24 },
+  { _id: 'Oscar', totalPerson: 33, totalAverage: 33 },
+  { _id: 'Nina', totalPerson: 34, totalAverage: 34 },
+  { _id: 'Paul', totalPerson: 36, totalAverage: 36 },
+  { _id: 'Ivy', totalPerson: 29, totalAverage: 29 },
+  { _id: 'Bob', totalPerson: 25, totalAverage: 25 },
+  { _id: 'Laura', totalPerson: 31, totalAverage: 31 },
+  { _id: 'jim', totalPerson: 46, totalAverage: 23 },
+  { _id: 'Kenny', totalPerson: 26, totalAverage: 26 },
+  { _id: 'Jack', totalPerson: 32, totalAverage: 32 },
+  { _id: 'Mike', totalPerson: 23, totalAverage: 23 },
+  { _id: 'Frank', totalPerson: 35, totalAverage: 35 },
+  { _id: 'Alice', totalPerson: 21, totalAverage: 21 },
+  { _id: 'Charlie', totalPerson: 30, totalAverage: 30 }
+]
+
+=> $sort
+AISY USERS do jin ki age 20 sy zyada hu aur same name k users ki age ko sum kr du aur un users ki age ki average b du,and age k total ko ascending order me du
+ db.data.aggregate([{$match:{age:{$gt:20}}},{$group:{_id:'$name',totalPerson:{$sum:'$age'},totalAverage:{$avg:'$age'}}},{$sort:{totalPerson:1}}])
+[
+  { _id: 'Alice', totalPerson: 21, totalAverage: 21 },
+  { _id: 'Eve', totalPerson: 22, totalAverage: 22 },
+  { _id: 'Mike', totalPerson: 23, totalAverage: 23 },
+  { _id: 'Hannah', totalPerson: 24, totalAverage: 24 },
+  { _id: 'Bob', totalPerson: 25, totalAverage: 25 },
+  { _id: 'Kenny', totalPerson: 26, totalAverage: 26 },
+  { _id: 'Grace', totalPerson: 27, totalAverage: 27 },
+  { _id: 'David', totalPerson: 28, totalAverage: 28 },
+  { _id: 'Ivy', totalPerson: 29, totalAverage: 29 },
+  { _id: 'Charlie', totalPerson: 30, totalAverage: 30 },
+  { _id: 'Laura', totalPerson: 31, totalAverage: 31 },
+  { _id: 'Jack', totalPerson: 32, totalAverage: 32 },
+  { _id: 'Oscar', totalPerson: 33, totalAverage: 33 },
+  { _id: 'Nina', totalPerson: 34, totalAverage: 34 },
+  { _id: 'Frank', totalPerson: 35, totalAverage: 35 },
+  { _id: 'Paul', totalPerson: 36, totalAverage: 36 },
+  { _id: 'Tom', totalPerson: 38, totalAverage: 38 },
+  { _id: 'Robert', totalPerson: 40, totalAverage: 40 },
+  { _id: 'jim', totalPerson: 46, totalAverage: 23 }
+]
+
+=>$project(same as projection but diff is yaha aggregate k sath user kr rhy ha)
+
+ db.data.aggregate([{$project:{'kesa':1}}])   //saray
+[
+  { _id: ObjectId('68b82902f8f6716c23fa3351'), kesa: 'pta ni' },
+  { _id: ObjectId('68b829b7f8f6716c23fa3353'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3350'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3351'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3352'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3353'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3354'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3355'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3356'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3357'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3358'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3359'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa335a'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa335b'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa335c'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa335d'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa335e'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa335f'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3360'), kesa: 'pta ni' },
+  { _id: ObjectId('68bf5a9527faf9bd23fa3361'), kesa: 'pta ni' }
+]
+
+
+dont show me the _id
+b.data.aggregate([{$project:{'kesa':1,_id:0}}])
+[
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' },
+  { kesa: 'pta ni' }, { kesa: 'pta ni' }
+]
+
+now also you can create any other operation in project aggregation(you can do another operation in plain projection)
+data k document k sary object me sy srf age du aur us age ko 5 sy multiply kr k du
+db.data.aggregate([{$project:{'age':1,totalActualAge:{$multiply:['$age',5]}}}])  //for multiple,use array[]
+[
+  {
+    _id: ObjectId('68b82902f8f6716c23fa3351'),
+    age: 23,
+    totalActualAge: 115
+  },
+  {
+    _id: ObjectId('68b829b7f8f6716c23fa3353'),
+    age: 23,
+    totalActualAge: 115
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3350'),
+    age: 21,
+    totalActualAge: 105
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3351'),
+    age: 25,
+    totalActualAge: 125
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3352'),
+    age: 30,
+    totalActualAge: 150
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3353'),
+    age: 28,
+    totalActualAge: 140
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3354'),
+    age: 22,
+    totalActualAge: 110
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3355'),
+    age: 35,
+    totalActualAge: 175
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3356'),
+    age: 27,
+    totalActualAge: 135
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3357'),
+    age: 24,
+    totalActualAge: 120
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3358'),
+    age: 29,
+    totalActualAge: 145
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3359'),
+    age: 32,
+    totalActualAge: 160
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335a'),
+    age: 26,
+    totalActualAge: 130
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335b'),
+    age: 31,
+    totalActualAge: 155
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335c'),
+    age: 23,
+    totalActualAge: 115
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335d'),
+    age: 34,
+    totalActualAge: 170
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335e'),
+    age: 33,
+    totalActualAge: 165
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa335f'),
+    age: 36,
+    totalActualAge: 180
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3360'),
+    age: 20,
+    totalActualAge: 100
+  },
+  {
+    _id: ObjectId('68bf5a9527faf9bd23fa3361'),
+    age: 40,
+    totalActualAge: 200
+  }
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

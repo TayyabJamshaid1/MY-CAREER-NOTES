@@ -1,0 +1,219 @@
+==> Agr ap directly folder bna k rkhty hu aur andr page  ni bnaty,tu wo accessible ni ha
+==>In case agr apny folder bna k kisi aur name ka page bna dia ya index k nam ka page bna dia,tab b wo accessible ni ha
+=>agr hum chahty ha hamari image automatically full width aur height ly ,tu fill={true} property dy dein aur height,width ko remove kr dein.Also image tag k parent k andr positioning dna b zrori ha like relative,fixed,absolute etc
+
+   <div className='w-100 h-100 relative'>Service
+<Image src={NextjsIntro} className='rounded-full' fill={true} alt='eee' priority={false} quality={100} placeholder='blur' blurDataURL=" "/>
+
+
+    </div> 
+    
+    1-priority by default false huti ha.Ap chahty ha koi section open hu tab he wo image load hu then hum false dty ha.Agr hum chahty ha k phly sy he image load hu chahy abi section show huwa b ha ya ni then give priority ={true}
+    2-quality ki by default value 75 huti ha mgr ap ap 100 dy gy tu iski quality improve kr dy ga but iska size increase hu jai ga
+    3-Image jab tak load hu rhi ha tab tak blur show kr du .For this use placeholder='blur', blur value dny ki wajah sy  blurDataURL b dna pry ga.
+    ---------------------------------------------------------------------------------------------------
+React Server Component vs Client Component in Next.js
+
+=>    react ka jitna b kam hum agr nextjs me krna chahty ha tu sab sy phly hamai us component ko "client component" bnana prta ha,
+=>    react ka jo b code ha hum usy client component me likhy gy aur backend ka jo b code ha hum usy server componnet me likhy gy
+React server component ka use below scenarios me karain gy
+a-use it when we have to fetch data and only have to represent it
+b-use it when we want to hide url
+c-Use it when we want to load data even before that component open while in react ,ui is rendered then make api call and then load the data
+=>if  a client component imports another component that imported component becomes a client component too even if it does not have use "use client"
+=>by default all the files including layout and pages are all react server components except 1 file which is error.js 
+
+
+
+=>client component ko kabhi b async ni bna skty
+--------------------------------------------------
+1️⃣ React Server Components (RSC)
+
+Runs on the server, never in the browser.
+
+Can fetch data directly from a database, filesystem, or API without exposing secrets.
+
+Returns HTML + serialized props to the client.(Serialized props:The data fetched is converted to JSON-like format so the client/browser can understand it.This converatable json data ko serialized props kehty ha).
+
+Cannot use client-side hooks like useState, useEffect, or browser APIs (window, document).
+
+Very fast for initial load because the server does the heavy lifting and sends ready-to-render HTML.
+
+Example:
+
+// server component (default)
+const Products = async () => {
+  const res = await fetch("https://api.example.com/products");
+  const products = await res.json();
+
+  return (
+    <ul>
+      {products.map((p) => (
+        <li key={p.id}>{p.name}</li>
+      ))}
+    </ul>
+  );
+};
+
+
+This fetch happens on the server, the browser only gets HTML.
+
+2️⃣ React Client Components
+
+Runs in the browser, same as normal React.
+
+Can use state, effects, browser APIs, event handlers.
+
+Can still receive props from a parent server component, but the server does not run this code.
+
+Useful for interactivity: buttons, forms, modals, toggles.
+
+To mark a component as client-side:
+
+'use client'
+
+import { useState } from "react";
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+
+export default Counter;
+
+
+This runs entirely in the browser, React behaves just like normal React.
+
+The server does not execute this component — it only sends the server component HTML to the client, and React hydrates the client component there.
+------------------------------------------------
+Static page vs dynamic page
+In nextjs,all pages are static by default
+=>Static means us page pr apka data change ni hu rha.Static pages are pages that do not depend on any request-time or changing data.
+
+=>A Page will become dynamic when it depends on data that can change between requests like using (See dynamic page img)
+a)searchParams  b)useSearchParams c)fetch d)usePathName e)When you manually make your page dynamic by export const dynamic='force-dynamic'  etc
+
+imp:
+Jab ap database sy data fetch kr rhy hu aur wo kisi param/searchparam k upr depend ni ha tu tab b ye apk page ko as a static he treat kry ga.
+
+=>Run command npm run build and see that which pages are static and which are dynamic
+See image named "Static vs Dynamic identity",a circle shaped represent static page jab k hum ny in mei db ka data collect kiya ha, while  f keyword represents dynamic page
+
+=>After run "npm run build",now i want to run production command (jo build mainy npm run build kr k bnai ha,usy ab production me run kr du) by using npm run start(production command)
+
+Imp:
+
+=>When you run npm run build, Next.js pre-renders all pages that don’t need changing data — these are static and built once. If a page needs request-time information like searchParams, cookies, or  fetch, Next.js cannot pre-render it, so it becomes a dynamic page and runs on the server every time a user requests it.
+=>After run "npm run start",ab hamari build production me ha.mai agr ab apny code me kuch b change kr lo,koi b changes ab reflect ni hu gi kyu k hum ny jis build pr production chlai ha,un mei ye changes ni thi.Agr hum wo changes dikhana chahty ha tu hamai dobara new build bnani hu gi by using "npm run build"
+=>When we are in production,hamaray data jo let suppose hamai db sy a rha ha ,us me koi update huti ha tu dynamic page me wo changes reflect hu gi mgr static page me previous data ko he hold rkhy ga which means static page me changes reflect ni hugi.
+
+
+
+---------------------------------------------------
+Incremental Static Regeneration(ISR)
+
+Why we need it?
+When we are in production,hamaray data jo let suppose hamai db sy a rha ha ,us me koi update huti ha tu dynamic page me wo changes reflect hu gi mgr static page me previous data ko he hold rkhy ga which means static page me changes reflect ni hugi.Static me ye issue resolve krny k liye ISR ka use krty ha.ISR hamary static page ko b dynamic bnany  ki power rkhta ha.
+
+export const revalidate=20;
+
+ISR Simple & Accurate Explanation (Final Version)
+
+When the developer builds the project at 12:00 PM, Next.js generates the static page and immediately starts the revalidate timer (for example, 10 seconds). If a user visits before the timer expires, they see the old static data. Once the timer expires, the next user who visits still sees the old page, but Next.js realizes the timer is over and quietly fetches updated data in the background. After this background fetch is finished, Next.js updates the stored static page, and the new version will only become visible when the next user loads or refreshes the page. At that same moment, a new revalidate timer starts again. This cycle continues forever—users always get instant responses, and the page gets refreshed only after the timer expires and a user triggers regeneration.
+
+
+┌────────────────────────────┐
+│        npm run build       │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Static page generated      │
+│ (e.g., shows 10 items)     │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Revalidate timer starts    │
+│ (10 seconds)               │
+└─────────────┬──────────────┘
+              │
+              │  User visits before timer expires
+              ▼
+┌────────────────────────────┐
+│ Serve OLD static page      │
+│ (fast, no regeneration)    │
+└─────────────┬──────────────┘
+              │
+              ▼
+      TIMER EXPIRES (→ 10 sec)
+────────────────────────────────────────────
+
+              │ Next user triggers regeneration
+              ▼
+┌────────────────────────────────────────────┐
+│ User visits AFTER timer expires            │
+│ → Still sees OLD page                      │
+│ → Next.js starts BACKGROUND regeneration   │
+└────────────────────────────┬───────────────┘
+                             │
+                             ▼
+┌────────────────────────────┐
+│ Fetch NEW data (e.g., 8 items)
+│ Update static HTML page     │
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Revalidate timer resets    │
+│ (starts new 10-second window)
+└─────────────┬──────────────┘
+              │
+              ▼
+┌────────────────────────────┐
+│ Next user visits → sees    │
+│ UPDATED page (8 items)     │
+└────────────────────────────┘
+-----------------------------------------
+Navigation in  nextjs
+
+1-redirect
+The redirect function allows you to redirect the user to another URL. redirect can be used while rendering in Server and Client Components, Route Handlers, and Server Actions.
+
+
+import { redirect } from "next/navigation";
+<button onClick={()=>{redirect("/")}}>Kesaaaa</button>
+
+2-useRouter
+It is also used for navigation in client side component
+You can import in from 2 ways
+a)next/router   b)next/navigation
+
+In the latest application you will allways use next/navigation
+
+import {useRouter} from "next/navigation"
+
+const router=useRouter();
+router.push("/")
+
+
+3-Go back
+import {useRouter} from "next/navigation"
+
+const router=useRouter();
+ <button onClick={() => router.back()}>
+            Go Back
+          </button>
+          
+          
+          
+          --------------
+          Server Component inside Client Component ❌ NOT allowed
+
+✅ Client Component inside Server Component

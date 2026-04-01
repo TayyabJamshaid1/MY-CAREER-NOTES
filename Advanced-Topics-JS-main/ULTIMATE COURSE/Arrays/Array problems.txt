@@ -1,0 +1,381 @@
+
+=>Find min value in array
+let sum=data.reduce((arr,curr,index)=>{
+  if (index==0){
+    
+    arr=curr
+  }
+  
+  if (arr>curr){
+    arr=curr;
+  }
+  return arr
+},0)
+
+=>Find max value
+let sum=data.reduce((arr,curr,index)=>{
+ 
+  if (arr<curr){
+    arr=curr;
+  }
+  return arr
+},0)
+
+=>Find sum of all values
+
+let sum=data.reduce((arr,curr)=>{
+  arr+=curr;
+  return arr
+},0)
+console.log(sum);
+
+=>Find keys
+let data=[{
+  name:"tayyab",age:50
+},{
+  name:"noman",age:40
+},{
+  name:"usman",age:30
+},{
+  name:"amir",age:40
+}]
+let datass={
+  56:"tayyab"
+}
+console.log(datass[59]);
+
+let num=data.reduce((acc,curr)=>{
+  acc[curr.age]=(acc[curr.age]||0)+1
+  
+  return acc
+},{})
+console.log(num);
+
+
+//find second largest number from array
+
+let arr = [10,5,10] or  [12,35,1,10,34,1];
+
+//my way:
+arr=[...new Set(arr)] //first remove the duplicates
+function findLargestNumber(arr){
+let max=0;
+for (let i=0;i<arr.length;i++){
+  if (max<arr[i]){
+    max=arr[i]
+  }
+}
+return max
+}
+
+let maxNum=findLargestNumber(arr);
+
+let index=arr.findIndex((item)=>item==maxNum)
+arr.splice(index,1)
+ maxNum=findLargestNumber(arr);
+ console.log(maxNum);
+ 
+ 
+ //second Recommended way
+ 
+ 
+ let num=[...new Set(arr)].sort((a,b)=>b-a)[1]
+console.log(num);
+
+=>Find k numbers
+let arrayValue = [12,35,1,10,34,1];
+function FindKNumbers(arr,k){
+let size=arr.length;
+if (k>size){
+  k=k%size;
+}
+let rotated=arr.splice(size-k,size);
+arr.unshift(...rotated);
+return arr;
+}
+
+console.log(FindKNumbers(arrayValue,4));
+
+Note:
+Modulus is the Correct Approach in case of k greater
+Mathematical Correctness: Rotating an array by k positions where k > size is equivalent to rotating by k % size positions
+
+Example: Rotating [1,2,3] by 4 positions = rotating by 1 position (since 4 % 3 = 1)
+
+=>Remove duplication:
+
+By for loop:
+let nums=[0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5]
+let nonRepeatedData=[]
+for (let i=0;i<nums.length;i++){
+if (!nonRepeatedData.includes(nums[i])){
+nonRepeatedData.push(nums[i])
+}
+}
+
+console.log(nonRepeatedData);
+
+By simple set method:
+let nums=[0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5]
+nums=[...new Set(nums)];
+
+=>Merging a two arrays
+Old way:
+let arr1=[1,3,5,7]; let arr2=[2,4,6,8];
+let arr3=[];
+let value=0;
+for (let val of arr1){
+    arr3.push(val);
+    for (let i=value;i<arr2.length;i++){
+value++;
+arr3.push(arr2[i]);
+break;
+
+    }
+}
+console.log(arr3);
+
+latest ways:
+Way 1:
+let arr1 = [1, 3, 5, 7];
+let arr2 = [2, 4, 6, 8];
+let arr3 = [];
+
+for (let i = 0; i < arr1.length; i++) {
+    arr3.push(arr1[i]);
+    arr3.push(arr2[i]);
+}
+
+console.log(arr3); // [1, 2, 3, 4, 5, 6, 7, 8]
+
+Way 2:
+let arr1=[1,3,5,7]; let arr2=[2,4,6,8];
+let arr3=arr1.reduce((acc,curr,index)=>{
+acc.push(curr,arr2[index]);
+return acc
+},[])
+console.log(arr3);
+
+=>Palindrome
+ let arr=[1, 2, 3, 2, 1];
+let left=0;
+let right=arr.length-1;
+let check=true;
+
+Old way:
+for(let i=0;i<arr.length;i++){
+    if (arr[left]==arr[right]){
+        left++; right--;
+        console.log(arr[left],arr[right]);
+        
+        check=true
+    }else{
+        check=false;
+    }
+}
+console.log(check);
+
+Better way:
+while (left<right){
+if (arr[left]!==arr[right]){
+ check=false;
+ break   
+}
+left++;
+right--;
+}
+
+Best latest way:
+let latest=arr.every((val,i)=>val===arr[arr.length-1-i])
+console.log(latest);
+---------------------
+Find the missing array numbers from the list
+let arr=[1,2,4,5,7]
+let missingElements=[]
+for (let i=0;i<arr.length;i++){
+if (!arr.includes(arr[i]+1)){
+missingElements.push(arr[i]+1)
+}
+}
+
+console.log(missingElements);
+
+BEST SOLUTION TO FIND PREVIOUS AND FORWARD NUMBERS TILL MAX NUMBER
+let arr = [4, 5, 7, 11];
+
+let max=Math.max(...arr)
+let missing=[]
+for (let i=1;i<max;i++){
+  if (!arr.includes(i)){
+    missing.push(i)
+  }
+}
+console.log(missing);
+
+------------------------
+find common numbers /intersection of two arrays
+Old way:
+let array=[1,2,4,5,7,11,17,44,47]
+let array2=[2,45,53,3,7,54,44]
+let common=[]
+for (let i=0;i<array.length;i++){
+if (array2.includes(array[i])){
+  common.push(array[i])
+}
+}
+console.log(common);
+
+Latest Way:
+let array=[1,2,4,5,7,11,17,44,47]
+let array2=[2,45,53,3,7,54,44]
+
+let intersection=array.filter((num)=>array2.includes(num));
+console.log(intersection);
+-------------------
+find union of arrayslet array=[1,2,4,5,7,2,11,17,44,47]
+let array2=[2,45,53,3,7,54,44]
+let union=[...new Set([...array,...array2])].sort((a,b)=>{
+  return a-b
+})
+console.log(union);
+----------------------
+
+let nums=[0,0,1,1,1,2,2,2,3,3,3,4,4,4,5,5,5]
+
+let values=nums.reduce((acc,curr)=>{
+acc[curr]=(acc[curr]||0)+1;
+return acc
+},{})
+console.log(values);
+
+let data=Object.entries(values).map(([item,count])=>{
+return `${item} is coming ${count} times`
+}).join(', ')
+console.log(data);
+
+
+--------------------
+
+
+find the smallest difference of two values in all array
+let data = [23, 77, 21, 44, 100, 99];
+
+function findClosestPair(arr) {
+  // Step 1: Sort the array
+  arr.sort((a, b) => a - b);
+
+  let minDiff = Infinity; //Infinity in JavaScript is just a special number that is larger than any other number.
+  let pair = [];
+
+  // Step 2: Compare neighbors
+  for (let i = 0; i < arr.length - 1; i++) {
+    let diff = arr[i + 1] - arr[i];
+    if (diff < minDiff) {
+      minDiff = diff;
+      pair = [arr[i], arr[i + 1]];
+    }
+  }
+
+  return { pair, difference: minDiff };
+}
+
+console.log(findClosestPair(data));
+
+
+Alternative:
+
+Instead of Infinity, you could start with the difference of the first two elements:
+
+let minDiff = arr[1] - arr[0];
+let pair = [arr[0], arr[1]];
+
+
+-----------
+FInd largest sum with pair
+
+let data = [23, 77, 21, 44, 100, 99];
+
+function largestPairSum(arr) {
+  // Sort the array
+  arr.sort((a, b) => b - a); // descending order
+
+  // The two biggest numbers will be at index 0 and 1
+  let max1 = arr[0];
+  let max2 = arr[1];
+
+  return { pair: [max1, max2], sum: max1 + max2 };
+}
+
+console.log(largestPairSum(data));
+-----------------
+Group array of objects by property
+
+let data= [{category: 'fruit', name: 'apple'}, {category: 'fruit', name: 'banana'}, {category: 'vegetable', name: 'carrot'}]
+Output should be :{fruit: [...], vegetable: [...]}
+
+Old way:
+let data= [{category: 'fruit', name: 'apple'}, {category: 'fruit', name: 'banana'}, {category: 'vegetable', name: 'carrot'}]
+let obj={}
+
+
+for (let i=0;i<data.length;i++){
+     if (Object.keys(obj).includes(data[i].category)){
+               obj[data[i].category]=[...obj[data[i].category],data[i].name]
+
+     }else{
+        obj[data[i].category]=[data[i].name]
+     }
+}
+console.log(obj);
+
+Latest methods:
+let data= [{category: 'fruit', name: 'apple'}, {category: 'fruit', name: 'banana'}, {category: 'vegetable', name: 'carrot'}]
+
+let grouped = data.reduce((acc, item,index) => {
+acc[item.category]=acc[item.category]||[]
+acc[item.category].push(item.name)
+return acc
+}, {});
+console.log(grouped);
+
+
+------------------
+chunking
+ chunk([1,2,3,4,5], 2) → [[1,2], [3,4], [5]]
+
+function data(array, pair) {
+  let arraychunk = [];
+  for (let i = 0; i < array.length; i += pair) {
+    arraychunk.push(array.slice(i, i + pair));
+  }
+  return arraychunk;
+}
+
+console.log(data([1, 2, 3, 4, 5], 2));
+
+
+-------------------------
+
+
+let names=["Tayyab Jamshaid","Hafiz Amir Attari Khan"]
+
+
+let data=names.map((item)=>{
+  //trim Removes extra spaces from start and end. e.g "  Tayyab Jamshaid  ".trim() ===>"Tayyab Jamshaid"
+  //split(/\s+/)
+//  /\s+/ is a regular expression
+//\s → matches any whitespace(space,tab,newLine)
+//+ → means one or more
+//So it splits the string no matter how many spaces are between words.
+//e.g "Muhammad   Tayyab  Bin   Jamshaid".split(/\s+/)    Result:["Muhammad", "Tayyab", "Bin", "Jamshaid"]
+let val=item.trim().split(/\s+/);
+let firstName=val[0];
+let lastName=val.length>1?val[val.length-1]:undefined;
+//parts.slice(1, -1)
+//1 → start from index 1 (skip first name)
+//-1 → stop before the last element
+let middleName=val.length>2?val.slice(1,-1).join(""):undefined
+
+return {firstName,lastName,middleName}
+})
+console.log(data);

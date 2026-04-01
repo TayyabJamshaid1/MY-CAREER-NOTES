@@ -1,0 +1,249 @@
+What is hook?
+hook is a normal js function.
+
+Why we need hook/function?
+It gives the benifits of Reusability,read ability & maintain ability,we can test it also.
+
+=>Always maintain modularity .It means Always create your componnet in smaller chunks.
+
+=>Always use "use" keyword to create your own hook
+
+=>When to use export default and export?
+When we have multiple functions to export,use "export" keyword ,else if we have only one function in all file,then use "export default".
+
+
+----------------------------
+Code Splitting / Chunking /lazy loading/on demand loading/ dynamic import concept in react:
+
+Suppose, you have thousand of components and your bundler load all the components in one file on your browser.That makes your page very very slow,
+because that file size has become very huge ,so it is not possible for browser to load. So what should we do? We should do a chunking and a logical bundling.
+
+Lazy loading means:
+
+👉 "Don't load everything at once.
+👉 Only load what you need, when you need it."
+
+
+🧠 Why use Lazy Loading?
+When your React app gets bigger, there are lots of components, images, code, etc.
+If you load everything together at the start:
+
+a)The app becomes slow to open.
+b)The user waits longer.
+
+So here we use lazy loading,
+Don't load all screens/components/pages at the beginning.
+Only load the parts when the user opens or uses them.
+
+🛍 Example:
+Suppose your app has these pages:
+
+🏠 Home
+
+📄 About
+
+🛒 Shop
+
+📞 Contact Us
+
+When the user first opens your app (landing on Home 🏠):
+
+Without lazy loading:
+➔ React downloads Home + About + Shop + Contact Us all at once — even though the user is only seeing Home.
+
+With lazy loading:
+➔ React downloads ONLY Home.
+➔ If the user clicks "Shop," then React downloads Shop page at that moment.
+
+🏃 Simple Real Life Comparison:
+Imagine a restaurant 🍔:
+
+Without lazy loading:
+They cook every item on the menu before you even order anything.
+
+With lazy loading:
+They only cook when you order.
+
+Which one makes more sense? → Of course, cook when ordered = load when needed!
+
+🧠 Why does this matter?
+Because:
+
+Your app opens much faster.
+
+You don't waste the user's internet/data downloading things they may never use.
+
+🔥 In super simple words:
+"Load it only when the user clicks on it, not before."
+
+So we by using lazy,
+
+Example:
+We are using lazy wrapped in Suspense in below example
+import "./App.css";
+import * as Header from "./Header";
+import Body from "./Body";
+import Footer from "./Footer";
+import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom"
+import AboutComponent from "./Components/AboutComponent";
+import Error from "./Components/Error";
+import ContactComponent from "./Components/ContactComponent";
+import RestaurantMenu from "./Components/RestaurantMenu";
+import ProfileComponent from "./Components/ProfileComponent";
+import { lazy, Suspense } from "react";
+import ShimmerComponent from "./ShimmerComponent";
+const Instamart=lazy(()=>import("./Components/Instamart"))
+const AppLayout=()=>{
+    return(
+      <>
+      <Header.Header/>
+      <Outlet/>
+      <Footer/>
+      </>
+    )
+}
+const App = () => {
+
+  const AppProvider=createBrowserRouter([
+    {
+      path:"/",
+      element:<AppLayout/>,
+      errorElement:<Error/>,
+      children:[
+        {
+          path:"/",
+          element:<Body/>
+        },
+        {
+          path:"/about",
+          element:<AboutComponent/>,
+          children:[{
+            path:"profile",
+            element:<ProfileComponent/>
+          }]
+        },
+        {
+          path:"/contact",
+          element:<ContactComponent/>
+        },
+        {
+          path:"/restaurantMenu/:id",
+          element:<RestaurantMenu/>
+        },
+        {
+          path:"/instamart",
+          element:<Suspense fallback={<ShimmerComponent/>}><Instamart/></Suspense>
+        }
+      ]
+    }
+  ])
+  return (
+    <>
+    <RouterProvider router={AppProvider}/>
+    </>
+  );
+};
+
+
+export default App;
+-----------------------------------------
+Never ever dynamically load your component inside another component especially lazy loading .See below example.Always use lazy load on the top.
+
+const AppLayout=()=>{
+const Instamart=lazy(()=>import("./Components/Instamart"))
+    return(
+      <>
+      <Header.Header/>
+      <Outlet/>
+      <Footer/>
+      </>
+    )
+}
+------
+import "./App.css";
+import * as Header from "./Header";
+import Footer from "./Footer";
+import {createBrowserRouter, Outlet, RouterProvider} from "react-router-dom"
+import Error from "./Components/Error";
+import ShimmerComponent from "./ShimmerComponent";
+import { lazy, Suspense } from "react";
+
+// Lazy load all components
+const Body = lazy(() => import("./Body"));
+const AboutComponent = lazy(() => import("./Components/AboutComponent"));
+const ContactComponent = lazy(() => import("./Components/ContactComponent"));
+const RestaurantMenu = lazy(() => import("./Components/RestaurantMenu"));
+const ProfileComponent = lazy(() => import("./Components/ProfileComponent"));
+const Instamart = lazy(() => import("./Components/Instamart"));
+
+const AppLayout=()=>{
+    return(
+      <>
+      <Header.Header/>
+      <Suspense fallback={<ShimmerComponent/>}>
+        <Outlet/>
+      </Suspense>
+      <Footer/>
+      </>
+    )
+}
+
+const App = () => {
+  const AppProvider=createBrowserRouter([
+    {
+      path:"/",
+      element:<AppLayout/>,
+      errorElement:<Error/>,
+      children:[
+        {
+          path:"/",
+          element:<Body/>
+        },
+        {
+          path:"/about",
+          element:<AboutComponent/>,
+          children:[{
+            path:"profile",
+            element:<ProfileComponent/>
+          }]
+        },
+        {
+          path:"/contact",
+          element:<ContactComponent/>
+        },
+        {
+          path:"/restaurantMenu/:id",
+          element:<RestaurantMenu/>
+        },
+        {
+          path:"/instamart",
+          element:<Instamart/>
+        }
+      ]
+    }
+  ])
+  
+  return (
+    <>
+    <RouterProvider router={AppProvider}/>
+    </>
+  );
+};
+
+export default App;
+
+Important notes:
+
+The Header and Footer components are not lazy-loaded because they're needed immediately on all routes
+
+The Error component is not lazy-loaded because it needs to be available immediately if there's a routing error
+
+You might want to create different loading states for different components rather than using the same ShimmerComponent everywhere
+
+Make sure all your lazy-loaded components have a default export (the lazy() function requires this)
+
+
+------------------
+
+
+does with lazy loading,i open  a about component and then move to anothercomponent.When i opened about,it load all its content.I have a question that when i come back,does it reload all the component or show me the loaded data which saved in his memory

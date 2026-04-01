@@ -1,0 +1,10 @@
+To prevent from props drilling,we can use useContext api/hook
+Usecontext can be done in 3 steps
+1)Create context
+2)Provide Context
+3)Consume context
+
+Parent Component ko humny context provide kr dia ,ab jis ko b data chahiye hu wo data consume kr ly ga (See context image),is sy mai props drilling sy bach gya,bich k components ko ab data pass krny ki zrort ni.
+
+
+In easy words,provider component kahay ga k mai data provider hu,sab ko mai data provide krpo ga,consumer kahay ga taiq ha jab mjy chahiye hu ga,mai data consume kr lo ga

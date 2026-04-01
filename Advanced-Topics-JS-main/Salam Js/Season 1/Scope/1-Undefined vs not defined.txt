@@ -1,0 +1,26 @@
+console.log(a); //undefined
+var a=9;
+console.log(x); //x is not defined
+
+Undefined vs not defined
+undefined ka matlab no defined ni ha,undefined ek special key word ha jo memory allocation k waqt a ko dia jata ha,is ka matlab ye ni a defined he ni ha
+
+
+//kabhi b kisi variable ko khud sy undefined assign ni krna chahiye,this approach is not recommendable, whether ye koi error ni dy ga but not recommended e.g let data=undefined; //not recommended
+
+
+
+null vs undefined
+n JavaScript, undefined and null both represent the absence of a value, but they convey different meanings and arise in different contexts:
+
+undefined: This indicates that a variable has been declared but has not yet been assigned a value. It can also occur when accessing a non-existent property of an object, or when a function does not explicitly return a value. undefined is automatically assigned by the JavaScript engine in these situations.
+
+null: This represents the intentional absence of any object value. It is a primitive value that a developer explicitly assigns to a variable to signify that it currently holds no meaningful value or object reference.
+
+Origin
+undefined is typically assigned by the JavaScript engine, while null is explicitly assigned by the developer.
+
+Type:
+typeof undefined returns "undefined", while typeof null returns "object" (a historical quirk in JavaScript).
+Loose vs. Strict Equality:
+null == undefined evaluates to true (loose equality), but null === undefined evaluates to false (strict equality, which checks both value and type).

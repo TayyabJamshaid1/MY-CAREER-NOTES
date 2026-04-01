@@ -1,0 +1,225 @@
+Here’s a **quick cheat sheet** you can keep in mind 📘:
+
+---
+
+## ✅ Common **Semantic Tags**
+
+These tags clearly define the role/meaning of the content.
+
+* **Headings & Text**:
+
+  * `<h1>` to `<h6>` → headings (importance hierarchy)
+  * `<p>` → paragraph
+  * `<strong>` → strong importance (usually bold)
+  * `<em>` → emphasized text (usually italic)
+  * `<blockquote>` → block quotation
+  * `<cite>` → citation
+
+* **Structure & Layout**:
+
+  * `<header>` → intro/header of page/section
+  * `<footer>` → footer of page/section
+  * `<main>` → main content of a page
+  * `<article>` → independent content (e.g., blog post, news article)
+  * `<section>` → thematic grouping of content
+  * `<nav>` → navigation links
+  * `<aside>` → side content (e.g., sidebar, ads)
+
+* **Lists & Media**:
+
+  * `<ul>` → unordered list
+  * `<ol>` → ordered list
+  * `<li>` → list item
+  * `<figure>` → self-contained content (image, chart, etc.)
+  * `<figcaption>` → caption for figure
+  * `<img>` → image (semantic with `alt`)
+  * `<audio>` / `<video>` → media elements
+<a>
+* **Tables (for actual tabular data)**:
+
+  * `<table>`
+  * `<thead>`, `<tbody>`, `<tfoot>`
+  * `<tr>`, `<th>`, `<td>`
+  * `<caption>`
+
+---
+
+## ❌ Common **Non-Semantic Tags**
+
+These do **not** provide meaning, just generic containers or inline styling.
+
+* `<div>` → generic block container
+* `<span>` → generic inline container
+* `<b>` → bold (visual only, not semantic; use `<strong>` instead if meaning is needed)
+* `<i>` → italic (visual only, not semantic; use `<em>` instead if meaning is needed)
+* `<font>` → deprecated (use CSS instead)
+* `<center>` → deprecated (use CSS instead)
+
+---
+
+👉 Rule of thumb:
+
+* If a tag tells *what the content is*, it’s **semantic**.
+* If a tag is just for grouping or styling, it’s **non-semantic**.
+
+-----------------------------------
+Great questions! Let’s tackle them one by one 👇
+
+---
+
+## 1️⃣ Block-level vs Inline-level Elements
+
+### 🔹 Block-level elements
+
+* Always **start on a new line**.
+* Take up the **full width** available (stretch across the container).
+* Can contain **other block or inline elements**.
+* Examples: `<div>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`, `<section>`, `<article>`
+
+✔️ Think of block-level elements as **big building blocks** of a page.
+
+---
+
+### 🔹 Inline elements
+
+* Do **not start on a new line**; they flow **within a line of text**.
+* Take up only as much **width as their content**.
+* Can only contain **text or other inline elements** (not block-level).
+* Examples: `<span>`, `<a>`, `<strong>`, `<em>`, `<img>`, `<label>`
+
+✔️ Think of inline elements as **small pieces of content inside a line**.
+
+---
+
+💡 Example:
+
+```html
+<p>This is a <strong>block</strong> and <span>inline</span> example.</p>
+```
+
+* `<p>` is **block-level** (new line).
+* `<strong>` and `<span>` are **inline** (stay inside the sentence).
+
+---
+
+## 2️⃣ Difference between **Element** and **Tag**
+
+### 🔹 Tag
+
+* A **piece of code enclosed in angle brackets** (`< >`).
+* Can be **opening tag** (`<p>`) or **closing tag** (`</p>`).
+* Example: `<h1>` is a tag.
+
+---
+
+### 🔹 Element
+
+* The **complete structure**, including opening tag, content, and closing tag.
+* Example:
+
+```html
+<h1>Hello World</h1>
+```
+
+* `<h1>` = opening tag
+* `Hello World` = content
+* `</h1>` = closing tag
+* Together they form an **element**: `<h1>Hello World</h1>`
+
+---
+
+👉 So:
+
+* **Tag** = the keyword inside `< >`.
+* **Element** = the whole thing (opening tag + content + closing tag).
+
+---
+
+Meta tags
+What are Meta Tags in HTML?
+
+Meta tags are tiny elements of HTML that live inside the <head> section of a webpage.
+They provide metadata (data about data) — information about the webpage, not shown directly on the page(browser/screen).
+They help browsers, search engines, and social media platforms understand your webpage better.
+
+Common Uses of Meta Tags
+1. SEO (Search Engine Optimization)
+
+Meta tags tell search engines what the page is about.
+Example:
+
+<meta name="description" content="This is a blog about fitness and nutrition.">
+<meta name="keywords" content="fitness, gym, nutrition, weight loss">
+
+
+2-When you share a link on Facebook, Twitter, WhatsApp, etc., the preview info comes from meta tags.
+Example:
+
+<meta property="og:title" content="My Fitness Blog">
+<meta property="og:description" content="Get tips on workouts, nutrition, and health.">
+<meta property="og:image" content="https://example.com/blog-image.jpg">
+
+
+og:title, og:description, and og:image → control what appears in the preview card.
+
+3-Author & Copyright Info
+<meta name="author" content="John Doe">
+<meta name="copyright" content="2025 MyCompany">
+
+-4-Control Page Behavior
+
+You can control how browsers render the page.
+Example:
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+charset="UTF-8" → Ensures correct text encoding (so all languages/symbols display properly).
+
+viewport → Makes web pages responsive (important for mobile).
+
+
+
+-----
+Major JavaScript Versions:
+Version	Year	Official Name	Key Features
+ES1	1997	ECMAScript 1	First standardized version
+ES2	1998	ECMAScript 2	Editorial changes
+ES3	1999	ECMAScript 3	Regular expressions, try/catch, better string handling
+ES4	❌	ECMAScript 4	Never released (too ambitious)
+ES5	2009	ECMAScript 5	JSON support, strict mode, array methods (forEach, map)
+ES6	2015	ECMAScript 2015	MAJOR UPDATE - most famous version
+ES7	2016	ECMAScript 2016	Array.prototype.includes, exponentiation operator
+ES8	2017	ECMAScript 2017	async/await, Object.values(), Object.entries()
+ES9	2018	ECMAScript 2018	Rest/spread properties, asynchronous iteration
+ES10	2019	ECMAScript 2019	Array.flat(), Object.fromEntries(), String.trim()
+ES11	2020	ECMAScript 2020	Optional chaining (?.), nullish coalescing (??)
+ES12	2021	ECMAScript 2021	String.replaceAll(), logical assignment operators
+ES13	2022	ECMAScript 2022	Top-level await, class fields, private methods
+ES14	2023	ECMAScript 2023	Array find from last, Hashbang grammar
+
+ES6 Key Features Introduced:
+
+Arrow functions: () => {}
+
+Classes: class MyClass {}
+
+Modules: import/export
+
+Let/Const: Block-scoped variables
+
+Template literals: `Hello ${name}`
+
+Destructuring: const {name, age} = person
+
+Promises: Better asynchronous programming
+
+Default parameters: function greet(name = "Guest")
+
+
+----
+The latest stable version of React is React 19.2.4. The major release, React 19, became stable in December 2024 
+
+
+The latest stable version of Next.js is Next.js 16, with the most recent patch being v16.1.6. This major release, announced in October 2025, includes significant performance improvements, enhanced caching, and integration with React 19.2 features. 

@@ -1,0 +1,219 @@
+In transform property,
+We have following options
+1-Scale  (Apny size sy kitny times greater value dni ha)
+=>ScaleX (horizontal)   =>ScaleY (Vertical)  =>Scale(both horizontal and vertical)
+
+Values can be 2(2 times greater than original size),1.5(1.5 times greater than original size) etc
+
+
+
+2-Translate
+
+Apni position sy top or bottom ya left or right move krna hu tu Translate property ka use kry gy
+
+a)-translateX(200px)
+By giving positive value ,move towards right until it completed 200px
+By giving negative value ,move towards left until it completed 200px
+
+B)-translateY(200px)
+By giving positive value ,move towards bottom until it completed 200px
+By giving negative value ,move towards top until it completed 200px
+
+c)translate(200px,200px)  //first value is for horizontal,second is for vertical direction
+
+
+3-Rotate
+Apni position sy kitny degree pr rotate krna
+      transform: rotate(45deg);
+
+By giving positive value ,move towards clock wise
+By giving negative value ,move towards anti clock wise
+
+
+4-skew
+if you want to tilt(taira) your element,then use this
+
+a)skewX(45deg)
+By giving positive value ,tilt towards left until it completed 45deg
+By giving negative value ,tilt towards right until it completed 45deg
+
+b)skewY(45deg);
+By giving positive value ,tilt towards top until it completed 45deg
+By giving negative value ,tilt towards bottom until it completed 45deg
+
+c)skew(45,55) //45 deals with left,55 deals with top
+
+CODE:
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+    <div class="container">
+    <div class="box">Kesa</div>
+    </div>
+</body>
+</html>
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+.container{
+      width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.box{
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid red;
+    transition: all 2s ease-in-out;
+}
+.box:hover{
+    /* background-color: blue; */
+    /* transform: scale(2); */
+transform: translate(350px, 50px) rotate(45deg) scale(4);
+}
+------------
+=>let suppose,when we give 4 values to any margin /padding,it is given as
+margin:10px 20px 30px 40px: top right left bottom
+=>if only 2 given
+margin:10px 20px;   //first value(10px) act as y axis and second value(20px) act as x axis(horizontal)
+
+------------------------------
+Position property:
+The position property sets how an element will be positioned in document
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./index.css"/>
+</head>
+<body>
+    <div class="container">
+        <div class="box1"></div>
+                <div class="box2"></div>
+        <div class="box3"></div>
+        <div class="box4"></div>
+
+    </div>
+    <div class="container2"></div>
+</body>
+</html>
+
+
+
+
+1-Relative
+=>Current window k Relatively he element ko position kiya jata ha.
+=>We can give the values of top,left,bottom,right
+=>After positioned of element,the space/area of element which he was covering before position is still maintained after position of element.
+
+
+2-Absolute
+An element with position: absolute; is positioned relative to its nearest positioned ancestor. A positioned ancestor is any ancestor element that has its position property set to something other than static (e.g., relative, absolute, fixed, or sticky).
+
+Imp:
+=>After positioned of element,the space/area of element which he was covering before position is removed after position of element.
+
+
+3-fixed
+Fixed position is making a fixed position of element.U can see the behaviour while scrolling.
+I see the behaviour that when i give fixed position,it overlaps on box 1.REASON IS When you apply position: fixed to an element, it is removed from the normal document flow and positioned relative to the viewport(screen k view k mutabiq khud ko adjust krta ha), not relative to its parent container.
+
+That means:
+
+It doesn’t care about .container or the other .box elements.
+
+It will “stick” to the viewport based on its top, left, right, or bottom values (which default to auto, meaning 0 if not changed).
+
+After positioned of element,the space/area of element which he was covering before position is removed after position of element.
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+.container,.container2{
+    display: flex;
+    border: 1px solid greenyellow;
+    padding: 10px;
+    gap: 5px;
+    height: 5000px;
+}
+.box1{
+    width: 200px;
+    height: 200px;
+    background-color: gray;
+}
+.box2{
+    width: 200px;
+    height: 200px;
+    position: fixed;
+    /* top: 20px;
+    left: 30px; */
+    background-color: yellow;
+}
+.box3{
+    width: 200px;
+    height: 200px;
+    background-color: red;
+}
+.box4{
+    width: 200px;
+    height: 200px;
+    background-color: pink;
+}
+
+4-sticky
+Sticky position is behave as a hybrid between position: relative and position: fixed.Initially if no(left,right,top,bottom) is given,it behaves like a relative position and when you give (left,right,top,bottom) and start scrolling,it behaves like a fixed position.But the main diff btw sticky and fixed is that sticky is behaving like fixed with in its parent container and fixed is adjusted according to the screen view port.
+After positioned of element,the space/area of element which he was covering before position is removed after position of element.
+
+*{
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+.container,.container2{
+    display: flex;
+    border: 10px solid greenyellow;
+    padding: 10px;
+    gap: 5px;
+    height: 5000px;
+}
+.box1{
+    width: 220px;
+    height: 200px;
+    background-color: gray;
+}
+.box2{
+    width: 200px;
+    height: 200px;
+    position: fixed;
+    top: 20;
+    left: 300px;
+    background-color: yellow;
+}
+.box3{
+    width: 200px;
+    height: 200px;
+    top: 50px;
+    position: sticky;  //sticky is used
+    background-color: red;
+}
+.box4{
+    width: 200px;
+    height: 200px;
+    background-color: pink;
+}

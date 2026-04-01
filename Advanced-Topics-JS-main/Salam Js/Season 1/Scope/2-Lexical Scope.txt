@@ -1,0 +1,29 @@
+Scope
+Where you can access specific variable or function in a code
+
+function dataFun()=>{
+var data="tayyab";
+data2();
+function data2(){
+console.log(data);
+}
+}
+dataFun();
+
+Ap kisi b variable/function ko pory code me kaha access kr skty ha,isy scope kehty ha
+
+There are two aspects of scope from example(hum is sawal ko 2trah sy b puch skty ha)
+1-What is the scope of this variable(data variable ka scope kya ha)
+2-Kya data variable ka scope data2 function me accessible ha
+
+LEXICAL ENVIRONMENT IMAGE EXPLANATION:
+=>lexical environment is a local memory along with lexical environment of his parent
+(apni memory k sath sath parent k variables/functions ko b access kr skty ha )
+=>Whenever a execution context is created,is k andr he  lexical environment is also created
+=>Lexical word meaning is hierarchy or in a sequence.
+=>So according to example,data2 is a lexically(physically) avaiable in dataFun function,similarly dataFun function is lexically(physically) avaiable in global scope
+=>So,whenever execution context  is created,you also get reference of his lexical environment parent(see image,orange wala part is the reference).So by example,data2 k pas dataFun ka reference huta ha,dataFun k pas global ka reference huta ha and global k pas reference me null huta ha
+
+So in short ,
+=>Lexical environment is the combination of 2 things(local memory+reference of lexical environment of parent)
+=>Jab b hamara execution context bnta ha,lexical environment us k andr he create huta ha

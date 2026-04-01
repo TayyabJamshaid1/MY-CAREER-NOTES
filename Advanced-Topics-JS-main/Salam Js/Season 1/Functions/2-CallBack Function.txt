@@ -1,0 +1,41 @@
+Callback
+A function passed it in another function is known as Callback function
+As we know js is a schronous and single threaded language but By using callbacks,we can use aschronous program in js
+For example:
+as we say By using callbacks,we can use aschronous program in js.So settimeout is a best example of it.Settimeout takes a  Callback function and calls it after their time.When its time is running,it is not in  callstack.After completion of time,it will come in  call stack and after executing,it will remove from call stack.
+=>Js has only one call stack.callstack is also known as main thread
+=>Everything executing in your program is executing through callstack
+=>If any operation blocks the callstack,that is known as blocking of main thread
+=>Suppose in your code,you have many functions.If any one function has heavy operations which take 20 to 30 seconds to complete that function,so by that time we know we have one call stack,so it wont be able to do any other work in the code thats mean Everything is blocked in the code.So thats why we should never block our main thread/call stack.So we should always use async things to that which takes time
+
+EVENT LISTENERS
+Event listeners also take callback function.That function is stored anywhere in memory.When that event listener called,that callback function comes in call stack and executed
+
+example:
+document.getElementById("data").addEventListener("click",function xyz(){
+    console.log("xyz");
+})
+xyz function is stored anywhere in memory,when click event called,it comes in call stack and executed
+
+now i want to count how many times a function xyz is called.This is very simple
+let count=0;
+document.getElementById("data").addEventListener("click",function xyz(){
+    console.log("xyz",++count);
+})
+but this approach is not recommended, because we make count a global variable and any one can modify it any whole code.So to prevent this,we use closures
+
+So,
+function eventListenersHandle(){
+let count=0;
+document.getElementById("data").addEventListener("click",function xyz(){
+    console.log("xyz",++count);
+})
+}
+eventListenersHandle()
+=>now this callback function xyz is forming a closure to its outer scope.So thats means xyz has a lexical scope of his parent.xyz function has a reference of count and window object which is given to it by lexical scope of its parent.So whenver this function is called,it have access to count and window object.
+That is what the closure is actually
+=>now count is not accessible in code because it is only in function scope
+
+GARBAGE COLLECTED & REMOVE EVENT LISTENERS
+Why we need to remove event listeners?
+Because event listeners are heavy.That means it takes memory even the call stack is empty.Suppose,we have thousand of event listeners in our code,so it grabs very much memory.Due to this,our page is very much slow because it takes a lot of memory due to closures.So whenever we remove any event listener,variables held by that event listener,will be garbage collected
