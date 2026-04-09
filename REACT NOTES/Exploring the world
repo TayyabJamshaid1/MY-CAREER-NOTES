@@ -256,3 +256,138 @@ if(){
 const [data,setData]=useState(false);  //Wrong Approach
 }
 
+
+------------------------
+
+Diff btw useLayoutEffect vs useEffect
+
+useLayoutEffect runs scyronously after a render before the screen is updated while useEffect runs ascyronously after render after the ui is updated
+
+useLayoutEffect:
+Render → useLayoutEffect runs → UI Updates → User sees screen
+         ↑                       
+    (Changes happen here before showing)
+
+useEffect:
+Render → UI Updates → User sees screen → useEffect runs
+                     ↑                    ↑
+              (Sees 0 for a moment)   (Then changes to 95)
+              
+ 
+ Example:
+              
+function Body() {
+  const [kesa, setKesa] = useState(0)
+
+  // ✅ useLayoutEffect - You CANNOT see 0 on screen
+  useLayoutEffect(() => {      
+    if (kesa === 0) {  
+      setKesa(95)  // Changes BEFORE showing
+    }
+  }, [kesa])
+
+  // ❌ useEffect - You CAN see 0 for a split second
+  // useEffect(() => {      
+  //   if (kesa === 0) {  
+  //     setKesa(95)  // Changes AFTER showing
+  //   }
+  // }, [kesa])
+
+  const changeKesa = () => {
+    setKesa(0)
+  }
+
+  return (
+    <div>
+      <h1>Test useeffect {kesa}</h1>
+      <button onClick={changeKesa}>Change Kesa</button>
+    </div>
+  )
+}
+
+🔑 Key Takeaway
+useLayoutEffect = Changes before user sees screen (no flicker)
+useEffect = Changes after user sees screen (possible flicker)
+
+ When to Use Which
+Use useEffect (Most Common)	Use useLayoutEffect (Rare)
+✅ Fetching data from API	✅ Measuring DOM elements (width, height)
+✅ Setting up subscriptions	✅ Getting scroll position
+✅ Adding event listeners	✅ Animations that need smooth start
+✅ Updating document title	✅ Preventing visual flickers
+✅ Logging/analytics	        ✅ Syncing with external DOM libraries
+
+
+❌ Disadvantages of useEffect
+#	Disadvantage	                          Explanation
+
+1	Visual Flicker	                          User sees intermediate values briefly before final update
+2	Layout Shift	                          Content can jump/move after user already sees it
+3	Flash of Unstyled Content	          May see unstyled content before CSS loads
+4	Inconsistent Measurements	          Getting element dimensions may be outdated
+5	FOUC (Flash of Unstyled Content)	  User sees raw HTML before styles apply
+
+
+❌ Disadvantages of useLayoutEffect
+#	Disadvantage	                          Explanation
+
+1	Blocks Painting	                          Browser cannot paint screen until it completes
+2	Slower Performance	                  Makes app feel laggy/slow
+3	Hurts User Experience	                  User sees delayed response
+4	Can Cause Errors in SSR	                  Crashes in Next.js / Server-Side Rendering
+5	Overkill for Most Cases	                  Using it unnecessarily hurts performance
+
+
+
+📊 Comparison Table
+Issue	         useEffect	                  useLayoutEffect
+
+Flickering	✅ Has flicker	                  ❌ No flicker
+Blocks Painting	❌ Doesn't block	          ✅ Blocks painting
+Performance	✅ Good	                  ⚠️ Can be bad
+SSR Compatible	✅ Yes                            ❌ Warning/Error
+Measures DOM	❌ Inaccurate	                   ✅ Accurate
+
+
+
+
+------------------------------Sequence of running useEffects
+useEffects runs from top to the bottom
+
+function Body() {
+ 
+const [kesa,setKesa]=useState(0)
+
+useEffect(()=>{
+  console.log("first useEffect");
+  
+},[])
+useEffect(()=>{
+  console.log("second useEffect");
+  
+},[])
+useEffect(()=>{
+  console.log("third useEffect");
+  
+},[])
+useLayoutEffect(()=>{
+  console.log("useLayoutEffect runs before useEffect");
+  
+},[])
+const chanegeKesa=()=>{
+  setKesa(0)
+}
+  return (
+    <div>
+     <h1>Test useeffect  {kesa}</h1>
+      <button onClick={chanegeKesa}>Change Kesa</button>
+    </div>
+  )
+}
+
+export default Body;
+Result:
+useLayoutEffect runs before useEffect
+first useEffect
+second useEffect
+third useEffect
