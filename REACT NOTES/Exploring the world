@@ -348,7 +348,23 @@ Performance	✅ Good	                  ⚠️ Can be bad
 SSR Compatible	✅ Yes                            ❌ Warning/Error
 Measures DOM	❌ Inaccurate	                   ✅ Accurate
 
+Visual Flow
+useEffect
+Render
+UI painted on screen
+useEffect runs
+State update
+Re-render
 
+
+useLayoutEffect
+Render
+useLayoutEffect runs
+State update
+Re-render
+UI painted
+
+👉 Only final UI is shown
 
 
 ------------------------------Sequence of running useEffects

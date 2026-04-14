@@ -13,7 +13,7 @@ Suppose if you have a container and you want a variable which has a scope just w
  
  Imp:
  Props are kind of local state of our parent component
- 
+ -----
  
  Props Drillings:
  
@@ -218,6 +218,46 @@ export default function Instamart() {
 Imp:
 Usecontext is like the useState of all the app.It means is me wo data rkha jai ga jisy kahai pori app me access kiya ja skta ha.You can also see how we can use useContext in class component.See image (useContext in class based component.png)
 
+--------------------
+Props are immutable,Explain
 
+
+The prop itself (the variable passed from parent to child) is immutable.
+But the state that lives in the parent component is mutable — and the child just receives a snapshot of that state at render time.
+
+What happens in your scenario
+Let’s break down your scenario step by step:
+
+jsx
+// Parent Component
+function Parent() {
+  const [count, setCount] = useState(0); // state lives here
+
+  return <Child count={count} onUpdate={setCount} />;
+}
+
+// Child Component
+function Child({ count, onUpdate }) {
+  return (
+    <div>
+      <p>{count}</p>          {/* This is a prop — immutable in this render */}
+      <button onClick={() => onUpdate(count + 1)}>Increment</button>
+    </div>
+  );
+}
+Step-by-step:
+Initial render
+Parent’s count state = 0.
+Child receives count={0} as a prop.
+
+User clicks button in Child → onUpdate(count + 1) is called.
+
+Parent’s setCount(1) runs — this changes the state in the Parent.
+
+React re-renders Parent with new state (count = 1).
+
+Parent creates a new prop value (1) and passes it to Child.
+
+Child receives brand new props — the old prop (0) is discarded.
 
 
