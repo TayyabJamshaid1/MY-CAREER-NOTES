@@ -74,7 +74,7 @@ Great questions! Let’s tackle them one by one 👇
 * Always **start on a new line**.
 * Take up the **full width** available (stretch across the container).
 * Can contain **other block or inline elements**.
-* Examples: `<div>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`, `<section>`, `<article>`
+* Examples: `<div>`, `<p>`, `<h1>`–`<h6>`, `<ul>`, `<ol>`, `<li>`, `<section>`, `<article>` nav footer
 
 ✔️ Think of block-level elements as **big building blocks** of a page.
 
