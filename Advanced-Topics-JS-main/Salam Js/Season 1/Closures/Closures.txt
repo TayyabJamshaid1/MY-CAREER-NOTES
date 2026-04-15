@@ -24,6 +24,7 @@ let data=x();
 let a=9;
 function y(){
 console.log(a);
+return a
 }
 return y(); //y does not return any thing,its why it return undefined here
 }
@@ -32,3 +33,18 @@ let data=x();
 console.log(data);
 
 data() //data is not a function
+
+
+Scenario 2
+function x(){
+let a=9;
+function y(){
+console.log(a);
+return a 
+}
+return y(); //y does not return any thing,its why it return undefined here
+}
+
+let data=x();
+console.log(data);
+

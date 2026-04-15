@@ -191,6 +191,298 @@ function delayedCounter() {
 
 const funcs = delayedCounter();
 
-console.log(funcs[0]()); // ?
-console.log(funcs[1]()); // ?
-console.log(funcs[2]()); // ?
+console.log(funcs[0]()); // ?  3
+console.log(funcs[1]()); // ?  3
+console.log(funcs[2]()); // ?  3
+
+
+
+Key Concept: var is function-scoped, not block-scoped
+There is ONLY ONE i variable
+All functions share the same reference to i
+What happens?
+3 functions created
+All point to same i box
+
+After loop:
+
+i = 3
+
+Now:
+
+funcs[0]() → 3
+funcs[1]() → 3
+funcs[2]() → 3
+
+👉 Because all look at same box 📦
+
+⚡ Important Twist
+❓ “But why doesn’t it store value at creation time?”
+
+Because JavaScript closures work like:
+
+“I’ll remember where to look later, not what I see now”
+
+💡 Important Insight
+👉 Functions don’t store values
+👉 They store reference to variables
+
+
+🔥 Now Compare with let
+for (let i = 0; i < 3; i++) {
+  counters.push(function () {
+    return i;
+  });
+}
+
+👉 Why this works?
+
+Because:
+
+Each loop creates a new box 📦
+Each function gets a different box
+
+
+-------
+
+function outer() {
+  let x = 0;
+
+  return function () {
+    x++;
+    return function () {
+      return x;
+    };
+  };
+}
+
+const fn = outer();
+
+const a = fn();
+const b = fn();
+
+console.log(a());
+console.log(b());
+
+
+----
+function test() {
+  var arr = [];
+
+  for (var i = 0; i < 3; i++) {
+    arr[i] = function () {
+      return i;
+    };
+  }
+
+  return arr;
+}
+
+const result = test();
+
+console.log(result[0]());
+console.log(result[1]());
+console.log(result[2]());
+
+
+-----
+function outer() {
+  let x = 10;
+
+  return function () {
+    x += 5;
+    return function () {
+      x += 1;
+      return x;
+    };
+  };
+}
+
+const fn = outer();
+
+const a = fn();
+const b = fn();
+
+console.log(a());
+console.log(b());
+
+
+----
+function outer() {
+  let x = 1;
+
+  return function () {
+    x++;
+
+    return function () {
+      x++;
+
+      return function () {
+        return x;
+      };
+    };
+  };
+}
+
+const fn = outer();
+
+const a = fn();
+const b = a();   
+const c = fn();
+
+console.log(b());
+console.log(c()());
+------------------
+
+function outer() {
+  let x = 0;
+
+  return {
+    inc: function () {
+      x++;
+      return function () {
+        return x;
+      };
+    },
+    get: function () {
+      return x;
+    },
+  };
+}
+
+const obj = outer();
+
+const a = obj.inc();
+const b = obj.inc();
+
+console.log(a());
+console.log(b());
+console.log(obj.get());
+-----------
+function create() {
+  let arr = [];
+
+  for (var i = 0; i < 3; i++) {
+    let x = i;
+
+    arr.push(function () {
+      x++;
+      return x;
+    });
+  }
+
+  return arr;
+}
+
+const res = create();
+
+console.log(res[0]());
+console.log(res[0]());
+console.log(res[1]());
+console.log(res[2]());
+-----------------------------
+function create() {
+  let arr = [];
+
+  for (let i = 0; i < 3; i++) {
+    let x = i;
+
+    arr.push(function () {
+      x++;
+      return x;
+    });
+  }
+
+  return arr;
+}
+
+const res = create();
+
+console.log(res[0]());
+console.log(res[0]());
+console.log(res[1]());
+
+--------
+function outer() {
+  let x = 1;
+
+  return {
+    a: function () {
+      x++;
+      return x;
+    },
+    b: function () {
+      let y = x;
+      x *= 2;
+      return y;
+    }
+  };
+}
+
+const obj = outer();
+
+console.log(obj.a());
+console.log(obj.b());
+console.log(obj.a());
+
+
+-------
+function test() {
+  let x = 0;
+
+  let arr = [];
+
+  for (let i = 0; i < 3; i++) {
+    arr.push(() => x += i);   
+  }
+
+  return arr;
+}
+
+const res = test();
+
+console.log(res[0]());  
+console.log(res[1]());
+console.log(res[2]());
+-------------------
+function outer() {
+  let x = 5;
+
+  return function () {
+    x = x * 2;
+
+    return function () {
+      x = x - 3;
+      return x;
+    };
+  };
+}
+
+const fn = outer();
+
+const a = fn();
+const b = fn();
+
+console.log(a());
+console.log(b());
+
+--------
+function test() {
+  return [
+    (() => {
+      let x = 0;
+      return () => ++x;
+    })(),
+    (() => {
+      let x = 0;
+      return () => ++x;
+    })()
+  ];
+}
+
+const [a, b] = test();
+
+console.log(a());
+console.log(a());
+console.log(b());
+console.log(b());
