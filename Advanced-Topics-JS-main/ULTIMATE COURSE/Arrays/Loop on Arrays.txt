@@ -18,8 +18,8 @@ for of && for in
 for (let key in data) {
   console.log(data[key]);
 }
-for (let key of data) {
-  console.log(key);
+for (let data of arr) {
+  console.log(data);
 }
 ------------------------------------------
 Map ,filter & reduce(NOT MODIFY THE ORIGINAL ARRAYS)
