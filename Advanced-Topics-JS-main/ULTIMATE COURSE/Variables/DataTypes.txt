@@ -280,6 +280,8 @@ let data2 = { ...data };
 
 // Reassign to a new array
 data2.arr = [44, 78, 99];
+or
+data2.arr=[...data.arr]
 
 console.log(data.arr);  // [1, 2, 3]
 console.log(data2.arr); // [44, 78, 99]
