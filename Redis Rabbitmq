@@ -1,0 +1,364 @@
+ Redis in Short:
+"Redis is your app's SUPER-FAST temporary memory" ⚡
+
+Stores data in RAM (lightning fast)
+
+Perfect for temporary stuff: sessions, cache, real-time data
+
+Auto-expires data (no cleanup needed)
+
+Like a quick notepad vs a permanent file cabinet
+
+🎯 RabbitMQ in Short:
+"RabbitMQ is your app's BACKGROUND WORKER MANAGER" 🚀
+
+Handles tasks behind the scenes without making users wait
+
+Distributes work among multiple workers
+
+Keeps tasks safe in queue until processed
+
+Like having a team of assistants - you give them work and focus on more important things
+
+-------
+🔐 Auth Flow (OTP Login with Redis + RabbitMQ)
+
+This project uses OTP-based authentication where the login process is divided into fast user response and background processing using Redis and RabbitMQ.
+
+⚡ Redis (In-Memory Database)
+
+Redis is used for temporary data storage:
+
+Stores OTP with expiry (5 minutes)
+Stores rate limit key (60 seconds) to prevent spam
+Very fast because data is stored in memory
+📦 RabbitMQ (Message Broker)
+
+RabbitMQ is used to handle background tasks asynchronously:
+
+Instead of sending email directly, backend pushes a message to a queue
+A separate mail service consumes the queue and sends the email
+Improves performance and scalability
+🔄 Login Flow
+User sends login request with email
+Backend checks rate limit in Redis
+→ If already requested recently → block request
+Generate 6-digit OTP
+Store OTP in Redis (expires in 5 minutes)
+Set rate limit key in Redis (expires in 60 seconds)
+Send OTP email task to RabbitMQ queue (send-otp)
+Backend immediately responds: "OTP sent"
+📨 Mail Service (Consumer Flow)
+Listens to send-otp queue
+Receives message (email + OTP)
+Sends email using Nodemailer
+Acknowledges message (ack) → removes it from queue
+🧠 Key Concepts
+Redis → Fast temporary storage (OTP, rate limit)
+RabbitMQ → Background job processing (email sending)
+assertQueue → Ensure queue exists
+sendToQueue → Add message to queue
+consume → Process messages from queue
+ack → Confirm task completion
+🎯 Overall Idea
+
+User gets a fast response, while heavy work (email sending) runs in the background.
+------------
+Express is an open-source backend web framework for Node.js that simplifies server-side development.
+
+It provides features like routing, middleware handling, request/response management, API creation, and easier server architecture.”
+
+
+
+Middleware is just a function that have access to request obj, response obj and the next middleware function.It can forward request to controller or return the res by dening access to controller
+Ye agay request ko forward b kr skta ha aur wahi sy response ko wapis b bhj skta ha
+-----------------
+We use Redis for temporary and fast storage like OTPs and rate limiting.
+When a user requests an OTP, we first check Redis to see whether the user already requested one within the last 60 seconds. If yes, we block the request to prevent spam.
+
+If allowed, we generate a 6-digit OTP and store it in Redis with an expiry time of 5 minutes using TTL.
+
+Instead of sending the email directly from the API, we use RabbitMQ for asynchronous processing. The API publishes an email task into a queue and immediately returns a response to the user, making the API very fast.
+
+RabbitMQ consumers run separately in the background and continuously listen to the queue. When a new message arrives, the consumer processes it and sends the OTP email.
+
+We use assertQueue to ensure that the queue exists before publishing or consuming messages
+┌─────────────┐
+│    User     │
+└──────┬──────┘
+       │
+       │ Request OTP
+       ▼
+┌──────────────────────┐
+│   Express API Server │
+└──────────┬───────────┘
+           │
+           │ Check rate limit
+           ▼
+┌──────────────────────┐
+│        Redis         │
+│ otp:ratelimit:email  │
+└──────────┬───────────┘
+           │
+     ┌─────┴─────┐
+     │ Exists ?  │
+     └─────┬─────┘
+           │Yes
+           ▼
+   Return 429 Error
+ "Too many requests"
+
+           │No
+           ▼
+┌──────────────────────┐
+│ Generate 6-digit OTP │
+└──────────┬───────────┘
+           │
+           │ Store OTP (5 min TTL)
+           ▼
+┌──────────────────────┐
+│        Redis         │
+│   otp:email = 123456 │
+└──────────┬───────────┘
+           │
+           │ Set rate limit key
+           │ (60 sec TTL)
+           ▼
+┌──────────────────────┐
+│        Redis         │
+│ otp:ratelimit:email  │
+└──────────┬───────────┘
+           │
+           │ Publish email task
+           ▼
+┌──────────────────────┐
+│      RabbitMQ        │
+│    Queue: send-otp   │
+└──────────┬───────────┘
+           │
+           │ Immediate success response
+           ▼
+┌──────────────────────┐
+│       User Gets      │
+│ "OTP sent to mail"   │
+└──────────────────────┘
+
+
+================ BACKGROUND FLOW ================
+
+┌──────────────────────┐
+│ RabbitMQ Consumer    │
+│ (Worker Server)      │
+└──────────┬───────────┘
+           │
+           │ assertQueue("send-otp")
+           │ Ensure queue exists
+           ▼
+┌──────────────────────┐
+│ Consume Message      │
+│ from send-otp queue  │
+└──────────┬───────────┘
+           │
+           │ Send Email
+           ▼
+┌──────────────────────┐
+│   SMTP / Mail Server │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│ User Receives OTP    │
+└──────────────────────┘
+
+
+
+
+---------------
+                IMAGE / VIDEO UPLOAD FLOW
+
+┌─────────────┐
+│    User     │
+└──────┬──────┘
+       │
+       │ Select Image / Video
+       ▼
+┌──────────────────────┐
+│      Frontend        │
+│ React / Next.js App  │
+└──────────┬───────────┘
+           │
+           │ multipart/form-data request
+           ▼
+┌──────────────────────┐
+│   Express API Server │
+└──────────┬───────────┘
+           │
+           │ Pass request to
+           ▼
+┌──────────────────────┐
+│  Multer Middleware   │
+└──────────┬───────────┘
+           │
+           ├──────────────────────────────┐
+           │                              │
+           │ Validate file type           │
+           │ (image/video only)           │
+           │                              │
+           │ Validate file size           │
+           │ (e.g. max 5MB / 50MB)        │
+           │                              │
+           └──────────────────────────────┘
+           │
+     ┌─────┴─────┐
+     │ Valid ?   │
+     └─────┬─────┘
+           │No
+           ▼
+┌──────────────────────┐
+│ Return Error         │
+│ "File too large"     │
+│ or invalid format    │
+└──────────────────────┘
+
+           │Yes
+           ▼
+┌──────────────────────┐
+│ Temporary Storage    │
+│ Memory / Disk        │
+└──────────┬───────────┘
+           │
+           │ Upload file
+           ▼
+┌──────────────────────┐
+│     Cloudinary       │
+└──────────┬───────────┘
+           │
+           ├──────────────────────────────┐
+           │                              │
+           │ Compress media               │
+           │ Optimize quality             │
+           │ Generate CDN URL             │
+           │ Create thumbnails            │
+           │ Video streaming support      │
+           │                              │
+           └──────────────────────────────┘
+           │
+           │ Return uploaded file URL
+           ▼
+┌──────────────────────┐
+│   Express Backend    │
+└──────────┬───────────┘
+           │
+           │ Store URL in Database
+           ▼
+┌──────────────────────┐
+│ MongoDB / Database   │
+└──────────┬───────────┘
+           │
+           │ Success Response
+           ▼
+┌──────────────────────┐
+│ Frontend Receives    │
+│ Optimized Media URL  │
+└──────────────────────┘
+
+
+
+============= MEDIA ACCESS FLOW =============
+
+┌─────────────┐
+│    User     │
+└──────┬──────┘
+       │
+       │ Open App / View Media
+       ▼
+┌──────────────────────┐
+│ Frontend Requests    │
+│ Media URL            │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│    Cloudinary CDN    │
+└──────────┬───────────┘
+           │
+           │ Deliver optimized
+           │ image/video quickly
+           ▼
+┌──────────────────────┐
+│ User Sees Media      │
+└──────────────────────┘
+
+
+
+---------------
+how node js works
+          JavaScript Code
+                  ↓
+             V8 Engine
+     (Converts to machine code)
+                  ↓
+              Call Stack
+                  ↓
+        ┌─────────────────┐
+        │ Sync Operation? │
+        └───────┬─────────┘
+                │YES
+                ▼
+       Execute Directly
+       (Blocking Operation)
+                │
+                ▼
+         Return Result
+
+
+                │NO (Async)
+                ▼
+       Send to Node APIs
+      / Worker Thread Pool
+                │
+        Background Processing
+                │
+                ▼
+         Callback Queue
+                │
+                ▼
+           Event Loop
+      "Is Stack Empty?"
+                │
+                ▼
+        Execute Callback
+                │
+                ▼
+          Return Result
+
+
+
+
+          “In Node.js, JavaScript code first goes to the V8, which converts the code into machine code that the computer understands. Node.js runs JavaScript on a single main thread, which means it executes one task at a time on the call stack. If the task is synchronous or blocking, like readFileSync, Node.js waits until the task finishes before moving to the next line. But if the task is asynchronous or non-blocking, like database calls, file uploads, APIs, or timers, Node.js sends that work to background systems such as OS APIs or libuv worker threads. While the background task is running, the main thread stays free and continues handling other requests. Once the background task finishes, its callback is added to the callback queue. The event loop continuously checks whether the call stack is empty, and when it becomes free, it takes the callback from the queue and executes it. This is why Node.js can handle many requests efficiently even though JavaScript execution itself is single-threaded.
+
+
+          in case of non blocking
+                      Main Thread
+                 │
+                 │ Async Task
+                 ▼
+         ┌────────────────┐
+         │     libuv      │
+         │ Thread Pool    │
+         └──────┬─────────┘
+                │
+   ┌────────────┼────────────┐
+   ▼            ▼            ▼
+Worker 1    Worker 2     Worker 3
+(File)      (Crypto)     (Zip)
+   │            │            │
+   └──────┬─────┴──────┬─────┘
+          ▼            ▼
+      Callback Queue
+             │
+             ▼
+         Event Loop
+             │
+             ▼
+        Execute Callback
