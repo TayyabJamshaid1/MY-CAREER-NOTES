@@ -1,0 +1,615 @@
+# Redis Auth Notes
+
+## 1. Important Redis Methods
+
+### redis.set()
+
+Used to store a value against a key.
+
+Example:
+
+```ts
+await redis.set(
+  "session:abc123",
+  JSON.stringify({
+    userId: "u1",
+    sessionVersion: 1
+  }),
+  "EX",
+  604800
+);
+```
+
+Meaning:
+
+```txt
+session:abc123
+```
+
+stores:
+
+```json
+{
+  "userId": "u1",
+  "sessionVersion": 1
+}
+```
+
+`EX 604800` means this session will expire automatically after 7 days.
+
+---
+
+### redis.get()
+
+Used to read data from Redis.
+
+Example:
+
+```ts
+const session = await redis.get("session:abc123");
+```
+
+If session exists, Redis returns user session data.
+
+If session expired or was deleted, Redis returns `null`.
+
+---
+
+### redis.del()
+
+Used to delete a key.
+
+Example:
+
+```ts
+await redis.del("session:abc123");
+```
+
+Used during logout.
+
+When this key is deleted, the session token stops working immediately.
+
+---
+
+### redis.sadd()
+
+`sadd` means Set Add.
+
+It adds a value into a Redis Set.
+
+Example:
+
+```ts
+await redis.sadd("user_sessions:u1", "abc123");
+```
+
+This means user `u1` has one active session: `abc123`.
+
+If user logs in from mobile also:
+
+```ts
+await redis.sadd("user_sessions:u1", "xyz456");
+```
+
+Now Redis has:
+
+```txt
+user_sessions:u1 = ["abc123", "xyz456"]
+```
+
+This helps in logout from all devices.
+
+---
+
+### redis.smembers()
+
+Used to get all values inside a Redis Set.
+
+Example:
+
+```ts
+const sessions = await redis.smembers("user_sessions:u1");
+```
+
+Returns:
+
+```ts
+["abc123", "xyz456"]
+```
+
+Used for logout all devices.
+
+---
+
+### redis.srem()
+
+`srem` means Set Remove.
+
+Used to remove one value from a Redis Set.
+
+Example:
+
+```ts
+await redis.srem("user_sessions:u1", "abc123");
+```
+
+This removes only one device/session from the user's active sessions list.
+
+---
+
+### redis.expire()
+
+Used to add expiry time to a key.
+
+Example:
+
+```ts
+await redis.expire("user_sessions:u1", 604800);
+```
+
+This means Redis will delete this key after 7 days.
+
+---
+
+## 2. Why Redis Is Better Than Plain JWT
+
+JWT is stateless.
+
+That means the token itself contains login proof.
+
+Example JWT payload:
+
+```json
+{
+  "userId": "u1",
+  "role": "manager",
+  "exp": 123456789
+}
+```
+
+Server checks:
+
+```txt
+Is JWT signature valid?
+Is JWT expired?
+```
+
+Problem:
+
+If JWT is stolen, it usually works until expiry.
+
+The server cannot easily delete one JWT because it is not stored on the server.
+
+---
+
+Redis session is stateful.
+
+Cookie contains only:
+
+```txt
+roleforge_session=abc123
+```
+
+Redis stores:
+
+```txt
+session:abc123 -> { userId: "u1", sessionVersion: 1 }
+```
+
+If user logs out:
+
+```ts
+await redis.del("session:abc123");
+```
+
+Now that session token stops working immediately.
+
+---
+
+Redis is preferred when we need:
+
+```txt
+Instant logout
+Logout current device
+Logout all devices
+Password reset invalidates sessions
+Suspicious session deletion
+Session tracking
+Rate limiting
+```
+
+Plain JWT is still useful for some APIs, but for strong session control, Redis sessions are better.
+
+---
+
+## 3. Can Redis Automatically Know Token Is Stolen?
+
+No.
+
+Redis cannot magically know that a token is stolen.
+
+Redis gives control after detection.
+
+Detection comes from security checks such as:
+
+```txt
+New device login
+New IP address
+New country
+Impossible travel
+Too many failed login attempts
+Too many active sessions
+Unusual browser/user-agent
+Password reset
+User reports suspicious activity
+```
+
+---
+
+## 4. How Suspicious Activity Can Be Detected
+
+### New Device
+
+Normal user:
+
+```txt
+Chrome on Ubuntu from Pakistan
+```
+
+Suddenly:
+
+```txt
+Safari on iPhone from another country
+```
+
+System can flag this as suspicious.
+
+---
+
+### Impossible Travel
+
+Example:
+
+```txt
+10:00 AM login from Pakistan
+10:20 AM login from Canada
+```
+
+This is physically impossible.
+
+System can block or ask for verification.
+
+---
+
+### Too Many Failed Login Attempts
+
+Redis can store login attempts.
+
+Example:
+
+```txt
+login_attempts:email@gmail.com = 5
+```
+
+If user fails login 5 times in 10 minutes, temporarily block login.
+
+---
+
+### Too Many Active Sessions
+
+Normal:
+
+```txt
+1 or 2 active sessions
+```
+
+Suspicious:
+
+```txt
+15 active sessions from different IPs
+```
+
+Action:
+
+```txt
+Force logout all devices
+Send security email
+Ask user to change password
+```
+
+---
+
+### User Agent Change
+
+Normal:
+
+```txt
+Chrome Linux
+```
+
+Suspicious:
+
+```txt
+curl
+Postman
+Python requests
+Unknown bot
+```
+
+Can be blocked or verified.
+
+---
+
+## 5. How Token Theft Damage Is Controlled
+
+If token is stolen, no system can guarantee full protection.
+
+But damage is reduced by:
+
+```txt
+HttpOnly cookies
+Secure cookies
+SameSite cookies
+Redis expiry
+Redis session deletion
+Logout all devices
+Session versioning
+Rate limiting
+Device/IP tracking
+Security emails
+MFA/OTP for sensitive actions
+```
+
+---
+
+## 6. What Is sessionVersion?
+
+MongoDB user has:
+
+```json
+{
+  "sessionVersion": 1
+}
+```
+
+Redis session has:
+
+```json
+{
+  "userId": "u1",
+  "sessionVersion": 1
+}
+```
+
+When password is changed or reset:
+
+```ts
+sessionVersion = sessionVersion + 1;
+```
+
+Now MongoDB has:
+
+```txt
+sessionVersion = 2
+```
+
+Old Redis session has:
+
+```txt
+sessionVersion = 1
+```
+
+During request:
+
+```txt
+Redis sessionVersion !== MongoDB sessionVersion
+```
+
+So the system rejects the session.
+
+This helps invalidate old/stolen sessions.
+
+---
+
+## 7. Full Redis Auth Flow
+
+### Register/Login Flow
+
+```txt
+User enters email/password
+        ↓
+API validates input
+        ↓
+MongoDB checks user
+        ↓
+Password is verified
+        ↓
+Redis session is created
+        ↓
+HttpOnly cookie is set
+        ↓
+User goes to dashboard
+```
+
+Redis stores:
+
+```txt
+session:abc123
+```
+
+Value:
+
+```json
+{
+  "userId": "u1",
+  "sessionVersion": 1
+}
+```
+
+Browser stores:
+
+```txt
+roleforge_session=abc123
+```
+
+---
+
+### Protected Route Flow
+
+```txt
+User opens /manager/dashboard
+        ↓
+Browser sends HttpOnly cookie automatically
+        ↓
+Server reads sessionId from cookie
+        ↓
+Server checks Redis session
+        ↓
+Server gets user from MongoDB
+        ↓
+Server checks sessionVersion
+        ↓
+Server checks role
+        ↓
+Allow or redirect
+```
+
+---
+
+### Logout Flow
+
+```txt
+User clicks logout
+        ↓
+Server reads cookie
+        ↓
+Server gets sessionId
+        ↓
+Server deletes session from Redis
+        ↓
+Server removes sessionId from user_sessions
+        ↓
+Server deletes cookie
+        ↓
+User is logged out
+```
+
+---
+
+### Suspicious Activity Flow
+
+```txt
+Request comes with session cookie
+        ↓
+Server reads session from Redis
+        ↓
+Server checks IP / user-agent / device pattern
+        ↓
+If suspicious:
+        ↓
+Delete Redis session
+        ↓
+Increment sessionVersion
+        ↓
+Logout all devices
+        ↓
+Send security email
+        ↓
+Force login again
+```
+
+---
+
+## 8. Simple Interview Answer
+
+Redis is better than plain JWT when we need strong session control.
+
+JWT is stateless, so if it is stolen, it usually works until expiry.
+
+Redis is stateful, so the server can delete a session immediately.
+
+Suspicious activity is not detected automatically by Redis. It is detected by checking IP, device, location, failed attempts, active sessions, and unusual behavior.
+
+Redis helps us control the damage by deleting suspicious sessions, logging out all devices, and combining with sessionVersion.
+
+
+---------------------------------------
+
+
+┌─────────────────────┐
+│ User Login/Register │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│ Validate Input      │
+│ Zod / Backend       │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│ MongoDB User Check  │
+│ email/password/role │
+└──────────┬──────────┘
+           ↓
+┌─────────────────────┐
+│ Create Session ID   │
+│ abc123              │
+└──────────┬──────────┘
+           ↓
+┌────────────────────────────┐
+│ Redis SET                  │
+│ session:abc123             │
+│ { userId, sessionVersion } │
+│ EX 7 days                  │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Redis SADD                 │
+│ user_sessions:u1           │
+│ add abc123                 │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Browser Cookie             │
+│ roleforge_session=abc123   │
+│ HttpOnly + Secure          │
+└──────────┬─────────────────┘
+           ↓
+┌─────────────────────┐
+│ Dashboard Access    │
+└─────────────────────┘
+
+
+Protected request:
+
+┌────────────────────────────┐
+│ User opens protected page   │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Browser sends cookie        │
+│ roleforge_session=abc123    │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Redis GET                   │
+│ session:abc123              │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ MongoDB get fresh user      │
+│ role, email, sessionVersion │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Security Checks             │
+│ sessionVersion, IP, device  │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Role Authorization          │
+│ user / manager / admin      │
+└──────────┬─────────────────┘
+           ↓
+┌────────────────────────────┐
+│ Allow or Redirect           │
+└────────────────────────────┘

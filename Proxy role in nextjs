@@ -1,0 +1,613 @@
+1. Role of proxy.ts
+
+proxy.ts runs before your page loads.
+
+Flow:
+
+Browser requests /admin/dashboard
+↓
+proxy.ts runs first
+↓
+proxy checks cookie
+↓
+allow or redirect
+↓
+then page/layout loads
+
+Think of it like a gate outside the building.
+
+It is useful for:
+
+blocking protected routes quickly
+redirecting logged-in user away from login/register
+handling Chrome back button issue
+adding headers
+basic route control
+
+But it should not contain heavy DB logic.
+
+
+
+
+
+---------
+# Next.js 16 Navigation Notes
+
+## 1. Link Component
+
+Used for normal navigation between pages.
+
+```tsx
+import Link from "next/link";
+
+<Link href="/dashboard">
+  Dashboard
+</Link>
+```
+
+### Characteristics
+
+```txt
+Client-side navigation
+No full page reload
+Most commonly used
+SEO friendly
+Prefetches pages automatically
+```
+
+### Use Cases
+
+```txt
+Navbar links
+Sidebar links
+Dashboard links
+Menu items
+```
+
+---
+
+# 2. router.push()
+
+Used inside Client Components.
+
+```tsx
+"use client";
+
+import { useRouter } from "next/navigation";
+
+const router = useRouter();
+
+router.push("/dashboard");
+```
+
+### Characteristics
+
+```txt
+Adds a new history entry
+User can go back
+Client-side navigation
+```
+
+### Flow
+
+```txt
+Login
+↓
+router.push("/dashboard")
+↓
+Dashboard
+↓
+Browser Back
+↓
+Login
+```
+
+### Use Cases
+
+```txt
+Navigate after button click
+Navigate after API success
+Wizard step navigation
+```
+
+---
+
+# 3. router.replace()
+
+Used inside Client Components.
+
+```tsx
+router.replace("/dashboard");
+```
+
+### Characteristics
+
+```txt
+Replaces current history entry
+Back button won't return to previous page
+Client-side navigation
+```
+
+### Flow
+
+```txt
+Login
+↓
+router.replace("/dashboard")
+↓
+Dashboard
+```
+
+### Use Cases
+
+```txt
+After Login
+After Register
+After Logout
+Auth redirects
+```
+
+### Difference Between push() and replace()
+
+router.push()
+
+```txt
+Adds history entry
+Back button works
+```
+
+router.replace()
+
+```txt
+Replaces history entry
+Back button does not return
+```
+
+---
+
+# 4. router.back()
+
+Used inside Client Components.
+
+```tsx
+router.back();
+```
+
+### Characteristics
+
+```txt
+Works like browser back button
+```
+
+### Use Cases
+
+```txt
+Back button in forms
+Back button in dashboard
+Navigation history
+```
+
+---
+
+# 5. router.forward()
+
+Used inside Client Components.
+
+```tsx
+router.forward();
+```
+
+### Characteristics
+
+```txt
+Works like browser forward button
+```
+
+### Use Cases
+
+```txt
+Rarely used
+History navigation
+```
+
+---
+
+# 6. redirect()
+
+Used inside:
+
+```txt
+Server Components
+Layouts
+Server Actions
+```
+
+Example:
+
+```tsx
+import { redirect } from "next/navigation";
+
+const user = await getCurrentUser();
+
+if (!user) {
+  redirect("/login");
+}
+```
+
+### Characteristics
+
+```txt
+Server-side redirect
+Stops execution immediately
+Protected route navigation
+```
+
+### Flow
+
+```txt
+Request
+↓
+Server checks auth
+↓
+redirect("/login")
+↓
+User never sees protected page
+```
+
+### Use Cases
+
+```txt
+Protected pages
+Protected layouts
+Role-based layouts
+Authentication checks
+```
+
+### Important
+
+```txt
+redirect() throws internally
+Nothing after redirect() executes
+```
+
+Example:
+
+```tsx
+redirect("/login");
+
+console.log("never runs");
+```
+
+---
+
+# 7. permanentRedirect()
+
+Used inside Server Components and Server Actions.
+
+```tsx
+import { permanentRedirect } from "next/navigation";
+
+permanentRedirect("/new-url");
+```
+
+### Characteristics
+
+```txt
+Returns HTTP 308 Permanent Redirect
+Search engines update URL
+Browser may cache redirect
+```
+
+### Use Cases
+
+```txt
+URL changed permanently
+SEO migration
+Legacy routes
+Domain migration
+```
+
+### Example
+
+```txt
+/old-blog
+↓
+/blog
+```
+
+Use:
+
+```tsx
+permanentRedirect("/blog");
+```
+
+---
+
+# Difference Between redirect() and permanentRedirect()
+
+redirect()
+
+```txt
+Temporary redirect
+HTTP 307
+SEO does not treat URL as permanently changed
+```
+
+Use when:
+
+```txt
+Login redirect
+Role redirect
+Auth redirect
+Temporary navigation
+```
+
+---
+
+permanentRedirect()
+
+```txt
+Permanent redirect
+HTTP 308
+SEO updates index
+Search engines remember new URL
+```
+
+Use when:
+
+```txt
+Route permanently moved
+Old URL should never be used again
+SEO migration
+```
+Real Example
+
+Old Website
+https://roleforge.com/dashboard
+
+Company changes architecture:
+
+https://roleforge.com/app/dashboard
+
+You want every old link:
+
+/dashboard
+
+to automatically go to:
+
+/app/dashboard
+
+and you want Google to remember this permanently.
+
+Use:
+
+permanentRedirect("/app/dashboard");
+---
+
+# 8. NextResponse.redirect()
+
+Used inside:
+
+```txt
+proxy.ts
+Route Handlers
+API Routes
+```
+
+Example:
+
+```tsx
+return NextResponse.redirect(
+  new URL("/login", request.url)
+);
+```
+
+### Characteristics
+
+```txt
+Runs before page rendering
+Works at request level
+Can block routes globally
+```
+
+### Use Cases
+
+```txt
+Auth route protection
+Proxy checks
+Request interception
+API redirects
+```
+
+---
+
+# Difference Between redirect() and NextResponse.redirect()
+
+redirect()
+
+```txt
+Used in Server Components
+Used in Layouts
+Used in Server Actions
+```
+
+Example:
+
+```tsx
+redirect("/login");
+```
+
+---
+
+NextResponse.redirect()
+
+```txt
+Used in proxy.ts
+Used in route handlers
+Used before rendering starts
+```
+
+Example:
+
+```tsx
+return NextResponse.redirect(
+  new URL("/login", request.url)
+);
+```
+
+---
+
+# 9. Proxy Navigation
+
+File:
+
+```txt
+proxy.ts
+```
+
+Example:
+
+```tsx
+export function proxy(request) {
+  const session =
+    request.cookies.get("session");
+
+  if (!session) {
+    return NextResponse.redirect(
+      new URL("/login", request.url)
+    );
+  }
+
+  return NextResponse.next();
+}
+```
+
+### Characteristics
+
+```txt
+Runs before page loads
+Runs on every matched request
+Good for route gating
+```
+
+### Use Cases
+
+```txt
+Prevent access to protected routes
+Prevent logged-in users visiting login/register
+Chrome back button protection
+Global route control
+```
+
+### What Proxy Should Check
+
+Good:
+
+```txt
+Cookie exists?
+Public route?
+Protected route?
+```
+
+Avoid:
+
+```txt
+Heavy MongoDB queries
+Complex business logic
+```
+
+---
+
+# Professional Auth Architecture
+
+proxy.ts
+
+```txt
+Checks:
+Session cookie exists?
+```
+
+↓
+
+layout.tsx
+
+```txt
+Checks:
+getCurrentUser()
+sessionVersion
+isActive
+role validation
+```
+
+↓
+
+API Routes
+
+```txt
+Checks:
+Authentication
+Authorization
+Ownership
+Business rules
+```
+
+---
+
+# Navigation Decision Guide
+
+Use Link when:
+
+```txt
+Normal page links
+Navbar
+Sidebar
+Menu
+```
+
+Use router.push() when:
+
+```txt
+Navigate after user action
+Keep history
+```
+
+Use router.replace() when:
+
+```txt
+Login
+Register
+Logout
+Auth redirects
+```
+
+Use redirect() when:
+
+```txt
+Server-side auth protection
+Layouts
+Server actions
+```
+
+Use permanentRedirect() when:
+
+```txt
+SEO migration
+URL permanently changed
+```
+
+Use NextResponse.redirect() when:
+
+```txt
+proxy.ts
+Route handlers
+Global route blocking
+```
+
+Use proxy.ts when:
+
+```txt
+Need request-level protection
+Prevent access before page loads
+Handle back-button auth issues
+```
+

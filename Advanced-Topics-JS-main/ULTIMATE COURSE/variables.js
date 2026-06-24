@@ -1,13 +1,15 @@
-let names=["Tayyab Jamshaid","Hafiz Amir Attari Khan"]
+let arrayValue = [12,35,1,10,34,1];
+function FindKNumbers(arr,k){
 
-let refirmedNames=names.map((item)=>{
-  let firstName,lastName,middleName; 
-  let data=item.trim("").split(/\s+/)
+let size=arr.length;
 
-  firstName=data[0];
-  lastName=data.length>1?data[data.length-1]:undefined;
-  middleName=data.length>2?data.slice(1,-1).join(" "):undefined;
-  return {firstName,lastName,middleName}
-})
+if (size<k){
+  k=k%size
+}
+let newArray=arr.splice(size-k,k)
+arr.unshift(...newArray)
+return arr
 
-console.log(refirmedNames);
+}
+
+console.log(FindKNumbers(arrayValue,7));

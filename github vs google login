@@ -1,0 +1,5 @@
+diff btw google login and github login
+
+Google uses OpenID Connect and provides an ID Token containing the user's identity, which the backend can verify directly.
+
+GitHub uses OAuth 2 Authorization Code Flow. The user first authorizes the application, GitHub sends an Authorization Code to the callback URL, the backend exchanges this code for an Access Token, and then uses that Access Token to fetch the user's profile and email from GitHub APIs.

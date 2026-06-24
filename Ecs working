@@ -1,0 +1,59 @@
+ssh -o IdentitiesOnly=yes -i ~/Downloads/shopdrop-backend2.pem ubuntu@13.233.142.140
+
+cd ~/tahwula-socket-backend
+
+git fetch origin
+git reset --hard origin/main
+
+npm install
+
+npm run build
+
+pm2 restart shopdrop-backend
+
+# start ngrok with PM2
+pm2 start "ngrok http 5000" --name ngrok
+
+pm2 save
+
+pm2 status
+
+
+Get Current ngrok URL
+
+Run:      curl http://127.0.0.1:4040/api/tunnels
+
+then add new url in netlify env
+
+
+To See ngrok Logs
+pm2 logs ngrok
+To See Backend Logs
+pm2 logs shopdrop-backend
+
+to see env variables
+cat .env
+
+--------------------------------------------------------
+See Storage Info
+in all laptop
+du -sh ~/* 2>/dev/null | sort -hr | head -20
+in desktop
+du -sh ~/Desktop/* 2>/dev/null | sort -hr | head -20
+
+in documents
+du -sh ~/Documents/* 2>/dev/null | sort -hr | head -20
+
+
+-------
+1. Explain useEffect() and its dependency array.
+2. Difference between useEffect(() => {}, []) and other dependency patterns.
+3. Explain React Router and the purpose of <BrowserRouter>.
+4. How would you improve React application performance?
+5. Diffenrence between useMemo, useCallback and lazy loading.
+
+
+❌ validateSessionAndGetUser error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+❌ validateSessionAndGetUser error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+❌ validateSessionAndGetUser error: Could not connect to any servers in your MongoDB Atlas cluster. One common reason is that you're trying to access the database from an IP that isn't whitelisted. Make sure your current IP address is on your Atlas cluster's IP whitelist: https://www.mongodb.com/docs/atlas/security-whitelist/
+
