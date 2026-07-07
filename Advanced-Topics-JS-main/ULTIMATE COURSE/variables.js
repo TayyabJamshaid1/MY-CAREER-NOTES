@@ -1,15 +1,12 @@
-let arrayValue = [12,35,1,10,34,1];
-function FindKNumbers(arr,k){
+const link="https://dummyjson.com/users";
+const user=fetch(link);
+console.log(user);
+user.then((ahmed)=>{
+  console.log(ahmed);
+return ahmed.json();
+}).then((data)=>{
+  console.log(data.users);
+})
 
-let size=arr.length;
 
-if (size<k){
-  k=k%size
-}
-let newArray=arr.splice(size-k,k)
-arr.unshift(...newArray)
-return arr
-
-}
-
-console.log(FindKNumbers(arrayValue,7));
+console.log("hiiiiiiii end");
