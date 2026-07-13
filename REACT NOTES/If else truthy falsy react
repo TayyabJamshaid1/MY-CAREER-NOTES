@@ -1,0 +1,390 @@
+React JSX Notes – Expressions, Statements, Truthy & Falsy
+1. Why can't we use if...else directly inside JSX?
+Rule
+
+JSX only accepts JavaScript expressions inside {}.
+
+It does not allow JavaScript statements.
+
+Expression
+
+An expression produces a value.
+
+Examples:
+
+10 + 20
+name
+isLoggedIn
+getUser()
+age > 18 ? "Adult" : "Child"
+
+Every expression evaluates to a value.
+
+Examples:
+
+10 + 20          // 30
+5 > 2            // true
+name             // "Tayyab"
+
+Since JSX needs something to render, it accepts expressions.
+
+<div>{10 + 20}</div>
+
+Output
+
+30
+Statement
+
+A statement performs an action.
+
+Examples:
+
+if
+else
+for
+while
+switch
+try...catch
+
+Statements do not produce a value.
+
+Example
+
+if (age > 18) {
+    console.log("Adult");
+}
+
+This executes code but doesn't return a value that JSX can render.
+
+Therefore this is invalid:
+
+<div>
+    {if(age > 18){
+        <Adult/>
+    }}
+</div>
+2. How to use if...else in React
+Method 1 (Recommended)
+
+Before return
+
+function App() {
+
+    if(isLoggedIn){
+        return <Home/>
+    }
+
+    return <Login/>
+}
+Method 2
+
+Store JSX in a variable
+
+function App(){
+
+    let content;
+
+    if(isLoggedIn){
+        content=<Home/>
+    }else{
+        content=<Login/>
+    }
+
+    return(
+        <div>{content}</div>
+    )
+}
+Method 3
+
+Ternary Operator
+
+<div>
+    {isLoggedIn ? <Home/> : <Login/>}
+</div>
+
+Because ternary is an expression.
+
+Method 4
+
+Logical AND
+
+<div>
+    {isAdmin && <AdminPanel/>}
+</div>
+
+If left side is truthy, React renders the right side.
+
+Method 5
+
+Immediately Invoked Function Expression (IIFE)
+
+<div>
+{
+(()=>{
+    if(isLoggedIn){
+        return <Home/>
+    }
+
+    return <Login/>
+})()
+}
+</div>
+
+The function call is an expression, so JSX accepts it.
+
+3. How JSX evaluates expressions
+
+Always think in two steps.
+
+Step 1
+
+JavaScript evaluates the expression.
+
+Step 2
+
+React renders the returned value.
+
+Example
+
+<div>
+    {5 + 5}
+</div>
+
+Step 1
+
+5 + 5
+↓
+
+10
+
+Step 2
+
+React renders
+
+10
+
+Another example
+
+<div>
+    {isLoggedIn ? <Home/> : <Login/>}
+</div>
+
+JavaScript evaluates
+
+<Home/>
+
+or
+
+<Login/>
+
+React renders whichever value JavaScript returns.
+
+4. Truthy and Falsy Values
+Falsy Values
+
+These values become false in a Boolean context.
+
+false
+0
+-0
+0n
+""
+null
+undefined
+NaN
+
+Everything else is truthy.
+
+Truthy Values
+[]
+{}
+"0"
+"false"
+" "
+1
+-1
+100
+Infinity
+function(){}
+5. How && works
+
+Rule
+
+Left side truthy
+↓
+
+Return right side
+Left side falsy
+↓
+
+Return left side
+
+Examples
+
+true && "Hello"
+
+Returns
+
+"Hello"
+false && "Hello"
+
+Returns
+
+false
+0 && "Hello"
+
+Returns
+
+0
+[] && "Hello"
+
+Returns
+
+"Hello"
+
+because array is truthy.
+
+{} && "Hello"
+
+Returns
+
+"Hello"
+
+because object is truthy.
+
+6. React Rendering Examples
+Example 1
+{0 && <h1>Hello</h1>}
+
+JavaScript
+
+0 && <h1>Hello</h1>
+
+↓
+
+0
+
+React renders
+
+0
+Example 2
+{false && <h1>Hello</h1>}
+
+JavaScript
+
+false
+
+React ignores it.
+
+Output
+
+Nothing
+Example 3
+{null && <h1>Hello</h1>}
+
+JavaScript
+
+null
+
+React ignores it.
+
+Output
+
+Nothing
+Example 4
+{undefined && <h1>Hello</h1>}
+
+Output
+
+Nothing
+Example 5
+{"" && <h1>Hello</h1>}
+
+JavaScript
+
+""
+
+React renders an empty string.
+
+Output
+
+Nothing visible
+Example 6
+{[] && <h1>Hello</h1>}
+
+JavaScript
+
+<h1>Hello</h1>
+
+Output
+
+Hello
+Example 7
+{{} && <h1>Hello</h1>}
+
+JavaScript
+
+<h1>Hello</h1>
+
+Output
+
+Hello
+7. Rendering Objects
+
+This works
+
+{} && <h1>Hello</h1>
+
+Because JavaScript first evaluates it to
+
+<h1>Hello</h1>
+
+React never tries to render the object.
+
+This does not work
+
+<div>
+    {{}}
+</div>
+
+Error
+
+Objects are not valid as a React child.
+
+Because React is trying to render the object itself.
+
+8. Common Mistake
+const items=[];
+
+return(
+    <div>
+        {items.length && <List/>}
+    </div>
+)
+
+items.length
+
+0
+
+JavaScript returns
+
+0
+
+React renders
+
+0
+
+Correct way
+
+{items.length > 0 && <List/>}
+
+Now JavaScript returns
+
+false
+
+React ignores false, so nothing is rendered.
+
+9. Interview Summary
+Why can't we use if...else inside JSX?
+
+JSX only accepts JavaScript expressions inside {} because expressions evaluate to a value. if, for, while, and switch are statements, so they don't produce a value that JSX can render. To use conditional rendering, perform the logic before return, assign JSX to a variable, use the ternary operator, logical &&, or wrap the logic inside an IIFE.
