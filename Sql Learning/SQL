@@ -117,7 +117,14 @@ insert into users (name,email,gender,date_of_birth,salary) values ("kessa","tay2
 
 
 ---------------------
+should not use - while settings the names
+
 Functions in Sql
+
+=>Aggregate Function:
+THis function is used to perform calculation on a set of values and return a single value.
+Examples
+avg,max,min,count,sum 
 1-Count
 select count(*) from users;
 or
@@ -130,5 +137,251 @@ select Min(salary) as min_salary , Max(salary) as max_salary from users;
 select sum(salary) as total from users;
 
 4-Group by & avg
+
+The group by statement is used with aggregate functions to group the result-set by one or more columns.
+We can select only those columns which were present in group by command.
+We can use only those columns in group by which data is repitative
+
+Every column in your SELECT that is NOT inside an aggregate function (COUNT, AVG, SUM, MAX, MIN) MUST be in GROUP BY
 select gender , avg(salary) as gender_salary from users group by gender;
+
+String Function
+1-lower & length
+select id,gender ,lower(name) as lower,length(name) as namelength from users;
+
+2-concat
+select id,gender ,lower(name) as lower,concat(lower(name),"787") as username from users;
+
+3-Current time & current year,month
+select id,gender ,now() as time, year(date_of_birth) as yob,month(date_of_birth) as month from users;
+
+4-datediff
+select name ,datediff(curDate(),date_of_birth) as days from users;
+----------
+Having:
+Having clause is used to specify conditions like where clause
+but it allways use with group by command
+We cannot use where command with group by
+
+Main difference btw where and having:
+Where clause is used for filtering the rows while having clause is used for filtering groups
+Where clause does not work with aggregate functions while we can use having clause with aggregate functions
+Where claused can used before the group by clause but not after that
+We can use where and having clause together in a single query
+From the performance point of view having is slower than where and should be avoided when possible
+------
+If else
+
+select id,name,gender,if (gender="Female","Yes","No") as is_female from "users";
+it will create a new column of is_female and it will implement that condition on each row 
+
+----------
+Commit un commit changes
+by default,auto commit is off,means by default  ek dfa jo change kr dia,usy revert back ni kr skty means koi record delete kr dia wo wapis ni a skta,agr hum chahty ha aisa na hu tu sab sy phly hamai default setting ko off krna hu ga.Us k bad apni final changes ko commit krna hu ga.Us k bad ap apna action perform kr skty ha.In case action galat hu jata ha aur ap undo krna chahty ha tu rollback statement execute krny sy  ap ny jo changes commit ki thi,wo wapis a jai gi .
+
+How to remove default setting of commit?
+set autocommit=0;
+
+
+-- select * from users;
+-- commit;   
+ -delete from users where id=8;
+select * from users;
+rollback;
+select * from users;
+
+if you want k default setting dobara on hu jai like undo wali option wagaira na hu then run below statement
+set autocommit=1;
+
+
+------------
+
+how to work with foreign key?
+
+ create table addresses(
+ id int primary key auto_increment not null unique,
+ city varchar(100),
+ street varchar(255),
+ state varchar(200),
+ pincode varchar(20),
+ user_id int,
+ constraint fk_user foreign key (user_id) references users(id) on delete cascade
+)
+select * from addresses;
+ insert into addresses (user_id,city,street,pincode,state) values  (5,"lhr","Darogawala","987","Punjab"), (6,"khi","sala","8987","Punjab");
+delete from users where id=4;    //now due to we use cascade,it will automatically deleted address record whenever user data removed
+select * from users;
+
+------------------
+Joins
+2 tables k data ko ek sath show krwany ko joins kehty ha
+
+Inner join:
+select users.gender,users.name,users.email,addresses.city,addresses.street from users inner join addresses on users.id=addresses.user_id;
+
+Left join
+select users.gender,users.name,users.email,addresses.city,addresses.street from users left join addresses on users.id=addresses.user_id;
+
+Right join
+select users.gender,users.name,users.email,addresses.city,addresses.street from users right join addresses on users.id=addresses.user_id;
+
+
+----------------------------
+Union & Union all
+=>2 aisy tables jin ka apas me koi relation ni ha un dono table ki kisi  b same column name field k data ko merge krny ko union kehty ha.
+In case of union, duplicates will be ignore  (see below example ,agr users me tayyab ha aur admin me b tayyab ha,tu ye admin k tayyab ko ignore kr dy gi)
+select name from users union  select name from admin_users;
+
+=>Union all:
+If we want duplication remove na hu,then use union all,ab tayyab 2 dfa show hu ga
+select name from users union all select name from admin_users;
+
+also we can add extra column for their identity
+select name,"Normal User" as role from users union  select name,"Admin User" as role from admin_users;//role will be added as separate column
+
+=>Ordered by
+also we can get the data of those first which have higher salary 
+select name,"Normal User" as role,salary  from users union  select name,"Admin User" as role,salary from admin_users order by salary desc;
+
+Rules of UNION
+The number of columns and their data types must match in all SELECT statements.(means users mei mainy srf name select kiya but admin_users me mainy name,email dono likhy,that is not allowed in union,users mei b email likhna pary ga)
+UNION removes duplicates by default.
+UNION ALL keeps duplicates.
+
+
+
+------------------
+self join
+assume users table as two tables
+ select a.id,a.name as "Refered",b.name as "Refered by" from users a inner join users b on a.refered_by_id=b.id;
+ 
+ ---------------
+ In
+ select id ,email from users where id in (1,2,3,4,5,6,7,8);  //it will give all the users which id is included in brackets
+ 
+----------
+
+------
+| Item                                 | Quotes?                                                 |
+| ------------------------------------ | ------------------------------------------------------- |
+| Text values (`'Ali'`, `'Female'`)    | ✅ Yes                                                   |
+| Numbers (`50000`, `10`)              | ❌ No                                                    |
+| Column names (`salary`, `name`)      | ❌ No                                                    |
+| Function names (`MAX`, `COUNT`)      | ❌ No                                                    |
+| Alias (one word: `highest_salary`)   | ❌ No                                                    |
+| Alias with spaces (`Highest Salary`) | ✅ Optional, but better to use backticks or avoid spaces |
+
+--------------
+Views
+A view in MySQL is a virtual table based on the result of a SELECT query. It does
+not store data itself — it always reflects the current data in the base tables.
+
+CREATE VIEW high_salary_users AS
+SELECT id, name, salary
+FROM users
+WHERE salary > 70000
+
+
+SELECT * FROM high_salary_users;
+
+---------------
+Subquery
+ Subquery means nested query.QUery k andr hum koi aur query execute kary gy.
+                                                   
+                                                   "SUB QUERY IN WHERE"
+                                                   
+Example 1:
+select a.name,a.email,a.salary,b.city 
+from users as a 
+inner join addresses as b 
+on a.id=b.user_id 
+where salary < (select avg(salary) from users);  //Basically (select avg(salary) from users) this query will return a number or a column along with number where salary compares it self
+
+let supose what we do is 
+select a.name,a.email,a.salary,b.city
+from users as a
+inner join addresses as b 
+on a.id=b.user_id 
+where salary < (select avg(salary),max(salary) from users);  //It will give error here because hum 2 columns(avg,max) return kr rhy ha jab k hamari outer query srf 1 int column expect kr rhi ha)
+
+
+Example 2 :
+Aisa student do ,jis ka address addresses table me mujood hu aur us user ki id admin_users mei b hu
+
+select name,email from users 
+where id in ( select user_id from addresses)
+and 
+id in (select id from admin_users);
+
+Scenario:
+
+select name,email from users 
+where id in ( select * from addresses) //humny yaha pr user_id ki jagah * likh dia ha ,it will give error here because it expects one clumn here jis sy id ko match kr paiy but humny saray columns he return kr diye
+and 
+id in (select id from admin_users);
+
+Example 3:
+wo walay students do jinho ny marks kisi b atleast 1 subject me 90 sy upr liye hu aur project me uska score b 85 sy upr hu
+
+select name,branch from students 
+where student_id in (select student_id from exam_scores where score>90) 
+and 
+student_id in (select student_id from projects where marks>85);
+
+
+                                                    "SUB QUERY IN FROM"
+                                                    
+ eXAMPLE 1:
+    we need to have total score student has earned and number of exams he has attempted ,also we have to show student name and student branch in result.
+    
+    Solution:
+    Without subquery:
+    I tried to do it first by my own without subquery and it works,see below
+    
+     select a.name,a.branch,sum(b.score) as total_score,count(b.student_id) as total_attempted,b.student_id from students as a inner join exam_scores as b on a.student_id=b.student_id group by b.student_id order by total_score desc;
+
+    With SubQuery:
+    select std.name,std.branch,total_stats.total_score,total_stats.totalattempted,std.student_id from (
+select sum(score) as total_score,count(student_id) as totalattempted,student_id from exam_scores group by student_id
+) as total_stats inner join students as std on std.student_id=total_stats.student_id;
+
+
+Example 2:
+    For each project get student name,branch and project obtained marks and also their average exam score on same row.
+    
+    Solution 1 :
+select project_marks.name,project_marks.branch,project_marks.marks as project_marks_gained,ex_score.student_id,avg(ex_score.score) as average_exam_marks  
+from (
+  select a.name,a.branch,b.marks,a.student_id from students as a inner join projects as b on a.student_id =b.student_id
+  ) as project_marks 
+  inner join exam_scores as ex_score 
+  on ex_score.student_id=project_marks.student_id 
+  group by project_marks.student_id,project_marks.name,project_marks.branch,project_marks_gained order by average_exam_marks desc;
+  
+  
+  Solution 2: recommended
+  select s.name,s.branch,p.marks,avg_marks.avg_score from students as s 
+  inner join projects as p on s.student_id=p.student_id 
+ inner join ( select student_id,avg(score) as avg_score from exam_scores group by student_id) as avg_marks 
+  on p.student_id=avg_marks.student_id;
+
+------------------
+Cube:
+Cube is a aggregate operate that produce a super aggregate row.
+The summary row is displayed for every possible combination of groups in the result set.
+e.g
+SELECT gender, SUM(salary) AS total_salary
+FROM users
+GROUP BY CUBE(gender);
+
+
+
+RollUp:
+To get subtotals and grand totals, you can use ROLLUP 
+
+ SELECT a.gender, SUM(a.salary) AS total_salary,b.city
+ FROM users a inner join addresses b on a.id=b.user_id
+ GROUP BY gender,city with rollup;                 
+                                                    
+
 
