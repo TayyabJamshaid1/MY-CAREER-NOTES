@@ -183,7 +183,30 @@ db.data.find(
   {name: 1, _id: 0} // SECOND ARGUMENT: Projection
 )
 ------------------------------------------------
+Cursor method sort imp point:
 
+Sort Multiple Fields
+
+Suppose two employees have the same salary.
+
+First sort by salary.
+
+If salaries are equal,
+
+sort by age.
+
+db.employees.find().sort({
+    salary:1,
+    age:-1
+});
+
+Priority
+
+salary
+    ↓
+age
+
+------------------------------------------------
 How to find the data for embeded documents
 Let suppose,mere document ki field ek array of objects ha,mai us array of objects me sy kisi specific object ki specific key k zariye data find krna chahta hu .For example,mere documents me age ek array of objects ha,hr object  me name ki field ha,mai kisi specific name ki bina pr data find krna chahta hu,then we use this approach
 
