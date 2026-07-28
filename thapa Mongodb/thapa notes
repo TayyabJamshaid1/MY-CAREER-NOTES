@@ -12,8 +12,62 @@ A text-based format for representing structured data.
 Human-readable, lightweight, language-independent (though inspired by JavaScript).
 
 Jab tak ap k database me data enter ni hu ga,tab tak showdbs ki command me wo database show ni hu ga
+-------------------
+Show all databases
+show dbs
+
+Create or switch database
+use school
+If school doesn't exist, MongoDB creates it when you first store data.
+
+Current database
+db
+
+Show collections
+show collections
+
+Create collection
+db.createCollection("students")
+
+Delete collection
+db.students.drop()
+
+Delete database
+db.dropDatabase()
+------------------
+What Happens When You Write  db.employees.find({address.state: "punjab"}) without quotes
+
+{ address.state: "punjab" }
+JavaScript's Parser Reads It As:
+
+address.state is treated as an expression, not a key name
+
+JavaScript tries to find a variable called address
+
+Then tries to access its property state
+
+Since address variable doesn't exist → ReferenceError,thats why we have to use quotes
+valid syntax
+db.employees.find({"address.state":"punjab"})
+--------------------
+Problem: employees who satisfy all of the following:
+db.employees.find({age:{$gt:24},salary:{$gte:4000},'address.city':{$in:['lhr','isl']}},{name:1,salary:1,'address.city':1,_id:0});
+
+age > 24
+salary >= 40000
+city is lhr or isl
+show only:
+name
+salary
+city
+don't show _id
 
 
+Problem 2:
+Find employees whose age is between 24 and 30 (inclusive).
+db.employees.find({age:{$gte:24,$lte:30}});
+or
+db.employees.find({$and:[{salary:{$gt:30000}},{salary:{$lt:50000}}]})
 
 logical operator
 db.data.find({$and:[{'age':{$gt:10}},{'name':'tayyab'}]});

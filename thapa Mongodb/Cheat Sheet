@@ -1,0 +1,232 @@
+Topic 1: find() & findOne()
+Q1. Show all employees.
+db.employees.find();
+
+Concept: Return all documents.
+
+Q2. Show only one employee.
+db.employees.findOne();
+
+Concept: Return the first matching document.
+
+Q3. Find the employee named "tayyab".
+db.employees.find({
+    name: "tayyab"
+});
+
+Concept: Equality match.
+
+Q4. Find all married employees.
+db.employees.find({
+    isMarried: true
+});
+
+Concept: Boolean filtering.
+
+Q5. Find employees living in Lahore.
+db.employees.find({
+    "address.city": "lhr"
+});
+
+Concept: Dot notation (Nested documents).
+
+Topic 2: Projection
+Q1. Show only name and salary.
+db.employees.find(
+    {},
+    {
+        name: 1,
+        salary: 1
+    }
+);
+
+Concept: Include specific fields.
+
+Q2. Show name and salary without _id.
+db.employees.find(
+    {},
+    {
+        _id: 0,
+        name: 1,
+        salary: 1
+    }
+);
+
+Concept: Exclude _id.
+
+Q3. Show only age.
+db.employees.find(
+    {},
+    {
+        _id: 0,
+        age: 1
+    }
+);
+Q4. Show only city.
+db.employees.find(
+    {},
+    {
+        _id: 0,
+        "address.city": 1
+    }
+);
+Q5. Show name, age and city.
+db.employees.find(
+    {},
+    {
+        _id: 0,
+        name: 1,
+        age: 1,
+        "address.city": 1
+    }
+);
+Topic 3: Comparison Operators
+Q1. Age = 24
+db.employees.find({
+    age: 24
+});
+Q2. Salary > 40000
+db.employees.find({
+    salary: {
+        $gt: 40000
+    }
+});
+Q3. Salary >= 50000
+db.employees.find({
+    salary: {
+        $gte: 50000
+    }
+});
+Q4. Age between 24 and 30
+db.employees.find({
+    age: {
+        $gte: 24,
+        $lte: 30
+    }
+});
+Q5. Salary is 30000, 42000 or 70000.
+db.employees.find({
+    salary: {
+        $in: [30000,42000,70000]
+    }
+});
+Topic 4: Logical Operators
+Q1. Age > 25 AND Salary > 40000
+db.employees.find({
+    age: {
+        $gt: 25
+    },
+    salary: {
+        $gt: 40000
+    }
+});
+Q2. City is lhr OR karachi
+db.employees.find({
+    $or: [
+        {
+            "address.city": "lhr"
+        },
+        {
+            "address.city": "karachi"
+        }
+    ]
+});
+Q3. Age NOT greater than 30
+db.employees.find({
+    age: {
+        $not: {
+            $gt: 30
+        }
+    }
+});
+Q4. City is neither lhr nor karachi
+db.employees.find({
+    "address.city": {
+        $nin: ["lhr","karachi"]
+    }
+});
+Q5. Age >24 AND (City is lhr OR isl)
+db.employees.find({
+    age: {
+        $gt: 24
+    },
+    $or: [
+        {
+            "address.city": "lhr"
+        },
+        {
+            "address.city": "isl"
+        }
+    ]
+});
+
+Q6:Age >24 AND (City lhr OR isl)
+db.employees.find({$and:[{age:{$gt:24}},{$or:[{"address.city":{$eq:"lhr"}},{"address.city":{$eq:"isl"}}]}]});
+
+Q7: Salary >30000 AND (Married OR Karachi)
+db.employees.find({
+    salary:{$gt:30000},
+    $or:[
+        {isMarried:true},
+        {"address.city":"karachi"}
+    ]
+});
+Topic 5: Array & Nested Fields
+Q1. Find employees with the skill "react".
+db.employees.find({
+    skills: "react"
+});
+Q2. Find employees with the skill "sql".
+db.employees.find({
+    skills: "sql"
+});
+Q3. Find employees from Punjab.
+db.employees.find({
+    "address.state": "punjab"
+});
+Q4. Find employees not from Karachi.
+db.employees.find({
+    "address.city": {
+        $ne: "karachi"
+    }
+});
+Q5. Find employees from lhr or isl.
+db.employees.find({
+    "address.city": {
+        $in: ["lhr","isl"]
+    }
+});
+⭐ MongoDB Syntax Cheat Sheet
+// Find All
+db.collection.find();
+
+// Find One
+db.collection.findOne();
+
+// Projection
+db.collection.find({}, { field:1, _id:0 });
+
+// Equality
+{ age:24 }
+
+// Comparison
+$eq
+$ne
+$gt
+$gte
+$lt
+$lte
+$in
+$nin
+
+// Logical
+$and
+$or
+$not
+$nor
+
+// Nested Field
+"address.city"
+
+// Array Search
+skills:"react"
