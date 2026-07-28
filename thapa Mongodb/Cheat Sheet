@@ -196,6 +196,144 @@ db.employees.find({
         $in: ["lhr","isl"]
     }
 });
+
+MongoDB Cursor Methods Revision Notes
+Problem 1 (Easy)
+Question
+
+Show the 5 highest-paid employees.
+
+Solution
+db.employees.find()
+.sort({
+    salary:-1
+})
+.limit(5);
+Concept
+sort()
+Descending Order
+limit()
+Problem 2 (Medium)
+Question
+
+Show the 4 youngest employees, displaying only their name, age, and salary.
+
+Solution
+db.employees.find(
+    {},
+    {
+        _id:0,
+        name:1,
+        age:1,
+        salary:1
+    }
+)
+.sort({
+    age:1
+})
+.limit(4);
+Concept
+Projection
+sort()
+limit()
+Problem 3 (Medium)
+Question
+
+Count the number of employees:
+
+Married
+Salary greater than 40,000
+Solution
+db.employees.countDocuments({
+    isMarried:true,
+    salary:{
+        $gt:40000
+    }
+});
+Concept
+countDocuments()
+Filtering
+Multiple Conditions
+Problem 4 (Hard)
+Question
+
+Show employees from Lahore, sorted by highest salary first, and display only the top 3.
+
+Solution
+db.employees.find({
+    "address.city":"lhr"
+})
+.sort({
+    salary:-1
+})
+.limit(3);
+Concept
+Filtering
+sort()
+limit()
+Problem 5 (Interview Question - Pagination)
+Question
+
+Assume:
+
+Page Size = 5
+Show Page 3
+Sort employees by salary (highest first)
+Logic
+
+Pagination Formula
+
+skip = (page - 1) × limit
+
+For Page 3
+
+skip = (3 - 1) × 5
+
+skip = 10
+Solution
+db.employees.find()
+.sort({
+    salary:-1
+})
+.skip(10)
+.limit(5);
+Execution Order
+Find Documents
+      │
+      ▼
+Sort by Salary
+      │
+      ▼
+Skip First 10 Documents
+      │
+      ▼
+Return Next 5 Documents
+Example
+
+Suppose salaries after sorting are:
+
+70000
+68000
+65000
+62000
+60000
+58000
+56000
+55000
+54000
+53000
+52000
+50000
+49000
+47000
+46000
+Page	Documents
+Page 1	70000, 68000, 65000, 62000, 60000
+Page 2	58000, 56000, 55000, 54000, 53000
+Page 3	52000, 50000, 49000, 47000, 46000
+
+---------------------------------------------------------------------------------------------------
+
 ⭐ MongoDB Syntax Cheat Sheet
 // Find All
 db.collection.find();
@@ -230,3 +368,43 @@ $nor
 
 // Array Search
 skills:"react"
+
+Cursor Methods Cheat Sheet
+// Sort Ascending
+.sort({field:1})
+
+// Sort Descending
+.sort({field:-1})
+
+// Multiple Field Sort
+.sort({
+    salary:1,
+    age:-1
+})
+
+// First N Documents
+.limit(5)
+
+// Skip N Documents
+.skip(10)
+
+// Pagination Formula
+skip = (page - 1) * limit
+
+// Count All Documents
+db.collection.countDocuments()
+
+// Count Matching Documents
+db.collection.countDocuments({
+    salary:{
+        $gt:40000
+    }
+})
+
+// Approximate Count
+db.collection.estimatedDocumentCount()
+
+// Unique Values
+db.collection.distinct("address.city")
+
+
