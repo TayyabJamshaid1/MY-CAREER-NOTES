@@ -407,4 +407,162 @@ db.collection.estimatedDocumentCount()
 // Unique Values
 db.collection.distinct("address.city")
 
+--------------------------------------------------
+Evaluation Operators
+
+
+1. $regex
+--------------------------------------------------------------
+What is $regex?
+
+$regex is used to search patterns in strings instead of exact values.
+
+Without $regex:
+
+db.employees.find({
+    name: "tayyab"
+});
+
+Only returns:
+
+tayyab
+
+It won't return:
+tayyab ali
+muhammad tayyab
+TAYYAB
+
+With $regex, you can search patterns.
+
+Examples–
+=>Names starting with "t"
+db.employees.find({
+    name: {
+        $regex: "^t"
+    }
+    
+=>Names ending with "a"
+db.employees.find({
+    name: {
+        $regex: "a$"
+    }
+});
+
+=>Contains "an"
+db.employees.find({
+    name: {
+        $regex: "an"
+    }
+});
+
+Returns
+tania
+imran
+
+=>Case Sensitivity
+Suppose the database contains
+
+Tayyab
+tayyab
+TAYYAB
+
+This query
+db.employees.find({
+    name: {
+        $regex: "^t"
+    }
+});
+
+returns only
+tayyab
+
+because MongoDB regex is case-sensitive by default.
+
+Solution:
+
+Use:
+$options: "i"
+Example
+db.employees.find({
+    name: {
+        $regex: "^t",
+        $options: "i"
+    }
+});
+
+Now it returns
+
+Tayyab
+tayyab
+TAYYAB
+---------------------------------------------
+2. $expr
+What is $expr?
+
+Normally MongoDB compares a field with a fixed value.
+
+Example
+db.employees.find({
+    salary: {
+        $gt: 40000
+    }
+});
+
+But what if you want to compare one field with another field?
+
+Example
+salary > bonus
+You can't do this with $gt alone.
+That's where $expr comes in.
+
+Suppose a document is
+
+{
+    name:"Ali",
+    salary:50000,
+    bonus:30000
+}
+
+db.employees.find({
+    $expr: {
+        $gt: ["$salary","$bonus"]
+    }
+});
+
+Meaning
+salary > bonus
+
+=>Another example
+
+Find employees where
+
+age > salary
+db.employees.find({
+    $expr:{
+        $gt:[
+            "$age",
+            "$salary"
+        ]
+    }
+});
+
+Probably returns nothing, but the syntax is correct.
+Inside $expr you can use
+$gt
+$gte
+$lt
+$lte
+$eq
+$ne
+-------------------------------------------------------------------------------------------------
+3-mod
+
+Find employees with even ages.
+db.employees.find({age:{$mod:[2,0]}}) 
+
+Find employees with odd ages.
+db.employees.find({age:{$mod:[2,1]}}) 
+
+Find employees whose salary is divisible by 10000.
+db.employees.find({salary:{$mod:[10000,0]}}) 
 

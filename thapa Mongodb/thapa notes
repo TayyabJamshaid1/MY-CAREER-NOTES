@@ -79,15 +79,59 @@ db.data.find({'age':{$ne:20}})
 
 
 elements operator (exists,type,size)
+common types:
+string
+int
+double
+bool
+array
+object
+date
+objectId
+null
 
 db.data.find({'age':{$exists:true}})   //aisy documents do,jin me age ki field exist krti hu
-
+db.employees.find({_id:{$type:"objectId"}})
 db.data.find({'age':{$exists:false,$gt:10}}) ////aisy documents do,jin me age ki field exist krti hu aur age b 10 sy zyada hu
-
+db.data.find({'isMarried':{$type:'bool'}})
 db.data.find({'age':{$type:'number'}})   //aisy documents do jin ki age ki type number hu
 db.data.find({'name':{$type:2}}) //2 represts string,8 represensts boolean etc,we can also implement the condition based on the numbers(see in pic)
 
 db.data.find({'age':{$size:1}})  //let suppose,age ek array ha aur is k andr multiple number of objects hain,size command k zariye mai isy ye keh rha hu k aisy documents do jis ki field age k  array k andr srf ek object ha
+
+Interview tip:
+-------------
+Important Interview Question ⭐
+
+Consider these documents:
+
+{
+    name: "Ali",
+    phone: null
+}
+{
+    name: "Ahmed"
+}
+
+Question:
+
+db.employees.find({
+    phone:{
+        $exists:true
+    }
+});
+
+Which document is returned?
+
+Answer:
+
+✅ Ali
+
+Why?
+
+Because the field exists, even though its value is null.
+
+$exists checks for the presence of the field, not whether it contains a value.
 -------
 Projection 
 Kisi b document k andr knsi field dkhani ha aur kn si ni dkhinani,ye projection k zariye handle krty ha
