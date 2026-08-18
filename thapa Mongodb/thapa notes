@@ -311,6 +311,13 @@ IMP: agr age ek array of objects k bjaiy ek simple object b huta tab b hum same 
  
 =>updateOne:
 By update one,we can update any field and also we can add any new field,depend on the filter condition
+Syntax
+
+db.collection.updateOne(
+    filter,
+    update
+)
+
 jis user ki age 34 ha ,us ka name update kr du aur us me kesa ki new field b add kr du
 
 db.data.updateOne({'age':34},{$set:{'name':'jim','kesa':'pta ni'}})
@@ -322,6 +329,10 @@ db.data.updateOne({'age':34},{$set:{'name':'jim','kesa':'pta ni'}})
   upsertedCount: 0
 }
 
+Without $set:
+It will replace your document instead of updating it.
+db.data.updateOne({'age':34},{'name':'jim','kesa':'pta ni'})
+
 => updateMany
 similar to updateOne but only one difference is updateMany works for multiple
  db.data.updateMany({'age':23},{$set:{'name':'jim'}})
@@ -332,6 +343,41 @@ similar to updateOne but only one difference is updateMany works for multiple
   modifiedCount: 3,
   upsertedCount: 0
 }
+
+=>replaceOne()
+This will replace your document.
+
+Suppose my document is below
+
+{
+    name:"Ali",
+    age:25,
+    salary:40000,
+    city:"lhr"
+}
+
+After Running
+db.employees.replaceOne(
+    {
+        name:"Ali"
+    },
+    {
+        name:"Ali",
+        age:26
+    }
+);
+
+Result
+{
+    name:"Ali",
+    age:26
+}
+
+Everything else is gone.
+Salary ❌ Deleted
+City ❌ Deleted
+
+Because replaceOne() replaces the entire document (except _id).
 
 =>$rename
 Agr mai kisi b field k name ko rename krna chahta hu,then rename condition will be used.
@@ -348,7 +394,7 @@ db.data.updateMany({'age':34},{$rename:{'kesa':'kesaa'}})
  
 =>unset
 kisi b key ko document me sy completly remove krna ho tu use unset
-db.data.updateMany({'age':23},{$unset:{'kesa':1}})
+db.data.updateMany({'age':23},{$unset:{'kesa':1}})   or you can also use empty quotes instead of 1 e.g: {$unset:{'kesa':""}}
 {
   acknowledged: true,
   insertedId: null,
@@ -357,6 +403,123 @@ db.data.updateMany({'age':23},{$unset:{'kesa':1}})
   upsertedCount: 0
 }
 
+=>$inc & decrement
+Increase or decrease numbers.
+Instead of salary:50000
+
+Suppose,Increase by 5000
+
+db.employees.updateOne(
+    {
+        name:"Ali"
+    },
+    {
+        $inc:{
+            salary:5000
+        }
+    }
+);
+
+If salary 40000
+
+Result:45000
+
+Decrease
+$inc:{
+salary:-5000
+}
+
+=>$mul (Multiply)
+
+Suppose,Increase salary by 10%
+
+Salary: 50000
+
+db.employees.updateOne(
+    {
+        name:"Ali"
+    },
+    {
+        $mul:{
+            salary:1.10
+        }
+    }
+);
+
+Result:55000
+
+=>$min & $max
+$min = "Keep the Minimum"
+Means: "Take the smaller value"
+It's like saying: "Keep the lowest number"
+
+Example:
+// Current salary: 30000
+db.employees.updateOne(
+  { name: "tayyab" },
+  { $min: { salary: 35000 } }
+)
+// Result: Salary stays 30000 ❌ NOT 35000
+// Why? $min keeps the smaller value: min(30000, 35000) = 30000
+
+// Current salary: 40000
+db.employees.updateOne(
+  { name: "tayyab" },
+  { $min: { salary: 35000 } }
+)
+// Result: Salary becomes 35000 ✅
+// Why? $min keeps the smaller value: min(40000, 35000) = 35000
+
+$max:
+$max = "Keep the Maximum"
+Means: "Take the larger value"
+It's like saying: "Keep the highest number"
+
+Example:
+// Current salary: 30000
+db.employees.updateOne(
+  { name: "tayyab" },
+  { $max: { salary: 35000 } }
+)
+// Result: Salary becomes 35000 ✅
+// Why? $max keeps the larger value: max(30000, 35000) = 35000
+
+// Current salary: 40000
+db.employees.updateOne(
+  { name: "tayyab" },
+  { $max: { salary: 35000 } }
+)
+// Result: Salary stays 40000 ❌ NOT 35000
+// Why? $max keeps the larger value: max(40000, 35000) = 40000
+
+=>$currentDate
+
+Stores the current date.
+
+Example
+
+db.employees.updateOne(
+    {
+        name:"Ali"
+    },
+    {
+        $currentDate:{
+            updatedAt:true
+        }
+    }
+);
+
+MongoDB creates
+
+updatedAt:
+ISODate(...)
+
+Useful for
+
+Updated Profile
+Last Login
+Updated Product
+---------------------------------------
  =>in case if we want to add key which may be a string/number/array of objects in any specific or all documents,we can add by below syntax,here i am adding array with its objects in all documents
  
  db.data.updateMany({},{$set:{'comments':[{ name: "tayyab", status: "married" },{name:"noman",status:'single'}]}})

@@ -155,7 +155,40 @@ acc.push(curr,arr2[index]);
 return acc
 },[])
 console.log(arr3);
+------------
+calculate no of digits appearing in n by using while loop
 
+My Solution:
+let n=578989,becomeZero=false,count=0
+
+while(!becomeZero){
+    n=n/10  //this formula is used to remove last digit
+    count=count+1
+    if (n<1){
+        becomeZero=true
+    }
+}
+console.log(count)
+
+Latest solution:
+ console.log(n.toString().length)
+ 
+Recommended solution:
+
+let n=-578989
+function countDigits(n){
+    if (n==0) return 1;
+    n=Math.abs(n) //in case,n is negative number,it will make it positive
+    let count=0
+while(n>0){
+    n=Math.floor(n/10)  //this formula is used to remove last digit
+    count++
+}
+return count
+}
+console.log(countDigits(n))
+
+-----------------
 =>Palindrome
  let arr=[1, 2, 3, 2, 1];
 let left=0;
@@ -188,6 +221,61 @@ right--;
 Best latest way:
 let latest=arr.every((val,i)=>val===arr[arr.length-1-i])
 console.log(latest);
+--------------------
+Check a digit/number is palindrome:
+
+My ways:
+let n=12121
+let num=n.toString().split("").map(Number)
+
+Way 1:
+let isPalindrome=num.every((item,index,array)=>item==num[array.length-1-index])
+console.log(isPalindrome)
+
+Way 2:
+let left=0,right=num.length-1,isPalindrome=true
+
+while (left<right){
+    if (num[left]!==num[right]){
+        isPalindrome=false;
+        break;
+    }
+    left++;
+    right--;
+}
+
+console.log(isPalindrome)
+
+Way 3: Recommended
+
+let n=12121,rev=0
+let copyNum=n
+while(copyNum>0){
+rem=copyNum%10 //by remainer with 10,we can get last digit of number
+rev=(10*rev)+rem //reverse formula
+copyNum=Math.floor(copyNum/10)  //it is used to remove last digit,floor is used to remove after . keywords 
+ 
+}
+if (n==rev){
+    console.log("Yes it is")
+}else{
+    console.log("No it is")
+
+}
+console.log(rev)
+-----------------------------
+Reverse a number
+
+let n=12128,rev=0
+let copyNum=n
+while(copyNum>0){
+rem=copyNum%10 //by remainer,we can get last digit of number
+rev=(10*rev)+rem //reverse formula
+copyNum=Math.floor(copyNum/10)  //it is used to remove last digit,floor is used to remove after . keywords 
+ 
+}
+
+console.log(rev)
 ---------------------
 Find the missing array numbers from the list
 let arr=[1,2,4,5,7]
@@ -291,6 +379,8 @@ let pair = [arr[0], arr[1]];
 
 
 -----------
+
+-----------
 FInd largest sum with pair
 
 let data = [23, 77, 21, 44, 100, 99];
@@ -379,3 +469,148 @@ let middleName=val.length>2?val.slice(1,-1).join(""):undefined
 return {firstName,lastName,middleName}
 })
 console.log(data);
+
+--------------------
+Find second largest number by for loop
+
+let array=[12,88,67,266,96]
+let largest=-Infinity,secondLargest=-Infinity;
+for (let i=0;i<array.length;i++){
+    if(array[i]>largest){
+        secondLargest=largest;
+        largest=array[i]
+    }else if(array[i]>secondLargest && secondLargest !== largest){
+        secondLargest=array[i]
+    }
+}
+console.log(secondLargest)
+
+----------------------------------
+* 
+* * 
+* * * 
+* * * * 
+
+for (let i=0;i<4;i++){
+    let row=""
+    for (let j=0;j<i+1;j++){   or j<=i   //both conditions are same
+          row+="* "
+        }
+    console.log(row)
+
+}
+
+--------------
+1
+1 2 
+1 2 3 
+1 2 3 4 
+1 2 3 4 5 
+for (let i=0;i<5;i++){
+    let row=""
+    for (let j=0;j<=i;j++){
+          row+=j+1+" "
+        }
+    console.log(row)
+
+}
+
+-------------
+1 
+2 2 
+3 3 3 
+4 4 4 4 
+5 5 5 5 5 
+
+for (let i=0;i<5;i++){
+    let row=""
+    for (let j=0;j<=i;j++){
+          row+=i+1+" "
+        }
+    console.log(row)
+
+}
+
+-----------
+
+1 2 3 4 5 
+1 2 3 4 
+1 2 3 
+1 2 
+1 
+
+My Solution:
+for (let i=4;i>=0 && i<5;i--){
+    let row=""
+    for (let j=0;j<=i;j++){
+          row+=j+1+" "
+        }
+    console.log(row)
+
+}
+
+Recommended Solution:
+let n=5
+for (let i=0; i<n;i++){
+    let row=""
+    for (let j=0;j<n-i;j++){
+          row+=j+1+" "
+        }
+    console.log(row)
+
+}
+
+---------------------------------------------
+
+See logic  in star problem pic
+ 
+ 
+_ _ _ _ * 
+_ _ _ * * 
+_ _ * * * 
+_ * * * * 
+* * * * * 
+let n=5
+for (let i=0; i<n;i++){
+    let row=""
+    for (let j=0;j<n-(i+1);j++){
+          row+="_ "
+        }
+         for (let k=0;k<(i+1);k++){
+          row+="* "
+        }
+    console.log(row)
+
+}
+
+-----------------------
+1 _ _ _ _ 
+1 0 _ _ _ 
+1 0 1 _ _ 
+1 0 1 0 _ 
+1 0 1 0 1 
+
+
+let n=5
+for (let i=0; i<n;i++){
+    let row=""
+        for (let k=0;k<(i+1);k++){
+            if ((k+1)%2==0){
+              row+="0 "
+            }else{
+                row+="1 "
+            }
+          
+        }
+    for (let j=0;j<n-(i+1);j++){
+          row+="_ "
+        }
+     
+    console.log(row)
+
+}
+
+
+
+
+
