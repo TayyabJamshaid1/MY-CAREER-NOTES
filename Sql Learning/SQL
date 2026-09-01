@@ -43,7 +43,8 @@ UPDATE users SET kjh = CONCAT('kjh_', id);
 (This ensures no duplicates and no NULL values.)
 
 Step 3:
-Before modify,if you forgot your column properties,you can see it by SHOW CREATE TABLE users or SHOW COLUMNS FROM users LIKE 'salary';
+IMP : Before modify,if you forgot your column properties,you can see it by
+ SHOW CREATE TABLE users or SHOW COLUMNS FROM users LIKE 'salary';
 
 Apply the NOT NULL constraint:
 ALTER TABLE users MODIFY COLUMN kjh VARCHAR(100) NOT NULL;
@@ -719,6 +720,21 @@ TRUNCATE removes all rows/records from a table, but keeps the table structure.
 TRUNCATE TABLE users;
 Faster than DELETE FROM users
 Cannot be rolled back in most cases
+------
+DELETE vs TRUNCATE vs DROP
+
+You already learned this yesterday, but today connect it to data modification:
+
+DELETE
+→ removes selected rows or all rows
+→ table remains
+→ can use WHERE
+TRUNCATE
+→ removes all rows
+→ table remains
+→ cannot use WHERE
+DROP
+→ removes the table itself
 
 -------------------------
 CHANGE vs MODIFY Column
@@ -736,7 +752,15 @@ MODIFY COLUMN salary BIGINT;
 This changes only the datatype of salary .
 --------------------------------------------------------
 
+Percentage Formula:
 
+Formula:
+Increase Amount = Original Salary × (Percentage / 100)
+New Salary = Original Salary + Increase Amount
+
+Calculation:
+Increase Amount = 50,000 × (10/100) = 50,000 × 0.10 = 5,000
+New Salary = 50,000 + 5,000 = 55,000
 
 
 

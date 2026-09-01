@@ -1,0 +1,48 @@
+| Operator     | Purpose                                   | Example                     |
+| ------------ | ----------------------------------------- | --------------------------- |
+| `$in`        | Match ANY value                           | `$in:["react","python"]`    |
+| `$all`       | Match ALL values                          | `$all:["react","node"]`     |
+| `$size`      | Exact array length                        | `$size:3`                   |
+| `$elemMatch` | One element satisfies multiple conditions | `$elemMatch:{...}`          |
+| `$push`      | Add element                               | `$push:{skills:"node"}`     |
+| `$addToSet`  | Add without duplicates                    | `$addToSet:{skills:"node"}` |
+| `$each`      | Add multiple elements                     | `$each:["node","react"]`    |
+| `$position`  | Choose insertion index                    | `$position:2`               |
+| `$slice`     | Limit elements kept                       | `$slice:-5`                 |
+| `$pop`       | Remove first/last element                 | `$pop:{skills:1}`           |
+| `$pull`      | Remove matching elements                  | `$pull:{skills:"react"}`    |
+
+
+
+$in
+"Does the array contain ANY of these?"
+
+$all
+"Does the array contain ALL of these?"
+
+$size
+"How many elements are in the array?"
+
+$elemMatch
+"Does ONE object satisfy all these conditions?"
+
+$push
+"Add something."
+
+$addToSet
+"Add something, but don't duplicate it."
+
+$each
+"Add multiple things."
+
+$position
+"Where should I insert them?"
+
+$slice
+"How many should I keep?"
+
+$pop
+"Remove the first or last element."
+
+$pull
+"Remove elements matching this value/condition."
