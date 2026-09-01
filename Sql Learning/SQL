@@ -43,6 +43,8 @@ UPDATE users SET kjh = CONCAT('kjh_', id);
 (This ensures no duplicates and no NULL values.)
 
 Step 3:
+Before modify,if you forgot your column properties,you can see it by SHOW CREATE TABLE users or SHOW COLUMNS FROM users LIKE 'salary';
+
 Apply the NOT NULL constraint:
 ALTER TABLE users MODIFY COLUMN kjh VARCHAR(100) NOT NULL;
 
@@ -90,6 +92,15 @@ select * from users where date_of_birth<  '2005-09-07';
 Wo sary users du jinki dob null hu
 select * from users where date_of_birth is Null;
 
+Remember:
+You cannot check NULL with:
+WHERE email = NULL
+❌ Wrong.
+
+Use:
+WHERE email IS NULL;
+or:
+WHERE email IS NOT NULL;
 
 wo sary users du jinki salaries 70000 hu
 select * from users where salary = 70000;
@@ -126,7 +137,27 @@ Now  you want that condition back,you can again make it to Not Null from Null
 alter table users modify column date_of_birth date Not Null
 
 -------------
-Manual add constraint 
+Two Ways of Adding Constraints
+
+First Approach: During table creation
+You can put the constraint directly beside the column:
+
+CREATE TABLE users (
+    id INT PRIMARY KEY,
+    email VARCHAR(150) UNIQUE
+);
+
+Here UNIQUE is attached directly to email.
+
+Second Approach:(Manual add constraint)  After table creation
+
+You can add a constraint separately:
+
+ALTER TABLE users
+ADD CONSTRAINT unique_email UNIQUE(email);
+
+Both approaches are valid.
+The second form is useful when the table already exists.
 It means we can add condition on any column that he has to first fullfill our criteria before adding data
 
 Example 1:
@@ -651,6 +682,37 @@ DISTINCT Keyword
 DISTINCT is used to return only unique values.
 SELECT DISTINCT gender FROM users;//normally without distinct answer was al lot of males,females of each record,by using distinct ,it gives the unique/1 time value from all values
 
+Example 2:
+SELECT DISTINCT gender, salary
+FROM users;
+
+Now it removes duplicate gender + salary combinations, not duplicates of gender alone
+
+Explanation:
+DISTINCT does not independently remove duplicate genders or duplicate salaries.
+Instead, it removes duplicate combinations of the selected columns.
+
+Think of it as:
+
+"Give me each unique gender + salary combination."
+
+| id | name   | gender | salary |
+| -: | ------ | ------ | -----: |
+|  1 | Ali    | Male   |  50000 |
+|  2 | Ahmed  | Male   |  50000 |
+|  3 | Bilal  | Male   |  60000 |
+|  4 | Sara   | Female |  50000 |
+|  5 | Ayesha | Female |  50000 |
+|  6 | Noor   | Female |  60000 |
+
+Result: now it give unique combination of gender + salary
+| gender | salary |
+| ------ | -----: |
+| Male   |  50000 |
+| Male   |  60000 |
+| Female |  50000 |
+| Female |  60000 |
+
 -------------------------
 TRUNCATE Keyword
 TRUNCATE removes all rows/records from a table, but keeps the table structure.
@@ -672,7 +734,7 @@ MODIFY: Only change datatype
 ALTER TABLE users
 MODIFY COLUMN salary BIGINT;
 This changes only the datatype of salary .
-
+--------------------------------------------------------
 
 
 

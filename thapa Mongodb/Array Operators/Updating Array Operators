@@ -1,0 +1,455 @@
+Updating arrays → Add, remove, or control array elements.
+
+a)$push — Add an Element
+
+$push adds an element to the end of an array.
+
+Suppose:
+
+skills: ["javascript", "react"]
+
+Run:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            skills: "mongodb"
+        }
+    }
+);
+
+Result:
+
+skills: [
+    "javascript",
+    "react",
+    "mongodb"
+]
+Important
+
+$push allows duplicates.
+
+If react already exists:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            skills: "react"
+        }
+    }
+);
+
+Result:
+
+skills: [
+    "javascript",
+    "react",
+    "mongodb",
+    "react"
+]
+-------------------------------------
+b). $addToSet — Add Without Duplicates
+
+$addToSet adds an element only if it doesn't already exist.
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $addToSet: {
+            skills: "react"
+        }
+    }
+);
+
+If react already exists:
+
+Nothing is added.
+
+If mongodb doesn't exist:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $addToSet: {
+            skills: "mongodb"
+        }
+    }
+);
+
+MongoDB adds it.
+
+$push vs $addToSet
+Operator	Duplicate allowed?
+$push	✅ Yes
+$addToSet	❌ No
+Easy memory trick
+$push
+→ Just add
+
+$addToSet
+→ Add to the SET
+→ Sets don't contain duplicates
+-------------------------------------------------
+c) $each — Add Multiple Elements
+
+$each is used with $push or $addToSet when you want to add multiple elements.
+
+Example:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            skills: {
+                $each: [
+                    "node",
+                    "express",
+                    "mongodb"
+                ]
+            }
+        }
+    }
+);
+
+If before:
+
+skills: ["javascript", "react"]
+
+After:
+
+skills: [
+    "javascript",
+    "react",
+    "node",
+    "express",
+    "mongodb"
+]
+$each + $addToSet
+
+You can also prevent duplicates:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $addToSet: {
+            skills: {
+                $each: [
+                    "node",
+                    "express",
+                    "react"
+                ]
+            }
+        }
+    }
+);
+
+If react already exists, it won't be added again.
+-----------------------------
+d). $position — Choose Where to Insert
+
+$position controls the array index where $push inserts elements.
+
+Suppose:
+
+skills: [
+    "javascript",  // index 0
+    "react",       // index 1
+    "mongodb",     // index 2
+    "node"         // index 3
+]
+Insert at Beginning
+$position: 0
+
+Example:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            skills: {
+                $each: ["typescript"],
+                $position: 0
+            }
+        }
+    }
+);
+
+Result:
+
+[
+    "typescript",
+    "javascript",
+    "react",
+    "mongodb",
+    "node"
+]
+Insert in the Middle
+
+To insert before index 2:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            skills: {
+                $each: ["typescript"],
+                $position: 2
+            }
+        }
+    }
+);
+
+Result:
+
+[
+    "javascript",
+    "react",
+    "typescript",
+    "mongodb",
+    "node"
+]
+Important
+
+$position means:
+
+Insert before this index.
+
+It does NOT mean:
+
+"Put it in the middle."
+
+Insert at End
+
+Normally you don't need $position.
+
+Just use:
+
+$push: {
+    skills: "typescript"
+}
+
+$push naturally adds to the end.
+---------------------------------------
+e) $slice — Limit Array Elements
+
+$slice controls how many elements should remain in the array after $push.
+
+This is usually used together with $push.
+
+Suppose:
+
+skills: [
+    "javascript",
+    "react",
+    "node"
+]
+
+Run:
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            skills: {
+                $each: ["mongodb"],
+                $slice: 3
+            }
+        }
+    }
+);
+Step 1 — $push
+
+MongoDB first adds:
+
+[
+    "javascript",
+    "react",
+    "node",
+    "mongodb"
+]
+Step 2 — $slice: 3
+
+Keep only the first 3:
+
+[
+    "javascript",
+    "react",
+    "node"
+]
+
+So mongodb gets removed again.
+
+Positive $slice
+$slice: 3
+
+Keep the first 3.
+
+[A, B, C, D, E]
+
+↓
+
+[A, B, C]
+Negative $slice
+$slice: -3
+
+Keep the last 3.
+
+[A, B, C, D, E]
+
+↓
+
+[C, D, E]
+Very useful example
+
+Keep only the latest 5 messages:
+
+db.users.updateOne(
+    {name: "tayyab"},
+    {
+        $push: {
+            messages: {
+                $each: ["new message"],
+                $slice: -5
+            }
+        }
+    }
+);
+
+This keeps the array at a maximum of 5 recent messages.
+--------------------------
+f). $pop — Remove First or Last Element
+
+$pop removes exactly one element.
+
+Remove last element
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $pop: {
+            skills: 1
+        }
+    }
+);
+1 → remove last
+Remove first element
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $pop: {
+            skills: -1
+        }
+    }
+);
+-1 → remove first
+Important
+
+You cannot use:
+
+$pop: 2
+
+to remove two elements.
+
+Remember:
+
+$pop: 1
+→ remove ONE from end
+
+$pop: -1
+→ remove ONE from beginning
+-------------------------------------------------
+g). $pull — Remove Based on Value/Condition
+
+$pull removes array elements matching a value or condition.
+
+Suppose:
+
+skills: [
+    "react",
+    "node",
+    "mongodb"
+]
+
+Remove "react":
+
+db.employees.updateOne(
+    {name: "tayyab"},
+    {
+        $pull: {
+            skills: "react"
+        }
+    }
+);
+
+Result:
+
+[
+    "node",
+    "mongodb"
+]
+$pull with a Condition
+
+Suppose:
+
+scores: [30, 50, 80, 20, 90]
+
+Remove all scores below 50:
+
+db.students.updateOne(
+    {name: "Ali"},
+    {
+        $pull: {
+            scores: {
+                $lt: 50
+            }
+        }
+    }
+);
+
+Result:
+
+[
+    50,
+    80,
+    90
+]
+
+So $pull can remove multiple matching elements.
+
+$pop vs $pull
+
+This is an important difference.
+
+$pop
+
+Position-based:
+
+$pop: {
+    skills: 1
+}
+
+Means:
+
+Remove the last element.
+
+$pull
+
+Value/condition-based:
+
+$pull: {
+    skills: "react"
+}
+
+Means:
+
+Remove matching elements.
+
+Remember
+$pop
+→ WHERE?
+→ Beginning / End
+
+$pull
+→ WHICH VALUE?
+→ Based on value/condition

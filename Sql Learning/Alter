@@ -1,0 +1,53 @@
+ALTER TABLE
+DIfferent Scenarios:
+
+a)Add column
+ALTER TABLE users
+ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+
+b)Drop column
+ALTER TABLE users
+DROP COLUMN is_active;
+
+c)Change datatype/properties
+ALTER TABLE users
+MODIFY COLUMN name VARCHAR(150);
+
+Remember:
+
+MODIFY COLUMN changes the definition of an existing column.
+MODIFY COLUMN
+    column_name
+    new_datatype
+    desired_properties;
+
+d)Change column name
+
+Use:
+
+ALTER TABLE users
+CHANGE COLUMN name full_name VARCHAR(150);
+
+Notice something important:
+
+CHANGE COLUMN requires the old name + new name + datatype.
+
+e)Change column position
+ALTER TABLE users
+MODIFY COLUMN email VARCHAR(150) AFTER id;
+
+or:
+
+ALTER TABLE users
+MODIFY COLUMN email VARCHAR(150) FIRST;
+
+---------imp:
+Remember:
+You cannot check NULL with:
+WHERE email = NULL
+❌ Wrong.
+
+Use:
+WHERE email IS NULL;
+or:
+WHERE email IS NOT NULL;

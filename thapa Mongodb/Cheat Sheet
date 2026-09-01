@@ -566,3 +566,10 @@ db.employees.find({age:{$mod:[2,1]}})
 Find employees whose salary is divisible by 10000.
 db.employees.find({salary:{$mod:[10000,0]}}) 
 
+
+----------------------------------------------------------------------------
+
+
+
+
+

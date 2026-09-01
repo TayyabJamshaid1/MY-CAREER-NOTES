@@ -1,0 +1,185 @@
+MongoDB Array Operator:
+
+MongoDB provides array operators for two main purposes:
+a) Querying arrays → Find documents based on array contents.
+b) Updating arrays → Add, remove, or control array elements.
+
+Querying arrays
+
+1. $in vs $all vs $size vs $elemMatch
+
+Before learning the update operators, understand these four query operators.
+
+a) $in — Match ANY value
+
+$in checks whether an array contains at least one of the specified values.
+
+Example
+db.employees.find({
+    skills: {
+        $in: ["react", "python"]
+    }
+});
+
+Meaning:
+
+Find employees whose skills contains react OR python.
+
+If the document is:
+
+{
+    skills: ["react", "javascript", "node"]
+}
+
+✅ Matches because react exists.
+-----------------------------
+b) $all — Match ALL values
+
+$all checks whether an array contains all specified values.
+
+db.employees.find({
+    skills: {
+        $all: ["react", "javascript"]
+    }
+});
+
+Meaning:
+
+skills must contain react AND javascript.
+
+Example:
+
+{
+    skills: ["react", "javascript", "node"]
+}
+
+✅ Matches.
+
+But:
+
+{
+    skills: ["react", "node"]
+}
+
+❌ Doesn't match because javascript is missing.
+
+c)  $in vs $all
+$in
+→ ANY value
+→ OR
+
+$all
+→ ALL values
+→ AND
+Operator	Requirement
+$in: ["react","python"]	        React OR Python
+$all: ["react","python"]	React AND Python
+
+
+-------------------
+d). $size — Exact Array Length
+
+$size finds arrays containing exactly the specified number of elements.
+
+db.employees.find({
+    skills: {
+        $size: 3
+    }
+});
+
+Meaning:
+
+Find employees whose skills array has exactly 3 elements.
+
+Example:
+
+skills: ["react", "node", "mongodb"]
+
+✅ Matches.
+
+skills: ["react", "node"]
+
+❌ Doesn't match.
+
+Important
+
+$size: 3 means:
+
+Exactly 3
+
+NOT:
+
+3 or more
+
+NOT:
+
+at least 3
+---------------------
+e) $elemMatch — Match One Array Element Against Multiple Conditions
+
+$elemMatch is especially useful when an array contains objects.
+
+Example:
+
+{
+    name: "Ali",
+    projects: [
+        {
+            name: "CRM",
+            status: "completed"
+        },
+        {
+            name: "Chat App",
+            status: "pending"
+        }
+    ]
+}
+
+Find an employee who has a project where:
+
+name = CRM
+AND
+status = completed
+
+Use:
+
+db.employees.find({
+    projects: {
+        $elemMatch: {
+            name: "CRM",
+            status: "completed"
+        }
+    }
+});
+
+MongoDB looks for one project object satisfying both conditions.
+
+Why is this important?
+
+Consider:
+
+projects: [
+    {
+        name: "CRM",
+        status: "pending"
+    },
+    {
+        name: "Chat App",
+        status: "completed"
+    }
+]
+
+There is:
+
+a CRM project ✅
+a completed project ✅
+
+But they are different objects.
+
+$elemMatch ensures that both conditions apply to the same array element.
+
+Remember
+$elemMatch
+→ One array element
+→ Multiple conditions
+→ Conditions must apply to that same element
