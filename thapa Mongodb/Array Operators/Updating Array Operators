@@ -473,6 +473,17 @@ Because updateOne() mainly tells you:
 
 It doesn't normally give you the updated document as the primary result.
 With findOneAndUpdate(), you can work with the document itself.
+
+Imp:
+by default, findOneAndUpdate() returns the document before the update in the MongoDB,if you want the latest/updated document,use
+{new:true} or {returnDocument:"after"}
+
+For example:
+let data = db.employees.findOneAndUpdate(
+  {name:"imran"},
+  {$inc:{salary:5000}},
+  {returnDocument:"after"}
+)
 ------------------------------------
 
 =>findOneAndDelete()
@@ -493,7 +504,7 @@ This is useful when you need to know what you deleted.
 
 --------------------------------
 findOneAndReplace()
-
+U cannot use update methods here like inc,dec etc
 Finds one document and replaces the entire document.
 
 Example:
@@ -518,6 +529,20 @@ replaceOne()
 
 but it also returns the document.
 
+Imp Point 1:
+by default, findOneAndReplace() returns the document before the replace in the MongoDB,if you want the latest document,use
+{new:true} or {returnDocument:"after"}
+
+For example:
+let data = db.employees.findOneAndReplace(
+  {name:"imran"},
+  {salary:5000},
+  {returnDocument:"after"}
+)
+
+
+Point 2:
+findOneAndReplace() does NOT automatically insert if data is not found.If you want that behavior,use  {returnDocument:"after"} or {new:true}
 --------------------------------------------
 
 Upsert ⭐⭐⭐⭐⭐
