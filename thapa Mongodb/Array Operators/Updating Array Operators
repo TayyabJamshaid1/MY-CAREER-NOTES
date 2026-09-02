@@ -453,3 +453,148 @@ $pop
 $pull
 → WHICH VALUE?
 → Based on value/condition
+
+----------------------------------------------------------------------
+ Advanced CRUD & Delete Operations
+ 
+=>findOneAndUpdate()
+
+You might ask:
+
+We already have updateOne(). Why do we need this?
+
+Because updateOne() mainly tells you:
+
+{
+    acknowledged: true,
+    matchedCount: 1,
+    modifiedCount: 1
+}
+
+It doesn't normally give you the updated document as the primary result.
+With findOneAndUpdate(), you can work with the document itself.
+------------------------------------
+
+=>findOneAndDelete()
+
+Finds one document and deletes it.
+
+db.employees.findOneAndDelete({
+    name: "tayyab"
+});
+
+This:
+
+Finds one matching document.
+Deletes it.
+Returns the deleted document.
+
+This is useful when you need to know what you deleted.
+
+--------------------------------
+findOneAndReplace()
+
+Finds one document and replaces the entire document.
+
+Example:
+
+db.employees.findOneAndReplace(
+    {name: "ali"},
+    {
+        name: "ali",
+        age: 30,
+        salary: 80000
+    }
+);
+
+Remember:
+
+findOneAndReplace()
+→ Entire document replaced
+
+Just like:
+
+replaceOne()
+
+but it also returns the document.
+
+--------------------------------------------
+
+Upsert ⭐⭐⭐⭐⭐
+
+This is one of the most important concepts in this section.
+
+upsert means:
+
+Update + Insert
+
+Suppose we run:
+
+db.employees.updateOne(
+    {name: "john"},
+    {
+        $set: {
+            salary: 50000
+        }
+    },
+    {
+        upsert: true
+    }
+);
+
+What happens?
+
+MongoDB first searches:
+
+Is there an employee named john?
+If YES
+
+It updates John:
+
+Update
+If NO
+
+MongoDB creates a new document:
+
+{
+    name: "john",
+    salary: 50000
+}
+
+That's upsert.
+This is very useful for API operations.
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+CREATE
+────────────────
+insertOne()
+insertMany()
+
+
+READ
+────────────────
+find()
+findOne()
+
+
+UPDATE
+────────────────
+updateOne()
+updateMany()
+replaceOne()
+
+findOneAndUpdate()
+findOneAndReplace()
+
+
+DELETE
+────────────────
+deleteOne()
+deleteMany()
+
+findOneAndDelete()
+
+
+SPECIAL
+────────────────
+upsert

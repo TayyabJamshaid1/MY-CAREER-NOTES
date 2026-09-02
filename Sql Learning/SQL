@@ -189,6 +189,15 @@ select count(*) from users;
 or
 select count(*) from users where gender="Male";
 
+Scenario 1:
+Count a particular column
+SELECT COUNT(email) FROM users;//This counts non-NULL values in email.
+
+That's an important distinction:
+
+COUNT(*)   → counts rows
+COUNT(column) → counts non-NULL values in that column.
+
 2- min salary & max salary
 select Min(salary) as min_salary , Max(salary) as max_salary from users;
 
@@ -197,13 +206,56 @@ select sum(salary) as total from users;
 
 4-Group by & avg
 
-The group by statement is used with aggregate functions to group the result-set by one or more columns.
-We can select only those columns which were present in group by command.
-We can use only those columns in group by which data is repitative
+=>The group by statement is used with aggregate functions to group the result-set by one or more columns.
+=>Every column in SELECT that is NOT inside an aggregate function generally must appear in GROUP BY.
+For example:
+SELECT gender, AVG(salary) FROM users GROUP BY gender;
+Here:
+gender → appears in GROUP BY ✅
+AVG(salary) → aggregate function ✅
+
+Therefore, it's valid.
+
+We can't do it like below:
+SELECT gender, name, AVG(salary) FROM users GROUP BY gender;
+
+=>GROUP BY is normally used with columns whose values define meaningful categories/groups, such as gender, branch, department, city, or customer_id. Repeated values are common because they allow multiple rows to be combined into groups, but repetition is not a requirement.We can use only those columns in group by which data is repitative
+
+For example:
+
+GROUP BY gender
+GROUP BY branch
+GROUP BY department
+GROUP BY city
 
 Every column in your SELECT that is NOT inside an aggregate function (COUNT, AVG, SUM, MAX, MIN) MUST be in GROUP BY
 select gender , avg(salary) as gender_salary from users group by gender;
 
+Imp Scenario:
+The Most Important Mental Trigger:-
+Whenever you see: each / every / per   immediately think:  GROUP BY
+
+Examples:
+Average salary for each gender:GROUP BY gender
+Number of employees in each branch:GROUP BY branch
+Total sales per customer:GROUP BY customer_id
+Highest score for each subject:GROUP BY subject
+
+This mental trigger will save you a lot of time in interviews.
+
+===>One Important Rule
+
+When using GROUP BY, columns in SELECT generally need to be either:
+Included in GROUP BY, or   Wrapped in an aggregate function.
+
+For example:
+SELECT gender, AVG(salary) FROM users GROUP BY gender;     ✅ Correct.
+But:
+SELECT gender, name, AVG(salary) FROM users GROUP BY gender; ❌ name doesn't represent a single value for each gender group.
+
+This is a very important concept for interviews.
+
+---------
 String Function
 1-lower & length
 select id,gender ,lower(name) as lower,length(name) as namelength from users;
@@ -230,7 +282,25 @@ Where clause does not work with aggregate functions while we can use having clau
 Where claused can used before the group by clause but not after that
 We can use where and having clause together in a single query
 From the performance point of view having is slower than where and should be avoided when possible
-------
+
+How it works:
+WHERE  : Which rows should participate?    e.g  WHERE salary > 50000
+HAVING : Which groups should appear after aggregation? e.g HAVING AVG(salary) > 50000
+
+A very useful mental model:
+
+FROM
+  ↓
+WHERE       ← filter individual rows
+  ↓
+GROUP BY    ← create groups
+  ↓
+AVG/COUNT/SUM/etc.
+  ↓
+HAVING      ← filter groups
+  ↓
+SELECT result
+----------------------------
 If else
 
 select id,name,gender,if (gender="Female","Yes","No") as is_female from "users";
