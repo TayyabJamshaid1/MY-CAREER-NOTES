@@ -3,8 +3,16 @@ a)Blocking requests   b)Non blocking request
 
 See event loop Pic
 
-Blocking operation also known as synchronous task while non Blocking operation also known as asynchronous task .Event loop jesy he kis request ko utati ha tu it checks that upcoming request is blocking or non blocking.If the request is non blocking,it will process that request and send response to the client.NOw,if it is blocking request,then to process that request,it moves to thread pool.Thread pool is a phol which have different threads.These threads are responsible to process our blocking request(ye in threads ki he duty huti ha in non blocking request ko handle krna ).You can assume a thread as  a worker(Aisa worker jo apk liye kam krta ha).Har request k liye ek thread ko assign kiya jata ha.So whenever a blocking request appears,it demand for a thread to thread pool.Normally thread hamary pas limited he huty ha.If any thread is avaiable,then us request k sath us thread ko assign kr dia jata ha.Jab b request process hu jai gi tu hamara thread/worker again thread pool mei a jai ga aur result ko return kr dy ga.Jesy he result hamary pas aiy ga ,hum wo response user ko send kr dy gy. See Blocking Thread Pool.png image 
+Blocking operation also known as synchronous task while non Blocking operation also known as asynchronous task .Event loop jesy he kis request ko utati ha tu it checks that upcoming request is blocking or non blocking.If the request is non blocking,it will process that request and send response to the client.NOw,if it is blocking request,then to process that request,it moves to thread pool.Thread pool is a phol which have different threads.These threads are responsible to process our blocking request(ye in threads ki he duty huti ha in non blocking request ko handle krna ).You can assume a thread as  a worker(Aisa worker jo apk liye kam krta ha).Har request k liye ek thread ko assign kiya jata ha.So whenever a blocking request appears,it demand for a thread to thread pool.Normally thread hamary pas limited he huty ha(by default only 4 threads are avaiable).If any thread is avaiable,then us request k sath us thread ko assign kr dia jata ha.Jab b request process hu jai gi tu hamara thread/worker again thread pool mei a jai ga aur result ko return kr dy ga.Jesy he result hamary pas aiy ga ,hum wo response user ko send kr dy gy. See Blocking Thread Pool.png image 
 
 now let suppose thread pool mei hamary sary threads dosri requests k sath busy thy,ab ek new upcoming request aai,usny thread/worker ki demand ki mgr all the threads are busy,tu is liye hamari request wait kary gi until any thread is free. jesy he koi thread free hu ga ,that free thread will be assigned to that request
 
 Now see the issues in blocking requests.If you are making a web application and you have made a blocking operations,and multiple users hit that blocking requests, then imagine what would be the result,it has to be wait for a long time.So allwas try to make non blocking operations 
+
+See blocking & non blocking examples in images
+
+Info:
+We can also increase the threads but it totally depend on your cpu machine.Like in 8core cpu,it has 8 threads.You can check your thread count by os module
+
+const os=require("os")
+console.log(os.cpus().length) //it will tell you the thread length
