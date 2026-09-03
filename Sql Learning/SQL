@@ -340,6 +340,12 @@ hello SQL
 With a column:
 SELECT REPLACE(email, '@gmail.com', '@company.com') FROM users;
 This changes the returned value only. It doesn't modify the database unless you use it inside an UPDATE
+
+Tricky Example:
+
+Display:Name: Ali | Gender: Male | Salary: 50000
+
+select concat("Name: ",upper(substring(name,1,1)),lower(substring(name,2))," | ","Gender: ",upper(substring(gender,1,1)),lower(substring(gender,2))," | ","Salary: ",salary) as full_name from users;
 ----------------------------
 Date Functions:
 1-NOW()
@@ -382,6 +388,7 @@ Example:1995-08-20 → 20
 select id,gender ,now() as time_date, year(date_of_birth) as yob,month(date_of_birth) as month from users;
 
 8-datediff
+DATEDIFF(later_date, earlier_date)
 select name ,datediff(curDate(),date_of_birth) as days from users;
 
 9-DATE_FORMAT()
@@ -399,8 +406,16 @@ Format	Meaning
 %H	Hour
 %i	Minutes
 %s	Seconds
+%M      Full month name 
+%W      Full Day name
 
 For example:
+SELECT
+    name,
+    DATE_FORMAT(date_of_birth, '%d %M %Y') AS birth_date
+FROM users;
+
+Result: 15 August 1995
 
 SELECT DATE_FORMAT(created_at, '%d-%m-%Y') AS formatted_date
 FROM users;
@@ -887,6 +902,24 @@ select * from users where  name like '%d'; //start me jo mrzi hu ,end "d" pr hu
 
 b)-
 select * from users where  name like '__m%'; //phly 2 character koi b hu,third place pr "m" huna chahiye bad me b chahy jo mrzi aaiy.
+c)%a% → contains a
+SELECT *
+FROM users
+WHERE name LIKE '%a%';
+
+Meaning:
+
+anything + a + anything
+
+The a can be anywhere.
+
+Examples:
+
+Ahmed  → ✅
+Hamza  → ✅
+Sara   → ✅
+Ali    → ❌
+John   → ❌
 ---------------------------------
 Offset:
 
