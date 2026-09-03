@@ -263,11 +263,160 @@ select id,gender ,lower(name) as lower,length(name) as namelength from users;
 2-concat
 select id,gender ,lower(name) as lower,concat(lower(name),"787") as username from users;
 
-3-Current time & current year,month
-select id,gender ,now() as time, year(date_of_birth) as yob,month(date_of_birth) as month from users;
+3-CONCAT_WS()
+CONCAT_WS() means CONCAT With Separator.
+SELECT CONCAT_WS(' - ', name, gender, salary) FROM users;
 
-4-datediff
+Result:  Ali - Male - 50000   //The first argument is the separator.
+
+CONCAT_WS(separator, value1, value2, ...) //This is useful when building readable strings.
+
+4-TRIM()
+Removes leading and trailing spaces.
+SELECT TRIM('   Tayyab   ');
+Result: Tayyab  //Very useful when cleaning user input.
+
+5-LTRIM()
+Removes spaces from the left side.
+SELECT LTRIM('   Tayyab');
+Result:Tayyab
+
+6-RTRIM()
+Removes spaces from the right side.
+SELECT RTRIM('Tayyab   ');
+Result:Tayyab
+
+Think:
+LTRIM → Left
+RTRIM → Right
+TRIM  → Both
+
+7-SUBSTRING()
+Extracts part of a string.
+
+Syntax:
+SUBSTRING(string, start, length)
+
+Example:
+SELECT SUBSTRING('Tayyab', 1, 3);
+Result:Tay
+
+SQL string positions start at 1, not 0.
+
+T a y y a b
+1 2 3 4 5 6
+
+Another example:
+SELECT SUBSTRING(name, 1, 3) FROM users;
+
+8-LEFT()
+
+Returns characters from the beginning.
+SELECT LEFT(name, 3) FROM users;
+
+For: Tayyab
+result:Tay
+
+11. RIGHT()
+Returns characters from the end.
+
+SELECT RIGHT(name, 3) FROM users;
+
+For:
+Tayyab
+result:yab
+
+12-REPLACE()
+Replaces one piece of text with another.
+Syntax:
+REPLACE(string, old_text, new_text)
+
+Example:
+SELECT REPLACE('hello world', 'world', 'SQL');
+
+Result:
+hello SQL
+
+With a column:
+SELECT REPLACE(email, '@gmail.com', '@company.com') FROM users;
+This changes the returned value only. It doesn't modify the database unless you use it inside an UPDATE
+----------------------------
+Date Functions:
+1-NOW()
+Returns the current date and time.
+SELECT NOW();
+Example:2026-09-03 14:30:25
+
+2-CURDATE()
+Returns the current date only.
+SELECT CURDATE();
+Example:2026-09-03
+
+Difference:
+NOW()     → date + time
+CURDATE() → date only
+
+3. CURTIME()
+Returns the current time.
+SELECT CURTIME();
+Example:14:30:25
+
+4-YEAR()
+Extracts the year.
+SELECT YEAR(date_of_birth) FROM users;
+If:
+1995-08-20
+result:1995
+
+5. MONTH()
+Extracts the month number.
+SELECT MONTH(date_of_birth) FROM users;
+Example:1995-08-20 → 8
+
+6. DAY()
+Extracts the day of the month.
+SELECT DAY(date_of_birth) FROM users;
+Example:1995-08-20 → 20
+
+7-Current time & date , current year,month
+select id,gender ,now() as time_date, year(date_of_birth) as yob,month(date_of_birth) as month from users;
+
+8-datediff
 select name ,datediff(curDate(),date_of_birth) as days from users;
+
+9-DATE_FORMAT()
+This is extremely useful when displaying dates.
+SELECT DATE_FORMAT(created_at, '%Y-%m-%d') FROM users;
+
+You can format a date differently: SELECT DATE_FORMAT(created_at, '%d/%m/%Y') FROM users;
+
+Common format specifiers:
+Format	Meaning
+%Y	4-digit year
+%y	2-digit year
+%m	Month number
+%d	Day
+%H	Hour
+%i	Minutes
+%s	Seconds
+
+For example:
+
+SELECT DATE_FORMAT(created_at, '%d-%m-%Y') AS formatted_date
+FROM users;
+
+10-TIMESTAMPDIFF()
+This is particularly useful for calculating things like age.
+Syntax: TIMESTAMPDIFF(unit, start_date, end_date)
+For example:
+SELECT TIMESTAMPDIFF(YEAR,date_of_birth,CURDATE()) AS age FROM users;
+
+This calculates the person's age in completed years.
+
+You can also use:
+TIMESTAMPDIFF(MONTH, start_date, end_date)
+or:
+TIMESTAMPDIFF(DAY, start_date, end_date)
 ----------
 Having:
 Having clause is used to specify conditions like where clause
