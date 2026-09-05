@@ -1,0 +1,13 @@
+Middleware functions are functions that have access to:
+a)The request object (req)
+b)The response object (res)
+c)The next middleware function in the application’s request-response cycle, commonly named next
+
+Middleware functions can perform the following tasks:
+a)Execute any code.
+b)Modify the request and response objects.
+c)End the request-response cycle.
+d)Pass control to the next middleware function.
+
+Middle ware is a function that responds on each request and response(Ye simple ek function ha which have access to our request and response,it works in a center as a middleman)
+We may have multiple middlewares for same request

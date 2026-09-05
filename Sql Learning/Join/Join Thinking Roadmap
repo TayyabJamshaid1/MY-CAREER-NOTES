@@ -1,0 +1,33 @@
+JOIN Problem-Solving Framework:-
+When you see a JOIN question, use this:
+
+Step 1 — What columns do I need?
+
+Example:
+student name
+exam score
+
+Step 2 — Which tables contain them?
+name  → students
+score → exam_scores
+
+Step 3 — How are they related?
+students.student_id = exam_scores.student_id
+
+Step 4 — Which JOIN?
+Ask:
+Do I need unmatched records?
+If no:
+INNER JOIN
+If:
+"show all students, even those without exams"
+LEFT JOIN
+
+Step 5 — Do I need filtering?
+WHERE
+
+Step 6 — Do I need one result per group?
+GROUP BY
+
+Step 7 — Do I need to filter groups?
+HAVING
