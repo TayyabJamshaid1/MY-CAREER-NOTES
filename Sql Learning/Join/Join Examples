@@ -3,13 +3,9 @@
 12. Find the total exam score obtained by each student and display the student's name and total score.
 
 13. Find students whose total exam score is greater than 160. Display their name and total score.
-
 14. Display every student and their project title. Students who have no project should still appear.
-
 15. Find the average project marks for each student. Display the student's name and average marks.
-
 16. Find students whose average project marks are greater than 80.
-
 17. Display each student's name, exam subject, exam score, and project title.
 
 18. Find each student's highest exam score and display the student's name and highest score.
