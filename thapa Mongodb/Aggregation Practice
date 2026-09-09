@@ -1,0 +1,122 @@
+Level 1 — Basic
+Q1 Find all employees whose age is 30 or greater.
+Q2 Return each employee's name, salary, and city. Do not return _id.
+Q3 Return all employees ordered from highest salary to lowest salary.
+Q4 Return the 5 highest-paid employees.
+Q5 Find all employees whose salary is greater than 50,000 and return only their name and salary.
+Solutions:
+db.employees.aggregate([{$match:{age:{$gte:30}}}])
+db.employees.aggregate([{$project:{_id:0,name:1,salary:1,"address.city":1}}])
+db.employees.aggregate([{$sort:{salary:-1}}])
+db.employees.aggregate([{$sort:{salary:-1}},{$limit:5}])
+db.employees.aggregate([{$match:{salary:{$gt:50000}}},{$project:{_id:0,name:1,salary:1,}}])
+
+
+-----------------
+
+🟡 Level 2 — Statistics
+Q6 Calculate the total salary paid to all employees.
+Q7 Calculate the average salary of all employees.
+Q8 For each city, find the number of employees working there.
+
+Q9 For each city, calculate:
+Number of employees
+Total salary
+Average salary
+Highest salary
+Lowest salary
+
+Q10 Consider only employees whose salary is 50,000 or more.
+For each city, find:
+Number of employees
+Average salary
+
+Solutions:
+db.employees.aggregate([{$group:{_id:null,totalSalary:{$sum:"$salary"}}}])
+db.employees.aggregate([{$group:{_id:null,avgSalary:{$avg:"$salary"}}}])
+db.employees.aggregate([{$group:{_id:"$address.city",totalEmployees:{$sum:1}}}])
+db.employees.aggregate([{$group:{_id:"$address.city",totalSalary:{$sum:"$salary"},avgSalary:{$avg:"$salary"},highestSalary:{$max:"$salary"},lowestSalary:{$min:"$salary"}}}])
+db.employees.aggregate([{$match:{salary:{$gte:50000}}},{$group:{_id:"$address.city",avgSalary:{$avg:"$salary"},totalEmployees:{$sum:1}}}])
+
+
+----------------------
+Level 3 — Multiple Requirements
+Q11 Find the 3 highest-paid employees who are older than 25.
+Return their:
+Name
+Age
+Salary
+
+Q12 For employees earning more than 40,000, calculate the average salary for each city and display the cities from the highest average salary to the lowest.
+Q13 For every employee, calculate what their salary would be after receiving a 10,000 salary increase.
+Return:
+Name
+Current salary
+New salary
+
+Q14 Classify every employee according to their salary:
+70,000 or more → "High"
+Below 70,000 → "Normal"
+Return the employee's name, salary, and classification.
+
+Q15 Some employees have a bonus and some don't.
+Create a result where every employee has a finalBonus value:
+If they have a bonus, use that bonus.
+If they don't have a bonus, use 0.
+Return the employee's name and finalBonus.
+
+Solutions:
+db.employees.aggregate([{$match:{age:{$gt:25}}},{$sort:{salary:-1}},{$limit:3},{$project:{name:1,age:1,salary:1,_id:0}}])
+db.employees.aggregate([{$match:{salary:{$gt:40000}}},{$group:{_id:"$address.city",avgEmployees:{$avg:"$salary"}}},{$sort:{avgEmployees:-1}}])
+db.employees.aggregate([{$addFields:{incrementedSalary:{$add:["$salary",10000]}}},{$project:{name:1,salary:1,incrementedSalary:1,_id:0}}])
+db.employees.aggregate([{$addFields:{classification:{$cond:[{$gte:["$salary",70000]},"High","Normal"]}}},{$project:{name:1,salary:1,classification:1,_id:0}}])
+db.employees.aggregate([{$addFields:{finalBonus:{$ifNull:["$bonus",0]}}},{$project:{name:1,finalBonus:1,_id:0}}])
+
+--------------------------------------------
+Level 4 — Arrays & Multiple Collections
+Q16 Each employee has a skills array.
+Produce a result where each employee-skill combination appears as a separate document.
+For example, if Ali has:
+skills: ["react", "node", "mongodb"]
+the result should contain three records for Ali.
+
+Q17 Determine how many employees have each skill.
+For example:
+{
+  skill: "react",
+  employeeCount: 8
+}
+Sort the results from the skill with the highest employee count to the lowest.
+
+Q18 The employees collection contains a departmentId, and the departments collection contains the corresponding department information.
+Return each employee together with their department information.
+Keep the department information grouped inside the employee result.
+
+Q19 Using the employee and department information, return:
+employeeName
+departmentName
+For example:
+{
+  employeeName: "Ali",
+  departmentName: "Engineering"
+}
+Employees without a matching department should not appear in the final result.
+
+🔥 Q20 — Final Interview Challenge
+You need a salary report for management.
+Consider only employees who:
+are older than 25
+earn 50,000 or more
+For each city, calculate:
+Number of employees
+Average salary
+Highest salary
+Lowest salary
+Then show only the 2 cities with the highest average salary.
+
+Solutions:
+db.employees.aggregate([{$unwind:"$skills"}])
+db.employees.aggregate([{$unwind:"$skills"},{$group:{_id:"$skills",employeeCount:{$sum:1}}},{$sort:{employeeCount:-1}},{$project:{_id:0,skills:"$_id",employeeCount:1}}])
+db.employees.aggregate([{$lookup:{from:"departments",localField:"departmentId",foreignField:"_id",as:"department_information"}}])
+db.employees.aggregate([{$lookup:{from:"departments",localField:"departmentId",foreignField:"_id",as:"department_information"}},{$unwind:"$department_information"},{$project:{employeeName:"$name",departmentName:"$department_information.name",_id:0}}])
+db.employees.aggregate([{$match:{salary:{$gte:50000},age:{$gt:25}}},{$group:{_id:"$address.city",avgSalary:{$avg:"$salary"},totalEmployees:{$sum:1},highestSalary:{$max:"$salary"},lowestSalary:{$min:"$salary"}}},{$sort:{"avgSalary":-1}},{$limit:2}])
