@@ -469,7 +469,27 @@ let middleName=val.length>2?val.slice(1,-1).join(""):undefined
 return {firstName,lastName,middleName}
 })
 console.log(data);
+-----------------------
+//in this program ,we will check did both objects have same keys and same values or not
+let obj1={a:99,b:67},obj2={a:199,b:67}
+let obj1Arr=Object.keys(obj1),obj2Arr=Object.keys(obj2)
 
+function checkObjEquality(){
+
+if (obj1Arr.length!==obj2Arr.length){
+    return false
+}else{
+for (let i=0;i<obj1Arr.length;i++){
+    let key=obj1Arr[i]
+    if(!obj2.hasOwnProperty(key)||obj1[key]!==obj2[key]){
+        return false
+    }
+}
+return true
+}
+}
+let res=checkObjEquality()
+console.log(res)
 --------------------
 Find second largest number by for loop
 
