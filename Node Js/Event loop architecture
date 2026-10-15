@@ -1,4 +1,4 @@
-Jab b client server pr request krta ha tu wo request event quene mei ja k quene hu jati ha, jitni b request ati jaiy gi wo equent quene me ja k quene huti jai gi,us k bad ye request event loop k pas jai gi.Event loop is a loop which allways watches our event quene to check that if any request need to be implemented.It works on first come first serve service(Jis ki request phly aiy gi usy phly serve kiya jai ga).Har request 2 tariqy ki hu skti ha 
+Jab b client server pr request krta ha tu wo request event quene mei ja k quene hu jati ha, jitni b request ati jaiy gi wo event quene me ja k quene huti jai gi,us k bad ye request event loop k pas jai gi.Event loop is a loop which allways watches our event quene to check that if any request need to be implemented.It works on first come first serve service(Jis ki request phly aiy gi usy phly serve kiya jai ga).Har request 2 tariqy ki hu skti ha 
 a)Blocking requests   b)Non blocking request
 
 See event loop Pic
