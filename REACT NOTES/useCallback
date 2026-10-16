@@ -84,43 +84,7 @@ const Body = () => {
   );
 };
 export default Body;
-
-Solution:
-import React, { useCallback, useContext, useMemo, useState } from "react";
-import UserContext from "./Utils/userContext";
-
-const ChildComponent = React.memo((props) => {
-  console.log("child render");
-
-  return (
-    <>
-      <h1>{props.btnName}</h1>
-    </>
-  );
-});
-const Body = () => {
-  const [count, setCount] = useState(0);
-
-  const incrementCount = useCallback(()=>{
-console.log("function called");
-
-    setCount(count=>count+1)
-
-  },[])
-  return (
-    <>
-      <h1>{count} Parent</h1>
-      <br />
-      <br />
-      <button onClick={incrementCount}>Increment Count</button>
-      <br />
-      <br />
-      <ChildComponent btnName="tayyab" incrementCount={incrementCount} />{" "}
-      {/**Now child component is not rendering but remember incrementCount function is called on every re render while it does not update the state untill we pass that state as  a dependency*/}
-    </>
-  );
-};
-export default Body;
+----------------------
 --------------------------------------
 Now,let suppose ,we pass a function in child component
 
@@ -159,6 +123,44 @@ const Body = () => {
   );
 };
 export default Body;
+
+Solution:
+import React, { useCallback, useContext, useMemo, useState } from "react";
+import UserContext from "./Utils/userContext";
+
+const ChildComponent = React.memo((props) => {
+  console.log("child render");
+
+  return (
+    <>
+      <h1>{props.btnName}</h1>
+    </>
+  );
+});
+const Body = () => {
+  const [count, setCount] = useState(0);
+
+  const incrementCount = useCallback(()=>{
+console.log("function called");
+
+    setCount(count=>count+1)
+
+  },[])
+  return (
+    <>
+      <h1>{count} Parent</h1>
+      <br />
+      <br />
+      <button onClick={incrementCount}>Increment Count</button>
+      <br />
+      <br />
+      <ChildComponent btnName="tayyab" incrementCount={incrementCount} />{" "}
+      {/**Now child component is not rendering but remember incrementCount function is called on every re render while it does not update the state untill we pass that state as  a dependency*/}
+    </>
+  );
+};
+export default Body;
+---------------------------
 
 2)To handle recreation of  expensive operations 
 
