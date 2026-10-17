@@ -1,0 +1,90 @@
+1. useActionState
+Definition: useActionState is a React hook that manages the response and pending state of an action.
+Syntax:
+const [state, formAction, isPending] =
+  useActionState(contactAction, null);
+
+
+- state: Stores the response returned by the action.
+- formAction: Function used in the form's action prop.
+- isPending: Indicates whether the action is running.
+Example:
+async function contactAction(prevState, formData) {
+  return { message: "Form submitted successfully!" };
+}
+
+function ContactForm() {
+  const [state, formAction, isPending] =
+    useActionState(contactAction, null);
+
+  return (
+    <form action={formAction}>
+      <button disabled={isPending}>
+        {isPending ? "Submitting..." : "Submit"}
+      </button>
+
+      <p>{state?.message}</p>
+    </form>
+  );
+}
+
+
+2. useFormStatus
+Definition: useFormStatus is a React DOM hook that provides information about the parent form's submission status and data.
+Syntax:
+const { pending, data, method, action } = useFormStatus();
+
+
+- pending: Whether the form is submitting.
+- data: Submitted form data.
+- method: Form submission method.
+- action: Form's action function or URL.
+Example:
+import { useFormStatus } from "react-dom";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button disabled={pending}>
+      {pending ? "Submitting..." : "Submit"}
+    </button>
+  );
+}
+
+function ContactForm() {
+  return (
+    <form action={contactAction}>
+      <input name="email" />
+      <SubmitButton />
+    </form>
+  );
+}
+
+
+Note: useFormStatus must be used inside a child component of the form whose status you want to track.
+3. useTransition
+Definition: useTransition is a React hook that marks state updates as non-urgent, allowing React to prioritize urgent UI updates.
+Syntax:
+const [isPending, startTransition] = useTransition();
+
+
+- isPending: Indicates whether the transition is in progress.
+- startTransition: Marks state updates as non-urgent.
+Example:
+const [input, setInput] = useState("");
+const [query, setQuery] = useState("");
+const [isPending, startTransition] = useTransition();
+
+function handleChange(e) {
+  const value = e.target.value;
+
+  setInput(value); // Update input immediately
+
+  startTransition(() => {
+    setQuery(value); // Update results as non-urgent work
+  });
+}
+
+
+Note: useTransition helps React prioritize UI updates. It does not automatically make heavy JavaScript calculations faster.
