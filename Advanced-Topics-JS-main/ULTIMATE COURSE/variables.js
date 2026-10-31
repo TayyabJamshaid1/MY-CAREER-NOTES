@@ -1,13 +1,16 @@
-let names=["Tayyab Jamshaid","Hafiz Amir Attari Khan"]
+// let x=20,sqrt=0,m=0,l=2,r=x/2;
 
+// while (l!==r){
+//  m=(l+r)/2
+// if (m*m>x){
+// r=m-1
+// }else if(x>m*m){
+// l=m+1
 
+// }
 
-let res=names.map((item)=>{
-let name=item.trim().split(/\s+/)
-let firstName=name[0]
-let lastName=name.length>1?name[name.length-1]:undefined;
-let middleName=name.length>2?name.slice(1,-1).join(" "):undefined
-return {firstName,lastName,middleName}
-})
+// }
 
-console.log(res);
+// sqrt=l-1;
+
+// console.log(sqrt)
