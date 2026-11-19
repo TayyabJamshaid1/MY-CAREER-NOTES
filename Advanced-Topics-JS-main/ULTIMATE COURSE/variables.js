@@ -1,16 +1,18 @@
-// let x=20,sqrt=0,m=0,l=2,r=x/2;
+let s="Hello World "
 
-// while (l!==r){
-//  m=(l+r)/2
-// if (m*m>x){
-// r=m-1
-// }else if(x>m*m){
-// l=m+1
+let count=0;
+let n=s.length-1;
+while(n>=0){
+if (s[n] !==" ") break;
+--n
 
-// }
+}
+console.log(n)
+while(n>=0){
+if (s[n] ==" ") break;
+++count
+--n
 
-// }
+}
 
-// sqrt=l-1;
-
-// console.log(sqrt)
+console.log(count)
