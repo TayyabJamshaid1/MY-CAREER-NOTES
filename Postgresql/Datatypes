@@ -1,0 +1,16 @@
+Datatypes:
+An attribute that specifies the type of data in a column of our database-table
+
+Most common datatypes:
+Numberic : int,double,float,decimal
+String   : varchar
+Date     : Date
+Boolean   : Boolean
+
+
+Constraint:
+It is a rule applied to a column
+
+Not null,default value,primary key,auto increment
+
+create table person(id int primary key,name varchar(100) not null,city varchar(50) default 'lhr');

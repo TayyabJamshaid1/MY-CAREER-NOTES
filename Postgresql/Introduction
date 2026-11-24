@@ -1,0 +1,23 @@
+enter :sudo -u postgres psql
+exit : \q
+Database Definition:
+"An organised collection of data.A method to manipulate and access the data"
+
+Database vs dbms:
+Let suppose,we have our app.We need a medium to collect data from app and store it in database.That medium is dbms.(It can be postgresql,mysql,oracle etc).The combination of medium(postgresql,oracle,mysql) with database is known as dbms
+
+RDBMS:
+A type of database system that stores data in structured tables (using rows and columns) and uses sql for managing and querying data
+
+Imp:Generally use a semicolon (;) at the end of each SQL statement.
+Imp: Postgresql is in sensitive,you can write query in upper or lower case both
+
+==>commands to see avaiable databases in postgres
+   a) \l (it will run only on terminal,not on pg admin)
+   b)  select datname from pg_database;
+   
+
+==>Now if we have to work with particular database,use below commands
+
+for terminal :  \c instadb;
+for pgadmin : select database and click on query tool   

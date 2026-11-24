@@ -1,0 +1,64 @@
+Crud:
+
+//Create query
+create database test:
+
+//drop database:
+drop database test;
+
+ After learn,how to create database,now learn how to create tables.
+ 
+ Table:
+ "A table is a collection of related data held in a table formal within database"
+
+//create table query
+create table person(id int,name varchar(100),city varchar(199));
+
+//insert data into table 
+
+In PostgreSQL, always use single quotes for text values because Double quotes " " is used for Identifiers (column names, table names)
+
+insert into person values (102,'tayyab','noman'),(105,'ss','sal');
+
+//read data from table 
+select * from person;
+
+or 
+select name from person;
+
+//Update query
+update person set name ='ali' where id=102;
+
+//delete data
+delete from person where id=102;
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------
+Terminal
+
+//switch on any database
+postgres=# \c dat;
+You are now connected to database "dat" as user "postgres".
+
+//switch on any database table
+dat=# \d person;
+                      Table "public.person"
+ Column |          Type          | Collation | Nullable | Default 
+--------+------------------------+-----------+----------+---------
+ id     | integer                |           |          | 
+ name   | character varying(100) |           |          | 
+ city   | character varying(199) |           |          | 
+
+dat=# 
+ 
