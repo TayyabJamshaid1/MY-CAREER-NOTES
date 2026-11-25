@@ -10,7 +10,14 @@ Boolean   : Boolean
 
 Constraint:
 It is a rule applied to a column
+You can use multiple constraints at a time
+e.g : Not null,default value,primary key,auto increment
 
-Not null,default value,primary key,auto increment
+//serial represents auto increment
+create table person(id int serial primary key,name varchar(100) not null,city varchar(50) default 'lhr');
 
-create table person(id int primary key,name varchar(100) not null,city varchar(50) default 'lhr');
+
+
+create table employees(emp_id serial primary key serial,fname varchar(100) not null,lname varchar(100) not null,email varchar(100) not null unique,dept varchar(50),salary int not null default 50000,hire_date Date not null default current_date );
+
+//Jab b hum primary key or unique kisi column ko bnaty ha ,tu behind the scene us column k indexes create kr dta ha which will help us in searching operation ( See image of Indexes of Primary & unique key.png)
