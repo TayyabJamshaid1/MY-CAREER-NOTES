@@ -1,0 +1,56 @@
+Clauses:
+Where,distinct,order by ,limit,like
+
+Jab b hum sql ki query likh rhy huty ha,us k sath kuch conditions dy rhy huty ha ,usy clause kehty ha
+
+=>Where: Use where when you have to search specific person or specific data,use it
+
+Examples:
+select * from employees where dept='it' or dept='finance';
+or
+select * from employees where dept='it' and salary>20000;
+
+=>In & Not in clause (to handle multiple or)
+select * from employees where dept in('it','finance');
+
+or
+
+select * from employees where dept not in('it','finance');
+
+
+=>Between
+select * from employees where salary between 40000 and 60000;
+
+=>Distinct:
+Distinct means mjy unique values niqal k du or duplicayes ko ignore kro
+
+select dept from employees; //it will give the duplicate  values,if i want only unique values use distinct
+
+select distinct dept from employees;
+
+=>Order By
+
+By default,its value is ascending,if i want descending,write desc
+select * from employees order by fname;  //fname ko ascending mei sort kr k us k mutabiq sara data represent kro
+or
+select * from employees order by  dept desc; //now it will give the result in descending way regarding dept
+
+==>limit:
+limit dny sy hum usy no of results bta rhy ha k itny du
+
+select * from employees limit 3;
+
+==>like
+Exact agr data find krna hu tu hum where ka use krty ha,lekin agr hamai data ek pattern/style k mutabiq chahiye hu then use like
+for example: mjy un employees ka data niqal k du jin ka nam r ya a sy shuru huta ha
+
+a)start with A : select * from employees where fname like 'A%';  //fname chahy jitna marzi bara hu ,start A sy huna chahiye
+b)end with a : select * from employees where fname like '%a';  //fname chahy jitna marzi bara hu ,end a sy huna chahiye
+c)Contains i : select * from employees where fname like '%i%';  //fname chahy jitna marzi bara hu ,starting or end k ilawa i kahi pr b huna chahiye
+d)second character should be a : select * from employees where fname like '_a%';
+
+Example 2:
+Mjy wo employees du jin k department k name ki length srf 2 characters hu
+select * from employees where dept like '__'  //_ underscore represents a length
+
+
