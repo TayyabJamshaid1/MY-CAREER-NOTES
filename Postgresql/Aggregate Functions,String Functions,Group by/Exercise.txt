@@ -1,0 +1,17 @@
+select count(*) as total_employees from employees;
+select count(*) as total_employees,dept from employees group by dept;
+select min(salary) as min_salary from employees;
+select max(salary) as max_salary from employees;
+select sum(salary) as sum_salary from employees where dept in ('Loan');
+select avg(salary) as avg_salary,dept from employees group by dept;
+
+
+-------------------
+wo employees du jo sab sy highest salary ly rhy ha
+select * from employees where salary=(select max(salary) from employees);
+
+wo employees du jo sab sy lowest salary ly rhy ha
+select * from employees where salary=(select min(salary) from employees);
+
+
+

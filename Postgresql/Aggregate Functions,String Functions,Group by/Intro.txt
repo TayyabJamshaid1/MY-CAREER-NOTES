@@ -1,0 +1,100 @@
+Aisy function jin ko hum use kr k apnay table mei calculation perform kr skty ha
+
+a)count
+select count(*) as total_employees from employees;
+
+b) max,min,sum,avg
+select max(salary) as max_salary,min(salary) as min_salary,sum(salary) as all_salaries from employees;
+
+
+------------
+Group by:
+For grouping,we need a common column like gender,departments
+
+=>Each department me kitny bndy kam kr rhy ha,unka count btao
+select count(*) as total_employees,dept from employees group by dept;
+
+=>Har department mei hamari kitni salary ja rhi ha,wo btao
+select sum(salary) as total_salary,dept from employees group by dept;
+
+-----------------------------------------------------------------
+String Functions
+Hamaray pas ek table ha ,us mei kafi sara data ha,jab b hum us data ko extract krty ha ya uski report generate krty ha,agr us data mei columns ki value mei kuch b change krna ha,is scenario mei string functions kafi zyada use huty ha
+
+Imp:this String Functions will not change in original data,only reflect changes in our result
+
+a)concat
+Ek sy zyada words ko jorna,isy concat kehty ha
+example:
+select concat(fname,' ',lname) as fullname from employees;
+
+b)concat_ws (concat with separator like space,-)
+select concat_ws(' ',fname,lname,salary) as fullname from employees; 
+//sab mei space aiy gi
+fullname
+Tayyab Jamshaid 25000
+
+c)substr
+String ka koi specific part chahiye,then use this
+Here we pass 3 parameters
+a)String   b)From where to start in string   c)From where to end in string
+example:
+select substr(fname,1,4) as fullname from employees;
+//in Ahmed fname,output will be Ahme
+
+d)Replace
+kisi b given string mei kisi b specific part ko agr kisi aur string sy replace krna ha then use this
+Here we pass 3 parameters
+a)String   b)Which string part needs to be change   c)String which will be replaced 
+
+ select replace(dept,'IT','It') as department_updated from employees;
+
+e)Reverse & length
+Reverse is used to reverse the string
+ select reverse(fname),length(fname) from employees;
+ 
+ Task:
+ Wo employees du jin k fname ki length 5 sy zyada na hu
+  select *  from employees where length(fname)<=5;
+
+f)Upper & lower
+ select upper(fname),lower(fname) from employees;
+ 
+g)left & right
+left function gives the string,start counting  from begining of given string
+right function gives the string ,start counting  from end of given string
+ select left(fname,3),right(fname,3) from employees;
+ 
+ //let suppose,string is Ahmed,then it will give
+ left  right
+ Ahm    med
+ 
+ h)trim
+ Trim is used to remove extra space from staring and end
+ select length(trim('   alright    '));
+ Without trim,its length was 14,after using trim,it remove begining and end space,length reduce to 7
+ 
+ i)position
+ Let suppose,hamary pas ek boht bara word ha ya statement ha,us word ya statement  mei hum kisi b particular word ki position janna chahtay ha,then use this
+ 
+ Example:
+ select position('ri' in 'alright');
+ //Output 3  
+ 
+ ---------------------------------
+ Exercises
+ 
+ Task 1: Show me the result in this form 
+           1:Ali Khan:IT:85000
+ 
+ Sol:select concat_ws(':',emp_id,concat_ws(' ',fname,lname),dept,salary) as combine_intro from employees;
+ 
+ Task 2 : Department should be in capitalize and show result in below format
+          3:Usman:FINANCE
+          
+  Sol:select concat_ws(':',emp_id,fname,upper(dept)) as combine_intro from employees;    
+  
+  Task 3: SHow the emp_id(connected with first character of dept) with fname in below format
+            I3  usman    
+               
+Sol: select concat(left(dept,1),emp_id),fname from employees;

@@ -1,0 +1,5 @@
+select distinct(dept) from employees;
+select * from employees order by salary desc;
+select * from employees order by salary desc limit 3;
+select * from employees where fname like('A%');
+select * from employees where length(lname)=4;
