@@ -1,0 +1,30 @@
+Kisi b table ko agr change krna hu ,then use alter.Here i am talking about table,not table data.For table changes,use alter
+
+How to add or remove a column?
+
+alter table employees add column age int default 0;
+alter table employees drop column age;
+
+
+How to rename a column?
+alter table employees rename column fname to firstName;
+
+How to rename a table?
+alter table  firstName rename to employees;
+
+How to modify a column?(changing datatypes or adding default values etc)
+
+a)changing datatypes
+alter table  employees alter column fname set data type varchar(500);
+
+
+b)Set default value 
+alter table employees alter column dept set default 'IT';
+
+c)Set not null
+alter table employees alter column fname set not null;
+
+d)Drop any modification
+alter table employees alter column fname drop not null;
+alter table employees alter column dept drop default;
+
