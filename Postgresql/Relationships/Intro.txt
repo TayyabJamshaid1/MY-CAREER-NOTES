@@ -1,0 +1,20 @@
+Types of Relationships:
+a)One to One
+b)One to Many
+c)Many to Many
+
+a)One to One
+let suppose,we have two tables,"employees" and "employee details",logically har individual employee ki personal detail srf 1 bar he "employee details" table mei aiy gi,isy 1 to 1 relationship kehty ha.See One to One image
+
+b)One to many
+let suppose,we have two tables,"employees" and "employee tasks",har employee ka 1 task b hu skta ha aur more then 1 task b hu skty ha,is relationship ko one to many kehty ha.See One to Many image
+
+c)Many to Many
+let suppose,we have two tables,"authors" and "books",one book can be written by multiple authors and each author can write multiple books,this is called many to many relationship.See image 
+
+
+--------------------------
+How to create foreign key?
+let suppose,we have two tables, customers & orders
+create table customers(id Serial Primary key,name varchar(100) not null);
+create table orders(id Serial Primary key,order_bill decimal(10,2) not null,cust_id int not null,foreign key(cust_id) references customers(id));
