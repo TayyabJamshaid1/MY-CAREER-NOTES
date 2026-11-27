@@ -1,0 +1,25 @@
+Cross Join
+Every row from one table is combined with every row from another table
+
+Syntax:
+select * from customers cross join orders;
+ 
+ It is not very useful.It give us all the possible combinations of our data
+ 
+Inner join:
+It give us all the matched data based on condition
+select * from customers as c inner join orders as o on c.id=o.cust_id;
+
+You can also use group by in inner join,let suppose ,we want to check har user ny kitny order kiye aur us ka total kitna bill bna ,for this,use below query
+
+select c.id,count(c.id) as total_orders,sum(o.order_bill) as total_bill from customers as c inner join orders as o on c.id=o.cust_id group by c.id;
+
+
+Left Join:
+
+Left table ka sara data dy du aur right table ka srf matched data du
+
+Right Join:
+Right table ka sara data dy du aur left table ka srf matched data du
+
+Imp: left & right joins will be helpful jab apny ye dkhna hu k kis customer ny koi b order ni kiya
