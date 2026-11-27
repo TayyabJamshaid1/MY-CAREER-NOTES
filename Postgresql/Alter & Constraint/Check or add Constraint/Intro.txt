@@ -1,0 +1,19 @@
+Incoming data ki validity and verification k liye check constraint ko use krty ha,let suppose,incoming phone number ki length 10 sy zyada na hu
+
+How to add constraint,while creating tables
+There are two ways
+
+a)Named Constraint( constraint ka nam b khud rkh lo)
+create table testCheck(id int primary key,mob varchar(100),constraint add_mob_length check(length(mob)>10));
+
+b)Add constraint simply with column (default postgres ko he nam rkhny du)
+create table testCheck(id int primary key,mob varchar(100) check(length(mob)>10));
+
+-------------------------
+let suppose,if testCheck table is already created and we have to add constraint in existing column then below query will be used
+
+alter table testCheck add constraint mob_length check(length(mob)>10);
+
+------------------------------
+now if we have to remove any constraint then use below query
+alter table testCheck drop constraint mob_length;

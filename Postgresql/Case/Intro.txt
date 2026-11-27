@@ -1,0 +1,36 @@
+Practical Use Cases of CASE in PostgreSQL
+1. Salary Categorization: Categorizing employees into Low, Medium, and High salary groups based on their salary.
+
+2. Age Categorization: Classifying people as Minor, Adult, or Senior based on their age.
+
+3. Exam Results: Categorizing students as Pass or Fail based on their obtained marks.
+
+4. Product Pricing: Classifying products as Cheap, Moderate, or Expensive based on their prices.
+
+---------------------------------------------
+ 
+select fname,salary, case when salary>90000 then 'High' when salary between 70000 and 90000 then 'med' else 'low' end as sal_category from employees;   
+ 
+ Imp: when using between , Always write the lower value first and the higher value second.
+ 
+ Task 1:
+ 
+ Task Result where you can do a calculation in case:
+ select fname,salary, case when salary>0 then Round(salary*0.10) end as bonus from employees; 
+ 
+ -------------------
+ Task 2:
+  select case when salary >90000 then 'High' when salary between 70000 and 90000 then 'Mid' else 'Low'end as salary_category,count(emp_id) from employees group by salary_category;
+  
+  Execution of Task 2:
+  PostgreSQL logically processes your query like this:
+1. FROM: Fetches all records from the employees table.
+2. GROUP BY: Encounters salary_category and evaluates the CASE expression for each employee to determine their category.
+3. Grouping: Puts employees into High, Mid, and Low groups.
+4. COUNT(emp_id): Counts employee IDs separately within each group.
+5. SELECT: Produces the final output containing the category and its count.
+Important: Although CASE is written inside SELECT, PostgreSQL can evaluate that expression for GROUP BY.
+
+Your mental model is now correct:
+
+FROM → CASE evaluation → GROUP BY → COUNT → Final result
